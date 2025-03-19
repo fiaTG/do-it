@@ -1,0 +1,12 @@
+// Variablen
+$background-color: lightblue;
+$text-color: #333;
+
+// Stile
+body {
+    background-color: $background-color;
+    color: $text-color;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px;
+}
