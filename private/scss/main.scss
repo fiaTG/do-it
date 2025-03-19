@@ -1,12 +1,329 @@
-// Variablen
-$background-color: lightblue;
-$text-color: #333;
-
-// Stile
-body {
-    background-color: $background-color;
-    color: $text-color;
-    font-family: Arial, sans-serif;
-    text-align: center;
-    padding: 20px;
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap");
+/* CSS Variables for Consistency */
+:root {
+    --opacity-layer: 0.8;
+    --triangle-height: 60vh;
+    overflow: hidden;
 }
+
+/* General Reset */
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+}
+
+.container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+}
+.logo{
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  width: 350px;
+  height: 350px;
+  background-image: url(./../public/img/logo.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position:center;
+  /* animation: fadeIn 2s ease-in-out; */
+  animation: mergeLogos 1.5s ease-in-out forwards;
+  animation-delay: 3s; /* Startet nach 3 Sekunden */
+}
+
+@keyframes mergeLogos {
+  0% {
+      transform: translate(-50%, 50%) scale(1);
+      opacity: 1;
+  }
+  100% {
+      transform: translate(-50%, 20%) scale(0.4);
+      opacity: 0;
+  }
+}
+
+@keyframes appearMiniLogo {
+  0% {
+      opacity: 0;
+      transform: translate(-50%, 10%) scale(0.4);
+  }
+  100% {
+      opacity: 1;
+      transform: translate(-50%, 10%) scale(1);
+  }
+}
+
+
+
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.logoMini{
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 10%);
+  width: 150px;
+  height: 150px;
+  background-image: url(./../public/img/logoMini.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position:center;
+  opacity: 0;
+  animation: appearMiniLogo 1.5s ease-in-out forwards;
+  animation-delay: 4s; /* Startet leicht verzögert */
+}
+
+/* 🔹 Left and Right Background Layers */
+/* 🔹 Linke und rechte Außenbereiche */
+/* 🔹 Left and Right Background Layers */
+.outer-layer {
+    position: absolute;
+    width: 50%;
+    height: var(--triangle-height); /* Same height as the triangle */
+    /* background: url('/image.png') center/cover no-repeat; */
+    clip-path: polygon(0 0, 100% 0, 100% 1%, 0% 100%);; /* Cuts off to the triangle's bottom edge */
+    opacity: 0;
+    transition: opacity 2s ease-in-out;
+  
+}
+
+.left { left: 0; top: 0; 
+  background: url(./../public/img/gettyimages-509604047-1024x1024.jpg) center/cover no-repeat; }
+.right { right: 0; top: 0; transform: scaleX(-1);
+  background: url(./../public/img/gettyimages-1480145601-612x612.jpg) center/cover no-repeat;} /* Mirrors the right image */
+
+/* 📷 Bottom Image */
+.bottom-image {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+   height: calc(100.1% - var(--triangle-height));  /* Fills the space below the triangle */
+    background: url(./../public/img/gettyimages-1140015682-1024x1024.jpg) center/cover no-repeat;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    opacity: 0;
+    transition: opacity 2s ease-in-out;
+}
+
+/* 🔺 Triangle */
+.triangle {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    height: var(--triangle-height);
+    background: var(--triangle-color); 
+    clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+    opacity: 0; /* Initially hidden */
+    transition: opacity .5s ease-in-out;
+    animation: fadeIn 1s ease-in-out 4s forwards;
+}
+
+
+
+
+.login-area {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+}
+
+/* Inputs and Button */
+.login-area label {
+
+    display: block;
+    margin: 5px 0 10px;
+    text-align: left;
+    color: var(--white-color);
+}
+.login-area input {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 8px;
+    border: none;
+    border-radius: 5px;
+}
+.login-area button {
+    width: 100%;
+    padding: 8px;
+    background: var(--main-white);
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+
+
+
+/* LightButton */
+
+/*=============== VARIABLES CSS ===============*/
+:root {
+  /*========== Colors ==========*/
+  --body-color: #6a4adb;  
+  --accent-color: #13d4ab; /* Taupe-Greige */
+  --text-color: #4f4a45;   /* Dunkles Greige */
+  --hover-color: #9f9587;  /* Etwas dunkleres Greige */
+  --box-shadow: 0 0 5px var(--body-color), 0 0 10px var(--accent-color), 
+                0 0 15px var(--accent-color), 0 0 20px var(--body-color);
+  --white-color: #f1efec;
+  --triangle-color: linear-gradient(135deg, #8e44ad, #3498db);;  
+
+
+
+}
+body {
+    font-family: var(--body-font);
+    font-size: var(--normal-font-size);
+    background: var(--body-color);
+    min-height: 100vh;
+
+  }
+
+
+  
+  a {
+    text-decoration: none;
+  }
+  
+  .button-animation {
+    position: relative;
+    display: inline-block;
+    padding: 20px 30px;
+    background-color: #6780bed3;
+    text-transform: uppercase;
+    overflow: hidden;
+    width:fit-content;
+    transition: 0.5s;
+    margin: 10% 30%;
+    border-radius: 6px;
+    opacity: 0;
+    animation: fadeIn 4s ease-in-out 4s forwards;
+
+  }
+  
+  .button-animation span {
+    position: absolute;
+    display: block;
+  }
+  
+  .button-animation span:nth-child(1) {
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, var(--accent-color));
+    animation: btn-anim1 3s linear infinite;
+  }
+  
+  @keyframes btn-anim1 {
+    0% {
+      left: -100%;
+    }
+    50%,
+    100% {
+      left: 100%;
+    }
+  }
+  
+  .button-animation span:nth-child(2) {
+    top: -100%;
+    right: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, transparent, var(--accent-color));
+    animation: btn-anim2 3s linear infinite;
+    animation-delay: 0.75s;
+  }
+  
+  @keyframes btn-anim2 {
+    0% {
+      top: -100%;
+    }
+    50%,
+    100% {
+      top: 100%;
+    }
+  }
+  
+  .button-animation span:nth-child(3) {
+    bottom: 0;
+    right: -100%;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(270deg, transparent, var(--accent-color));
+    animation: btn-anim3 3s linear infinite;
+    animation-delay: 1.5s;
+  }
+  
+  @keyframes btn-anim3 {
+    0% {
+      right: -100%;
+    }
+    50%,
+    100% {
+      right: 100%;
+    }
+  }
+  
+  .button-animation span:nth-child(4) {
+    bottom: -100%;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(360deg, transparent, var(--accent-color));
+    animation: btn-anim4 3s linear infinite;
+    animation-delay: 2.25s;
+  }
+  
+  @keyframes btn-anim4 {
+    0% {
+      bottom: -100%;
+    }
+    50%,
+    100% {
+      bottom: 100%;
+    }
+  }
+  
+  .button-animation:hover {
+    background-color: var(--accent-color);
+    color: var(--white-color);
+    border-radius: 5px;
+    box-shadow: var(--box-shadow);
+  }
+  
+  .box__link i {
+    font-size: 2.5rem;
+    color: #f1efec;
+      display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease-in-out, opacity 0.2s;
+  }
+  
+  .box__link:hover i {
+    transform: rotateY(180deg);
+    opacity: 0.8;
+  }
+  
+
+
+
+
+

@@ -5,8 +5,8 @@ require_once "../private/config/db.php"; // Datenbankverbindung einbinden
 try {
     $stmt = $pdo->query("SELECT DATABASE()");
     $dbName = $stmt->fetchColumn();
-    echo "✅ Erfolgreich mit der Datenbank verbunden: " . $dbName;
+    echo "Erfolgreich mit der Datenbank verbunden: " . $dbName;
 } catch (PDOException $e) {
-    echo "❌ Fehler: " . $e->getMessage();
+    echo "Fehler: " . $e->getMessage();
 }
 ?>
