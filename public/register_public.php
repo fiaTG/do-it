@@ -33,5 +33,9 @@ $fehler = isset($_GET['error']) ? htmlspecialchars($_GET['error']) : "";
 
         <button type="submit">Registrieren</button>
     </form>
+    
+
+     
+
 </body>
 </html>

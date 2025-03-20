@@ -1,9 +1,7 @@
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    RewriteBase /
+<FilesMatch "\.(php)$">
+    Require all denied
+</FilesMatch>
 
-    # Verhindere direkten Zugriff auf sensible Dateien
-    <FilesMatch "\.(ini|log|sh)$">
-        Require all denied
-    </FilesMatch>
-</IfModule>
+<FilesMatch "register-handler.php$">
+    Require all granted
+</FilesMatch>

@@ -52,6 +52,12 @@
         <!-- Unterer Bildbereich -->
         <div class="bottom-image" aria-hidden="true"></div>
     </div>
+
+    
+    <?php if (isset($_GET['message']) && $_GET['message'] === 'registered'): ?>
+    <p style="color: green;">Erfolgreich registriert! Bitte logge dich ein.</p>
+<?php endif; ?>
+
     <script src="js\main.js" defer></script>
 </body>
 </html>

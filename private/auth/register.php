@@ -1,6 +1,5 @@
 
 <?php
-echo "register.php wurde aufgerufen!<br>"; // Debugging-Text
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -62,8 +61,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             "password" => $hashed_password
         ]);
 
+        function isStrongPassword($password) {
+            return preg_match('/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/', $password);
+        }
+        
+        if (!isStrongPassword($_POST['password'])) {
+            die("⚠ Das Passwort muss mindestens 8 Zeichen lang sein, eine Zahl, einen Buchstaben und ein Sonderzeichen enthalten.");
+        }
+
+
         // Erfolgreich -> Zur Login-Seite oder Startseite
-        header("Location: /public/index.php?message=registered");
+        header("Location: /files/Do-IT/public/index.php?message=registered");
         exit();
     } catch (PDOException $e) {
         error_log("DB-Fehler: " . $e->getMessage());
