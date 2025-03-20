@@ -19,7 +19,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION["nachname"] = $user["nachname"];
             $_SESSION["email"] = $user["email"];
 
-            header("Location: /files/Do-IT/public/dashboard.php");
+            echo "<!DOCTYPE html>
+<html lang='de'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Logout</title>
+    <script>
+        setTimeout(function() {
+            window.location.href = '/files/Do-IT/public/dashboard.php?message=Login+erfolgreich!';
+        }, 2000); // 2 Sekunden Verzögerung
+    </script>
+</head>
+<body>
+    <h2 style='color: green; text-align: center;'>Du wurdest erfolgreich eingeloggt!</h2>
+    <p style='text-align: center;'>Du wirst in 2 Sekunden zum Dashboard weitergeleitet...</p>
+</body>
+</html>";
+
+            
 
 
             exit();

@@ -1,4 +1,3 @@
-
 <?php
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -23,19 +22,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     // Basisvalidierung
     if (empty($vorname) || empty($nachname) || empty($email) || empty($password)) {
-        header("Location: /public/register_public.php?error=" . urlencode("Bitte alle Felder ausfüllen!"));
+        header("Location:  /files/Do-IT/public/register_public.php?error=" . urlencode("Bitte alle Felder ausfüllen!"));
         exit();
     }
 
     // E-Mail-Format prüfen
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        header("Location: /public/register_public.php?error=" . urlencode("Ungültige E-Mail-Adresse!"));
+        header("Location:  /files/Do-IT/public/register_public.php?error=" . urlencode("Ungültige E-Mail-Adresse!"));
         exit();
     }
 
-    // Passwortlänge prüfen
-    if (strlen($password) < 8) {
-        header("Location: /public/register_public.php?error=" . urlencode("Passwort muss mindestens 8 Zeichen lang sein!"));
+    // Passwortprüfung (Länge + Sicherheit)
+    function isStrongPassword($password) {
+        return preg_match('/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/', $password);
+    }
+
+    if (!isStrongPassword($password)) {
+        header("Location:  /files/Do-IT/public/register_public.php?error=" . urlencode("Passwort muss 8 Zeichen, eine Zahl, einen Buchstaben & ein Sonderzeichen enthalten!"));
         exit();
     }
 
@@ -45,7 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $stmt->execute(["email" => $email]);
 
         if ($stmt->fetch()) {
-            header("Location: /public/register_public.php?error=" . urlencode("Diese E-Mail ist bereits registriert!"));
+            header("Location:  /files/Do-IT/public/register_public.php?error=" . urlencode("Diese E-Mail ist bereits registriert!"));
             exit();
         }
 
@@ -61,24 +64,32 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             "password" => $hashed_password
         ]);
 
-        function isStrongPassword($password) {
-            return preg_match('/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/', $password);
-        }
-        
-        if (!isStrongPassword($_POST['password'])) {
-            die("⚠ Das Passwort muss mindestens 8 Zeichen lang sein, eine Zahl, einen Buchstaben und ein Sonderzeichen enthalten.");
-        }
-
-
-        // Erfolgreich -> Zur Login-Seite oder Startseite
-        header("Location: /files/Do-IT/public/index.php?message=registered");
-        exit();
+        echo "<!DOCTYPE html>
+<html lang='de'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Logout</title>
+    <script>
+        setTimeout(function() {
+            window.location.href = '/files/Do-IT/public/index.php?message=registered';
+        }, 2000); // 2 Sekunden Verzögerung
+    </script>
+</head>
+<body>
+    <h2 style='color: green; text-align: center;'>Sie haben sich erfolgreich registriert!</h2>
+    <p style='text-align: center;'>Du wirst in 2 Sekunden zur Startseite weitergeleitet...</p>
+</body>
+</html>";
+exit();
+    
+     
     } catch (PDOException $e) {
         error_log("DB-Fehler: " . $e->getMessage());
-        header("Location: /public/register_public.php?error=" . urlencode("Datenbankfehler!"));
+        header("Location:  /files/Do-IT/public/register_public.php?error=" . urlencode("Datenbankfehler!"));
         exit();
     }
 } else {
-    header("Location: /public/register_public.php?error=" . urlencode("Ungültige Anfrage"));
+    header("Location:  /files/Do-IT/public/register_public.php?error=" . urlencode("Ungültige Anfrage"));
     exit();
 }

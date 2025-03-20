@@ -20,9 +20,10 @@ if (!isset($_SESSION["userID"])) {
 <body>
 
 <h2>Willkommen, <?php echo htmlspecialchars($_SESSION["vorname"]); ?>!</h2>
-<p>Du bist erfolgreich eingeloggt.</p>
 
-<a href="../auth/logout.php">Logout</a>
+<p>Hier entsteht in kürze dein Dashboard</p>
+
+<a href="../private/auth/logout-handler.php">Logout</a>
 
 </body>
 </html>
