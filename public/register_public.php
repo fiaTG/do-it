@@ -18,7 +18,9 @@ $fehler = isset($_GET['error']) ? htmlspecialchars($_GET['error']) : "";
 
     <form action="../private/auth/register-handler.php" method="POST">
 
-
+  <!-- Verstecktes Token-Feld -->
+        <input type="hidden" name="token" value="<?php echo htmlspecialchars($_GET['token'] ?? ''); ?>">
+     
         <label for="vorname">Vorname</label>
         <input id="vorname" name="vorname" type="text" required>
 
@@ -33,9 +35,5 @@ $fehler = isset($_GET['error']) ? htmlspecialchars($_GET['error']) : "";
 
         <button type="submit">Registrieren</button>
     </form>
-    
-
-     
-
 </body>
 </html>

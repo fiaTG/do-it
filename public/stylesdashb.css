@@ -1,0 +1,155 @@
+@charset "UTF-8";
+/* Allgemeine Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-size: 100%;
+  font-family: Arial, sans-serif; }
+
+body {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f4f4f4; }
+
+/* Sidebar */
+.sidebar {
+  width: 60px;
+  background-color: #2c3e50;
+  color: white;
+  padding-top: 20px;
+  position: fixed;
+  height: 100%;
+  transition: width 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center; }
+
+.sidebar:hover {
+  width: 250px;
+  /* Auf volle Breite erweitern */ }
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  width: 100%; }
+
+.sidebar ul li {
+  text-align: center; }
+
+.sidebar ul li:last-child,
+.sidebar ul li:nth-last-child(2) {
+  margin-top: auto;
+  /* Logout & Einstellungen nach unten schieben */ }
+
+.sidebar ul li a {
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  transition: background 0.3s;
+  white-space: nowrap; }
+
+.sidebar ul li a:hover {
+  background-color: #34495e; }
+
+/* Icons */
+.sidebar ul li a i {
+  width: 30px;
+  text-align: center;
+  margin-right: 15px; }
+
+/* Versteckter Text (wird sichtbar beim Hover der Sidebar) */
+.sidebar ul li a span {
+  opacity: 0;
+  transition: opacity 0.3s; }
+
+.sidebar:hover ul li a span {
+  opacity: 1; }
+
+/* Header */
+.dashboard-header {
+  width: 100%;
+  /* Unabhängig von der Sidebar */
+  background-color: #3498db;
+  color: white;
+  padding: 20px;
+  text-align: center; }
+
+.family-info {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(./../public/img/gettyimages-1480145601-612x612.jpg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 50%;
+  margin-top: 10px; }
+
+.family-info h2 {
+  font-size: 4rem;
+  color: red; }
+
+/* Dashboard Content */
+.dashboard-content {
+  flex: 1;
+  margin-left: 60px;
+  /* Standardmäßig Platz für die schmale Sidebar */
+  padding: 20px; }
+
+/* Aktivitäts-Board */
+.activity-board {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 20px auto; }
+
+.activity-board h3 {
+  margin-bottom: 10px; }
+
+.activity-board ul {
+  list-style: none; }
+
+.activity-board li {
+  padding: 10px;
+  border-bottom: 1px solid #ddd; }
+
+.activity-board li:last-child {
+  border-bottom: none; }
+
+/* Formular */
+form {
+  margin: 20px 0;
+  text-align: center; }
+
+input, button {
+  padding: 10px;
+  margin: 5px;
+  border: none;
+  border-radius: 5px; }
+
+input {
+  border: 1px solid #ccc;
+  width: 80%;
+  max-width: 300px; }
+
+button {
+  background-color: #27ae60;
+  color: white;
+  cursor: pointer; }
+
+button:hover {
+  background-color: #218c53; }
+
+/* Logout-Link */
+a {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+  color: #333;
+  text-decoration: none; }
+
+a:hover {
+  color: #000; }

@@ -50,6 +50,9 @@
                 <a href="register_public.php">
                     <button>Registrieren</button></a>
             </div>
+            <?php if (isset($_GET['message']) && $_GET['message'] === 'registered'): ?>
+        <p style="color: green;">Erfolgreich registriert! Bitte logge dich ein.</p>
+    <?php endif; ?>
         </div>
 
         <!-- Unterer Bildbereich -->
@@ -57,9 +60,7 @@
     </div>
 
 
-    <?php if (isset($_GET['message']) && $_GET['message'] === 'registered'): ?>
-        <p style="color: green;">Erfolgreich registriert! Bitte logge dich ein.</p>
-    <?php endif; ?>
+ 
 
     <script src="js\main.js" defer></script>
 </body>

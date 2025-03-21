@@ -9,3 +9,7 @@
 <FilesMatch "logout-handler.php$">
     Require all granted
 </FilesMatch>
+
+<FilesMatch "register.php$">
+    Require all granted
+</FilesMatch>
