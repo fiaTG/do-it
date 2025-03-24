@@ -34,15 +34,18 @@ $row = $stmt->fetch(PDO::FETCH_ASSOC);
     <title>Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <link rel="stylesheet" href="../public/stylesdashb.css">
+    <link rel="stylesheet" href="./../public/stylesdashb.css">
 </head>
 <body>
     <!-- Sidebar Navigation -->
     <nav class="sidebar">
-    <ul>
+    <h2><br>Hey, <?php echo htmlspecialchars($row["vorname"]); ?>!</h2>
+    <ul class="sidebar-menu">
         <li><a href="dashboard.php"><i class="fas fa-home"></i> <span>Startseite</span></a></li>
         <li><a href="#"><i class="fas fa-user"></i> <span>Profil</span></a></li>
         <li><a href="#"><i class="fas fa-users"></i> <span>Familienmitglieder</span></a></li>
+    </ul>
+    <ul class="sidebar-bottom">
         <li><a href="#"><i class="fas fa-cog"></i> <span>Einstellungen</span></a></li>
         <li><a href="../private/auth/logout-handler.php"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
     </ul>
@@ -50,14 +53,23 @@ $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
     <!-- Header mit Familienbild und Namen -->
     <header class="dashboard-header">
-        <h2>Willkommen, <?php echo htmlspecialchars($row["vorname"]); ?>!</h2>
+       
         <div class="family-info">
             <p> Familie <?php echo !empty($row['famName']) ? htmlspecialchars($row['famName']) : 'Noch keine Familie'; ?></p>
         </div>
     </header>
 
-    <main class="dashboard-content">
-        
+    <main class="dashboard-container">
+       
+
+         <!-- Linke Spalte mit Apps -->
+         <div class="apps-container">
+            <button class="app"><i class=" fa-solid fa-square-plus"></i></button>
+           
+        </div>
+
+
+        <div class="dashboard-rightSection">
         <!-- Aktivitäten Bereich -->
         <section class="activity-board">
             <h3>Neueste Familienaktivitäten</h3>
@@ -68,15 +80,21 @@ $row = $stmt->fetch(PDO::FETCH_ASSOC);
             </ul>
         </section>
 
+            <!-- Kalender Widget -->
+    <div class="calendar-widget">
+        <h3>Familienkalender</h3>
+        <iframe src="eigener Kalender Link" 
+                style="border: 0" width="100%" height="300" frameborder="0" scrolling="no"></iframe>
+    </div>
 
-<?php
+        <?php
 // Prüfen, ob der User einer Familie angehört
 if (!empty($row['famID'])) { 
-    echo '<h3>Familienmitglieder einladen</h3>
+    echo ' <div class="inviteButtonArea"><h3>Familienmitglieder einladen</h3>
           <form method="POST">
               <input type="email" name="inviteEmail" placeholder="E-Mail-Adresse" required>
-              <button type="submit" name="sendInvite">Einladen</button>
-          </form>';
+              <button class="invite-button" type="submit" name="sendInvite">Einladen</button>
+          </div></form>';
 } else {
     echo '<h3>Erstelle eine neue Familie</h3>
           <form method="POST">
@@ -146,7 +164,41 @@ if (isset($_POST['sendInvite'])) {
     }
 }
 ?>
-    </main>
+</div>
+ </main>
+<!-- Modales Fenster für App-Auswahl -->
+<div id="appModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Wähle deine Apps</h3>
+        <br>
+        <div class="modal-apps">
+    <button class="add-app" data-app="Einkaufsliste" data-icon="fas fa-shopping-cart"> 
+        <span class="app-title">Einkaufsliste</span>
+        <i class="fas fa-shopping-cart"></i>
+    </button>
+    
+    <button class="add-app" data-app="Bildergalerie" data-icon="fas fa-images"> 
+        <span class="app-title">Bildergalerie</span>
+        <i class="fas fa-images"></i>
+    </button>
+
+    <button class="add-app" data-app="To-Do Liste" data-icon="fas fa-list-check"> 
+        <span class="app-title">To-Do Liste</span>
+        <i class="fas fa-list-check"></i>
+    </button>
+
+    <button class="add-app" data-app="Kalender" data-icon="fas fa-calendar-alt"> 
+        <span class="app-title">Kalender</span>
+        <i class="fas fa-calendar-alt"></i>
+    </button>
+</div>
+
+
+    </div>
+</div>
+
+ <script src="..\public\js\dashboard.js" defer></script>
 
 </body>
 </html>
