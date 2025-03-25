@@ -332,17 +332,21 @@ html, body {
   background-color: #2980b9; }
 
 .remove-app {
-  background: red;
-  color: white;
-  border: none;
-  font-size: 1rem;
-  width: 25px;
-  height: 25px;
-  border-radius: 50%;
-  cursor: pointer;
   position: absolute;
   top: 5px;
   right: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center; }
+  background: red;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  line-height: 20px;
+  font-size: 16px;
+  display: none;
+  /* Standardmäßig verstecken */ }
+
+.app:hover .remove-app {
+  display: block;
+  /* Zeige den Button nur beim Hover über die App */ }

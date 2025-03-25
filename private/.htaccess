@@ -13,3 +13,7 @@
 <FilesMatch "register.php$">
     Require all granted
 </FilesMatch>
+
+<FilesMatch "add_user_app.php|remove_user_app.php|get_user_apps.php">
+    Require all granted
+</FilesMatch>

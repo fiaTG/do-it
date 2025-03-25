@@ -173,22 +173,22 @@ if (isset($_POST['sendInvite'])) {
         <h3>Wähle deine Apps</h3>
         <br>
         <div class="modal-apps">
-    <button class="add-app" data-app="Einkaufsliste" data-icon="fas fa-shopping-cart"> 
+    <button class="add-app" data-app="1" data-icon="fas fa-shopping-cart"> 
         <span class="app-title">Einkaufsliste</span>
         <i class="fas fa-shopping-cart"></i>
     </button>
     
-    <button class="add-app" data-app="Bildergalerie" data-icon="fas fa-images"> 
+    <button class="add-app" data-app="2" data-icon="fas fa-images"> 
         <span class="app-title">Bildergalerie</span>
         <i class="fas fa-images"></i>
     </button>
 
-    <button class="add-app" data-app="To-Do Liste" data-icon="fas fa-list-check"> 
+    <button class="add-app" data-app="3" data-icon="fas fa-list-check"> 
         <span class="app-title">To-Do Liste</span>
         <i class="fas fa-list-check"></i>
     </button>
 
-    <button class="add-app" data-app="Kalender" data-icon="fas fa-calendar-alt"> 
+    <button class="add-app" data-app="4" data-icon="fas fa-calendar-alt"> 
         <span class="app-title">Kalender</span>
         <i class="fas fa-calendar-alt"></i>
     </button>
