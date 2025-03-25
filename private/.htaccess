@@ -14,6 +14,6 @@
     Require all granted
 </FilesMatch>
 
-<FilesMatch "add_user_app.php|remove_user_app.php|get_user_apps.php">
+<FilesMatch "add_user_app.php|remove_user_app.php|get_user_apps.php|get_aviable_apps.php">
     Require all granted
 </FilesMatch>

@@ -178,7 +178,7 @@ if (isset($_POST['sendInvite'])) {
         <i class="fas fa-shopping-cart"></i>
     </button>
     
-    <button class="add-app" data-app="2" data-icon="fas fa-images"> 
+    <button class="add-app" data-app="2" data-icon="fas fa-images" data-url="apps/gallery.php"> 
         <span class="app-title">Bildergalerie</span>
         <i class="fas fa-images"></i>
     </button>
