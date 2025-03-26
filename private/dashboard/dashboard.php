@@ -172,13 +172,14 @@ if (isset($_POST['sendInvite'])) {
         <span class="close">&times;</span>
         <h3>Wähle deine Apps</h3>
         <br>
+
         <div class="modal-apps">
     <button class="add-app" data-app="1" data-icon="fas fa-shopping-cart"> 
         <span class="app-title">Einkaufsliste</span>
         <i class="fas fa-shopping-cart"></i>
     </button>
     
-    <button class="add-app" data-app="2" data-icon="fas fa-images" data-url="apps/gallery.php"> 
+    <button class="add-app" data-app="2" data-icon="fas fa-images"> 
         <span class="app-title">Bildergalerie</span>
         <i class="fas fa-images"></i>
     </button>

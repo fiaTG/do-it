@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Modal öffnen
     openModalBtn.addEventListener("click", () => {
         modal.style.display = "flex";
+        loadAvailableApps(); // Jetzt wird die Funktion aufgerufen
     });
 
     // Modal schließen
@@ -35,6 +36,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Apps vom Backend holen und auf dem Dashboard anzeigen
     function loadUserApps() {
+
         fetch("../private/dashboard/get_user_apps.php")
             .then(response => response.json())
             .then(data => {
@@ -45,16 +47,56 @@ document.addEventListener("DOMContentLoaded", function () {
                         const appName = app.appName;  // Platzhalter: Hier solltest du den echten Namen aus der DB holen
                         const iconClass = app.appIcon;  // Platzhalter: Hier das passende Icon ergänzen
 
-                        const newApp = createApp(appName, iconClass, appID);
-                        appContainer.appendChild(newApp);
+                   // Prüfen, ob die App bereits existiert
+                   if (!document.querySelector(`.app[data-app-id="${appID}"]`)) {
+                    const newApp = createApp(appName, iconClass, appID);
+                    newApp.setAttribute("data-app-id", appID); // ID als Attribut setzen
+                    appContainer.appendChild(newApp);
+                }
+            });
+            disableAddedApps(data.apps);
+        } else {
+            console.log("Fehler beim Laden der Apps:", data.message);
+        }
+    })
+    .catch(error => console.error("Fehler:", error));
+}
+
+
+    function loadAvailableApps() {
+        fetch("../private/dashboard/get_aviable_apps.php")
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    document.querySelector(".modal-apps").innerHTML = ""; // Alte Buttons entfernen
+                    
+                    data.apps.forEach(app => {
+                        const button = document.createElement("button");
+                        button.classList.add("add-app");
+                        button.setAttribute("data-app", app.appID);
+                        button.setAttribute("data-icon", app.appIcon);
+                        button.innerHTML = `
+                            <span class="app-title">${app.appName}</span>
+                            <i class="${app.appIcon}"></i>
+                        `;
+    
+                        button.addEventListener("click", () => {
+                            addUserApp(app.appID);
+                            button.disabled = true;
+                            button.textContent = "Bereits hinzugefügt";
+                        });
+    
+                        document.querySelector(".modal-apps").appendChild(button);
                     });
-                    disableAddedApps(data.apps); // Deaktiviere bereits hinzugefügte Apps
                 } else {
-                    console.log("Fehler beim Laden der Apps:", data.message);
+                    console.log("Fehler beim Laden der verfügbaren Apps:", data.message);
                 }
             })
             .catch(error => console.error("Fehler:", error));
     }
+    
+
+
 
  // Deaktiviere die "Hinzufügen"-Buttons für Apps, die bereits hinzugefügt wurden
  function disableAddedApps(addedApps) {
@@ -94,18 +136,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // App zur Datenbank hinzufügen
     function addUserApp(appID) {
-        console.log("AppID gesendet:", appID);  // Für Debugging
+        console.log("AppID gesendet:", appID);  // Debugging
         fetch("../private/dashboard/add_user_app.php", {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: `appID=${appID}` // App-ID im Body senden
+            body: `appID=${appID}`
         })
-        .then(response => response.text())  // Antwort im Textformat
+        .then(response => response.json())  // JSON statt Text, damit wir den Status checken können
         .then(data => {
-            console.log(data);    // Antwort des Servers
+            console.log(data);  // Debugging
+    
+            if (data.status === "success") {
+                loadUserApps();  // Apps nach erfolgreichem Hinzufügen neu laden
+            } else {
+                console.error("Fehler beim Hinzufügen der App:", data.message);
+            }
         })
         .catch(error => console.error("Fehler:", error));
     }
+    
 
     // App aus der Datenbank entfernen
     function removeUserApp(appID, appElement) {
