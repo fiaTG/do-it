@@ -13,7 +13,7 @@ $userID = $_SESSION['userID'];
 
 // Apps des Benutzers aus der Datenbank abrufen
 $stmt = $pdo->prepare("
-    SELECT App.appID, App.appName, App.appIcon
+      SELECT App.appID, App.appName, App.appIcon, App.appPfad
     FROM UserApps 
     INNER JOIN App ON UserApps.appID = App.appID
     WHERE UserApps.userID = ?

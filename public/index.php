@@ -43,10 +43,6 @@
                     <i id="icon" class="fa-solid fa-door-closed" style="font-size: 2rem; "></i>
                 </a>
 
-
-
-
-
                 <a href="register_public.php">
                     <button>Registrieren</button></a>
             </div>

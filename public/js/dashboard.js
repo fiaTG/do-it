@@ -36,31 +36,41 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Apps vom Backend holen und auf dem Dashboard anzeigen
     function loadUserApps() {
-
         fetch("../private/dashboard/get_user_apps.php")
             .then(response => response.json())
             .then(data => {
                 if (data.status === "success") {
                     data.apps.forEach(app => {
-                        // Hier solltest du sicherstellen, dass du den richtigen Namen und Icon für jede App hast
                         const appID = app.appID;
-                        const appName = app.appName;  // Platzhalter: Hier solltest du den echten Namen aus der DB holen
-                        const iconClass = app.appIcon;  // Platzhalter: Hier das passende Icon ergänzen
-
-                   // Prüfen, ob die App bereits existiert
-                   if (!document.querySelector(`.app[data-app-id="${appID}"]`)) {
-                    const newApp = createApp(appName, iconClass, appID);
-                    newApp.setAttribute("data-app-id", appID); // ID als Attribut setzen
-                    appContainer.appendChild(newApp);
+                        const appName = app.appName;
+                        const iconClass = app.appIcon;
+                        const appUrl = app.appPfad; // URL der App holen, falls vorhanden
+    
+                        // Prüfen, ob die App bereits existiert
+                        if (!document.querySelector(`.app[data-app-id="${appID}"]`)) {
+                            const newApp = createApp(appName, iconClass, appID);
+                            newApp.setAttribute("data-app-id", appID); // ID als Attribut setzen
+                            appContainer.appendChild(newApp);
+    
+                            // Hier loggen wir die URL und setzen den Event-Listener
+                            console.log("App URL:", appUrl); // Debugging: Zeige die URL in der Konsole
+                            
+                            // Wenn URL existiert, öffne sie bei Klick
+                            newApp.addEventListener("click", () => {
+                                if (appUrl) {
+                                    console.log("Weiterleitung zur URL:", appUrl); // Debugging: Zeige die URL beim Klick
+                                    window.location.href = appUrl; // URL aufrufen
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    console.log("Fehler beim Laden der Apps:", data.message);
                 }
-            });
-            disableAddedApps(data.apps);
-        } else {
-            console.log("Fehler beim Laden der Apps:", data.message);
-        }
-    })
-    .catch(error => console.error("Fehler:", error));
-}
+            })
+            .catch(error => console.error("Fehler:", error));
+    }
+    
 
 
     function loadAvailableApps() {
@@ -69,12 +79,13 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(data => {
                 if (data.status === "success") {
                     document.querySelector(".modal-apps").innerHTML = ""; // Alte Buttons entfernen
-                    
+    
                     data.apps.forEach(app => {
                         const button = document.createElement("button");
                         button.classList.add("add-app");
                         button.setAttribute("data-app", app.appID);
                         button.setAttribute("data-icon", app.appIcon);
+                        button.setAttribute("data-url", app.url); // URL setzen
                         button.innerHTML = `
                             <span class="app-title">${app.appName}</span>
                             <i class="${app.appIcon}"></i>
@@ -94,6 +105,7 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .catch(error => console.error("Fehler:", error));
     }
+    
     
 
 

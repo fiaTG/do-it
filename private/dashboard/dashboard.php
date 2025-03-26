@@ -70,27 +70,12 @@ $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
 
         <div class="dashboard-rightSection">
-        <!-- Aktivitäten Bereich -->
-        <section class="activity-board">
-            <h3>Neueste Familienaktivitäten</h3>
-            <ul>
-                <li>Max hat ein neues Rezept hinzugefügt.</li>
-                <li>Lisa hat ein Familienfoto hochgeladen.</li>
-                <li>Jonas hat eine Einkaufsliste erstellt.</li>
-            </ul>
-        </section>
-
-            <!-- Kalender Widget -->
-    <div class="calendar-widget">
-        <h3>Familienkalender</h3>
-        <iframe src="eigener Kalender Link" 
-                style="border: 0" width="100%" height="300" frameborder="0" scrolling="no"></iframe>
-    </div>
+       
 
         <?php
 // Prüfen, ob der User einer Familie angehört
 if (!empty($row['famID'])) { 
-    echo ' <div class="inviteButtonArea"><h3>Familienmitglieder einladen</h3>
+    echo ' <div class="inviteButtonArea"><h3 class="invite-header">Familienmitglieder einladen</h3>
           <form method="POST">
               <input type="email" name="inviteEmail" placeholder="E-Mail-Adresse" required>
               <button class="invite-button" type="submit" name="sendInvite">Einladen</button>
@@ -164,6 +149,23 @@ if (isset($_POST['sendInvite'])) {
     }
 }
 ?>
+ <!-- Aktivitäten Bereich -->
+ <section class="activity-board">
+            <h3>Neueste Familienaktivitäten</h3>
+            <ul>
+                <li>Max hat ein neues Rezept hinzugefügt.</li>
+                <li>Lisa hat ein Familienfoto hochgeladen.</li>
+                <li>Jonas hat eine Einkaufsliste erstellt.</li>
+            </ul>
+        </section>
+
+            <!-- Kalender Widget -->
+    <div class="calendar-widget">
+        <h3>Familienkalender</h3>
+        <iframe src="http://localhost/files/Do-IT/private/apps/calender.php" 
+                style="border: 0" width="100%" height="300" frameborder="0" scrolling="no"></iframe>
+    </div>
+
 </div>
  </main>
 <!-- Modales Fenster für App-Auswahl -->
@@ -174,22 +176,22 @@ if (isset($_POST['sendInvite'])) {
         <br>
 
         <div class="modal-apps">
-    <button class="add-app" data-app="1" data-icon="fas fa-shopping-cart"> 
+    <button class="add-app" data-app="1" data-icon="fas fa-shopping-cart" data-url="http://localhost/files/Do-IT/public/index.php"> 
         <span class="app-title">Einkaufsliste</span>
         <i class="fas fa-shopping-cart"></i>
     </button>
     
-    <button class="add-app" data-app="2" data-icon="fas fa-images"> 
+    <button class="add-app" data-app="2" data-icon="fas fa-images" data-url="http://localhost/files/Do-IT/public/index.php"> 
         <span class="app-title">Bildergalerie</span>
         <i class="fas fa-images"></i>
     </button>
 
-    <button class="add-app" data-app="3" data-icon="fas fa-list-check"> 
+    <button class="add-app" data-app="3" data-icon="fas fa-list-check" data-url="http://localhost/files/Do-IT/public/index.php"> 
         <span class="app-title">To-Do Liste</span>
         <i class="fas fa-list-check"></i>
     </button>
 
-    <button class="add-app" data-app="4" data-icon="fas fa-calendar-alt"> 
+    <button class="add-app" data-app="4" data-icon="fas fa-calendar-alt" data-url="http://localhost/files/Do-IT/public/index.php"> 
         <span class="app-title">Kalender</span>
         <i class="fas fa-calendar-alt"></i>
     </button>

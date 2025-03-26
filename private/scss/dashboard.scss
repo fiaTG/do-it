@@ -226,6 +226,7 @@ html, body {
     width: 100%;
     max-width: 280px;
     margin-bottom: 20px;
+    margin-top: 20px;
 }
 
 .activity-board h3 {
@@ -270,20 +271,25 @@ html, body {
 
 .invite-button {
     align-self: center;
-    padding: 10px 20px;
-    background-color: #27ae60;
+    padding: 5px;
+    background-color: #3498db;
+  
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    width: 100%;
-    max-width: 280px;
     transition: background 0.3s;
 }
 
 .invite-button:hover {
-    background-color: #218c53;
+    background-color: #2980b9;
 }
 
 
+
+.invite-header{
+    margin-bottom: 20px;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
 

@@ -77,7 +77,6 @@ body {
   width: 50%;
   height: var(--triangle-height);
   /* Same height as the triangle */
-  /* background: url('/image.png') center/cover no-repeat; */
   clip-path: polygon(0 0, 100% 0, 100% 1%, 0% 100%);
   /* Cuts off to the triangle's bottom edge */
   opacity: 0;
@@ -86,23 +85,22 @@ body {
 .left {
   left: 0;
   top: 0;
-  background: url(./../public/img/gettyimages-509604047-1024x1024.jpg) center/cover no-repeat; }
+  background: url("./../public/img/alltogether.JPG") center/cover no-repeat; }
 
 .right {
   right: 0;
   top: 0;
   transform: scaleX(-1);
-  background: url(./../public/img/gettyimages-1480145601-612x612.jpg) center/cover no-repeat; }
+  background: url("./../public/img/alltogether.JPG") center/cover no-repeat; }
 
-/* Mirrors the right image */
 /* 📷 Bottom Image */
 .bottom-image {
   position: absolute;
   bottom: 0;
   width: 100%;
-  height: calc(100.1% - var(--triangle-height));
+  height: calc(100% - var(--triangle-height));
   /* Fills the space below the triangle */
-  background: url(./../public/img/gettyimages-1140015682-1024x1024.jpg) center/cover no-repeat;
+  background: url(./../public/img/alltogether2.JPG) center center/cover no-repeat;
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
   opacity: 0;
   transition: opacity 2s ease-in-out; }
