@@ -55,8 +55,12 @@ document.addEventListener("DOMContentLoaded", function () {
                             // Hier loggen wir die URL und setzen den Event-Listener
                             console.log("App URL:", appUrl); // Debugging: Zeige die URL in der Konsole
                             
-                            // Wenn URL existiert, öffne sie bei Klick
-                            newApp.addEventListener("click", () => {
+                            // Wenn URL existiert, öffne sie bei Klick, aber nur wenn nicht der Entfernen-Button geklickt wird
+                            newApp.addEventListener("click", (event) => {
+                                if (event.target.closest(".remove-app")) {
+                                    return; // Wenn der Entfernen-Button geklickt wurde, tue nichts
+                                }
+    
                                 if (appUrl) {
                                     console.log("Weiterleitung zur URL:", appUrl); // Debugging: Zeige die URL beim Klick
                                     window.location.href = appUrl; // URL aufrufen

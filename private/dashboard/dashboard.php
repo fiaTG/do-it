@@ -15,6 +15,9 @@ if (!isset($_SESSION["userID"])) {
     exit();
 }
 
+$famID = $_GET['famID'] ?? null; // Wenn kein Parameter vorhanden ist, wird null gesetzt
+$userID = $_GET['userID'] ?? null;
+
 // Daten des eingeloggten Nutzers inkl. Familiennamen abrufen
 $stmt = $pdo->prepare("
     SELECT User.vorname, User.famID, Family.famName 
@@ -24,6 +27,10 @@ $stmt = $pdo->prepare("
 ");
 $stmt->execute(['userID' => $_SESSION['userID']]);
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$row) {
+    echo "<p style='color:red;'>Benutzer nicht gefunden oder keine Familieninformationen vorhanden.</p>";
+}
 ?>
 
 <!DOCTYPE html>
@@ -39,9 +46,10 @@ $row = $stmt->fetch(PDO::FETCH_ASSOC);
 <body>
     <!-- Sidebar Navigation -->
     <nav class="sidebar">
-    <h2><br>Hey, <?php echo htmlspecialchars($row["vorname"]); ?>!</h2>
+        <br>
+    <h2>Hey, <?php echo htmlspecialchars($row["vorname"]); ?>!</h2>
     <ul class="sidebar-menu">
-        <li><a href="dashboard.php"><i class="fas fa-home"></i> <span>Startseite</span></a></li>
+        <li><a href="dashboard.php?famID=<?= $row['famID'] ?>&userID=<?= $_SESSION['userID'] ?>"><i class="fas fa-home"></i> <span>Startseite</span></a></li>
         <li><a href="#"><i class="fas fa-user"></i> <span>Profil</span></a></li>
         <li><a href="#"><i class="fas fa-users"></i> <span>Familienmitglieder</span></a></li>
     </ul>
