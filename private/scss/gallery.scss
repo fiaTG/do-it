@@ -1,0 +1,251 @@
+      /* Galerie Layout */
+      body,
+      html {
+          overflow: visible !important;
+          overflow-x: hidden !important;
+          max-width: 100%;
+      }
+
+
+      .family-info p {
+          position: relative !important;
+          left: 45% !important;
+      }
+
+      .row {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 16px;
+          justify-content: center;
+          align-items: center;
+          margin-left: 250px;
+          /* Abstand zur Sidebar erhöhen */
+          margin-right: auto;
+
+      }
+
+      .column {
+          width: calc(25% - 16px);
+          max-width: 300px;
+          box-sizing: border-box;
+          height: 300px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+      }
+
+      .column img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          border-radius: 8px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+          cursor: pointer;
+          transition: transform 0.4s ease, box-shadow 0.4s ease;
+      }
+
+      .column img:hover {
+          transform: scale(1.02);
+          /* Weniger Skalierung für dezenteren Effekt */
+          box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+          /* Optionaler Effekt */
+      }
+
+      /* Modal Styles */
+      .modalG {
+          display: none;
+          /* Standardmäßig versteckt */
+          position: fixed;
+          z-index: 1000;
+          left: 50%;
+          top: 50%;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0.7);
+          transform: translate(-50%, -50%);
+          /* Exakte Zentrierung */
+      }
+
+      .modal-contentG {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          background-color: #fff;
+          padding: 20px;
+          border-radius: 8px;
+          max-width: 90%;
+          max-height: 90vh;
+          text-align: center;
+          transform: translate(-50%, -50%);
+          /* Exakte Zentrierung */
+      }
+
+
+      #modalImage {
+          width: auto;
+          height: auto;
+          max-width: 100%;
+          max-height: 80vh;
+      }
+
+      .close {
+          color: white;
+          position: absolute;
+          top: 10px;
+          right: 25px;
+          font-size: 35px;
+          font-weight: bold;
+          cursor: pointer;
+      }
+
+      .close:hover,
+      .close:focus {
+          color: #999;
+          text-decoration: none;
+      }
+
+      /* Upload-Bereich */
+
+
+      .uploadArea label {
+          font-size: 1.2rem;
+          font-weight: bold;
+      }
+
+      .uploadArea input,
+      .uploadArea button {
+          width: 100%;
+          padding: 10px;
+          margin: 10px 0;
+          border-radius: 5px;
+          border: 1px solid #ccc;
+      }
+
+      .uploadArea button {
+          background: #2980b9;
+          color: white;
+          font-size: 1rem;
+          cursor: pointer;
+          transition: background 0.3s;
+      }
+
+      .uploadArea button:hover {
+          background: rgb(52, 158, 230);
+      }
+
+
+      .latestImageArea img {
+          width: 100%;
+          max-width: 300px;
+          height: auto;
+          border-radius: 8px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .latestImageArea p {
+          font-size: 1rem;
+          text-align: center;
+      }
+
+      .flex-container {
+          display: flex;
+          gap: 100px;
+          /* Abstand zwischen den beiden Bereichen */
+          justify-content: flex-start;
+          /* Beide Bereiche nebeneinander ausrichten */
+          align-items: stretch;
+          /* Beide Bereiche gleichmäßig ausrichten */
+          margin: 20px auto;
+          /* Zentrierung des Containers */
+          max-width: 800px;
+          /* Begrenzte Gesamtbreite */
+      }
+
+      .uploadArea,
+      .latestImageArea {
+          background: #fff;
+          /* Einheitlicher Hintergrund */
+          padding: 20px;
+          /* Gleicher Innenabstand */
+          border-radius: 10px;
+          /* Abgerundete Ecken */
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          /* Einheitliche Schatten */
+          width: 50%;
+          /* Beide Bereiche nehmen gleiche Breite ein */
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          /* Inhalt vertikal zentrieren */
+          box-sizing: border-box;
+          /* Sicherstellen, dass Padding berücksichtigt wird */
+          height: auto;
+          /* Höhe gleich für beide */
+      }
+
+
+
+      /* Next & previous buttons */
+      .prev,
+      .next {
+          cursor: pointer;
+          position: absolute;
+          top: 50%;
+          width: auto;
+          padding: 16px;
+          margin-top: -50px;
+          color: white;
+          font-weight: bold;
+          font-size: 20px;
+          transition: 0.6s ease;
+          border-radius: 0 3px 3px 0;
+          user-select: none;
+          -webkit-user-select: none;
+      }
+
+      /* Position the "next button" to the right */
+      .next {
+          right: 0;
+          border-radius: 3px 0 0 3px;
+      }
+
+      .prev:hover,
+      .next:hover {
+          background-color: rgba(0, 0, 0, 0.8);
+      }
+
+      /* Number text (1/3 etc) */
+      .numbertext {
+          color: #f2f2f2;
+          font-size: 12px;
+          padding: 8px 12px;
+          position: absolute;
+          top: 0;
+      }
+
+      /* Caption text */
+      .caption-container {
+          text-align: center;
+          background-color: black;
+          padding: 2px 16px;
+          color: white;
+      }
+
+      /////test
+
+      img.demo {
+          opacity: 0.6;
+      }
+
+      .active,
+      .demo:hover {
+          opacity: 1;
+      }
+
+      img.hover-shadow {
+          transition: 0.3s;
+      }
+
+      .hover-shadow:hover {
+          box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      }
