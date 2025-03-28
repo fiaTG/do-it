@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="de">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,19 +8,16 @@
 
     <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
     <div class="container">
 
         <div class="logo"></div>
-
         <!-- Linkes Bild -->
         <div class="outer-layer left" aria-hidden="true"></div>
-
         <!-- Rechtes Bild -->
         <div class="outer-layer right" aria-hidden="true"></div>
 
-        <!-- Dreieck -->
+        <!-- Login-Formular und triangle Area -->
         <div class="triangle" aria-hidden="true">
             <div class="login-area">
                 <div class="logoMini"></div>
@@ -33,7 +29,8 @@
                     <label for="password">Passwort</label>
                     <input id="password" name="password" type="password" required>
 
-                </form>
+               
+                    <!-- Login-Button mit Animation -->
                 <a class="box__link button-animation" href="#" onclick="submitForm(event, 'loginForm')"
                     onmouseover="toggleIcon(true)" onmouseout="toggleIcon(false)">
                     <span></span>
@@ -42,23 +39,23 @@
                     <span></span>
                     <i id="icon" class="fa-solid fa-door-closed" style="font-size: 2rem; "></i>
                 </a>
+                </form>
 
                 <a href="register_public.php">
                     <button>Registrieren</button></a>
             </div>
+            
+            <!-- PHP-Code zur Anzeige einer Nachricht nach erfolgreicher Registrierung
+             Überprüfung, ob eine Nachricht in der URL als GET-Parameter übergeben wurde -->
             <?php if (isset($_GET['message']) && $_GET['message'] === 'registered'): ?>
-        <p style="color: green;">Erfolgreich registriert! Bitte logge dich ein.</p>
-    <?php endif; ?>
+                <p style="color: green;">Erfolgreich registriert! Bitte logge dich ein.</p>
+            <?php endif; ?>
         </div>
 
         <!-- Unterer Bildbereich -->
         <div class="bottom-image" aria-hidden="true"></div>
     </div>
 
-
- 
-
     <script src="js\main.js" defer></script>
 </body>
-
 </html>

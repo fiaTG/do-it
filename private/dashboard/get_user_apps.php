@@ -1,6 +1,6 @@
 <?php
 session_start();
-header('Content-Type: application/json'); // Sicherstellen, dass die Antwort im JSON-Format erfolgt
+header ('Content-Type: application/json'); // Sicherstellen, dass die Antwort im JSON-Format erfolgt
 
 require '../config/db.php';
 

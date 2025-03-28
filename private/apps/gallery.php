@@ -99,13 +99,8 @@ $latestBild = $stmtLatest->fetch(PDO::FETCH_ASSOC);
         </div>
     </div>
 
-
     <br>
 
-
-
-    <!-- Bilder anzeigen -->
-    <!-- Bilder anzeigen -->
     <div class="row">
         <?php foreach ($bilder as $bild): ?>
             <div class="column">
@@ -117,64 +112,32 @@ $latestBild = $stmtLatest->fetch(PDO::FETCH_ASSOC);
     </div>
 
 
-    <!-- Modal für das Bild -->
-    <div id="myModal" class="modalG">
-        <span class="close cursor" onclick="closeModal()">&times;</span>
-        <div class="modal-contentG">
-            <!-- Dynamically Render Slides -->
-            <?php foreach ($bilder as $key => $bild): ?>
-                <div class="mySlides">
-                    <div class="numbertext"><?= $key + 1 ?> / <?= count($bilder) ?></div>
-                    <img src="" id="modalImage" style="width:100%">
-                </div>
-            <?php endforeach; ?>
-            <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
-            <a class="next" onclick="plusSlides(1)">&#10095;</a>
-            <div class="caption-container">
-                <p id="caption"></p>
-            </div>
+<!-- Modal für das Bild -->
+<div id="myModal" class="modalG">
+    <span class="close cursor" onclick="closeModal()">&times;</span>
+    <div class="modal-contentG">
+        <img src="" id="modalImage" style="width:100%">
+        <div class="caption-container">
+            <p id="caption"></p>
         </div>
     </div>
+</div>
 
     <script>
-        // Funktion zum Öffnen des Modals
-        function openModal(bildData, titel) {
-            console.log("Bild Data: ", bildData); // Überprüfe die Bilddaten
-            console.log("Titel: ", titel); // Überprüfe den Titel
+// Funktion zum Öffnen des Modals
+function openModal(bildData, titel) {
+    document.getElementById("myModal").style.display = "block";
 
-            document.getElementById("myModal").style.display = "block";
+    // Setze das Bild im Modal
+    var modalImage = document.getElementById("modalImage");
+    modalImage.src = "data:image/jpeg;base64," + bildData;  // Bilddaten direkt verwenden
+    document.getElementById("caption").innerHTML = titel;  // Titel im Modal setzen
+}
 
-            var modalImage = document.getElementById("modalImage");
-            modalImage.src = "data:image/jpeg;base64," + bildData;  // Bilddaten direkt verwenden
-            document.getElementById("caption").innerHTML = titel;  // Titel im Modal setzen
-        }
-
-
-        // Funktion zum Schließen des Modals
-        function closeModal() {
-            document.getElementById("myModal").style.display = "none";
-        }
-
-
-        var slideIndex = 1; // Start at the first slide
-        showSlides(slideIndex);
-
-        // Next/Previous Controls
-        function plusSlides(n) {
-            showSlides(slideIndex += n);
-        }
-
-        // Show Slide Based on Index
-        function showSlides(n) {
-            var i;
-            var slides = document.getElementsByClassName("mySlides");
-            if (n > slides.length) { slideIndex = 1; } // Loop back to the first slide
-            if (n < 1) { slideIndex = slides.length; } // Loop back to the last slide
-            for (i = 0; i < slides.length; i++) {
-                slides[i].style.display = "none"; // Hide all slides
-            }
-            slides[slideIndex - 1].style.display = "block"; // Show the current slide
-        }
+// Funktion zum Schließen des Modals
+function closeModal() {
+    document.getElementById("myModal").style.display = "none";
+}
     </script>
 </body>
 

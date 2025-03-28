@@ -60,8 +60,7 @@ if (!$row) {
 </nav>
 
     <!-- Header mit Familienbild und Namen -->
-    <header class="dashboard-header">
-       
+    <header>
         <div class="family-info">
             <p> Familie <?php echo !empty($row['famName']) ? htmlspecialchars($row['famName']) : 'Noch keine Familie'; ?></p>
         </div>

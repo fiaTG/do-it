@@ -104,30 +104,18 @@ html, body {
     white-space: nowrap;
 }
 
-/* Header */
-.dashboard-header {
-    width: 100%;
-    background-color: #f4f4f4;
-    color: white;
-    padding: 20px;
-    text-align: center;
-    margin-left: 8%;
-}
 .family-info {
-    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-                url('./../public/img/alltogether.JPG') center/cover no-repeat;
-    min-height: 33vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    background: linear-gradient(rgba(0, 0, 0, 0.3), #406f8f), url(./../public/img/alltogether.JPG) center / cover no-repeat;
+    min-height: 40vh;
     color: white;
-    text-shadow: 2px 2px 5px rgba(0,0,0,0.7);
-  border-radius: 5px;
-    /* Zentriert das Bild mit gleichmäßigem Abstand */
-    margin: 0 auto;
-    width: calc(100% - 180px); /* Abstand zur Sidebar und rechtem Rand */
-    max-width: 1200px; /* Begrenzung für große Bildschirme */
+    text-align: center;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+    border-radius: 5px;
+    margin: 2% 17%;
+    width: calc(100% - 180px);
+    max-width: 1200px;
 }
+
 
 .family-info p {
     font-size: 2rem;
