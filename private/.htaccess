@@ -25,3 +25,7 @@
 <FilesMatch "upload_image.php$|image_url.php$">
     Require all granted
 </FilesMatch>
+
+<FilesMatch "addItems.php$|getItems.php$|deleteItems.php$">
+    Require all granted
+</FilesMatch>

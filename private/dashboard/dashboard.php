@@ -183,7 +183,7 @@ if (isset($_POST['sendInvite'])) {
         <br>
 
         <div class="modal-apps">
-    <button class="add-app" data-app="1" data-icon="fas fa-shopping-cart" data-url="http://localhost/files/Do-IT/public/index.php"> 
+    <button class="add-app" data-app="1" data-icon="fas fa-shopping-cart" data-url=""> 
         <span class="app-title">Einkaufsliste</span>
         <i class="fas fa-shopping-cart"></i>
     </button>
