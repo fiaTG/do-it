@@ -23,7 +23,7 @@ $famID = $user['famID'];
 
 // Einkaufsartikel abrufen, die zur gleichen Familie gehören
 $shopItemsStmt = $pdo->prepare("
-    SELECT si.shopItemsID, si.itemName, si.menge, s.shopname, ui.shopID
+    SELECT si.shopItemsID, si.itemName, si.menge, s.shopname, ui.shopID, ui.userID as creatorID
     FROM ShopItems si
     JOIN UserItems ui ON si.shopItemsID = ui.shopitemsID
     JOIN Shop s ON ui.shopID = s.shopID

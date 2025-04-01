@@ -40,6 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(response => response.json())
             .then(data => {
                 if (data.status === "success") {
+                    disableAddedApps(data.apps); // Hier den Aufruf einfügen!
                     data.apps.forEach(app => {
                         const appID = app.appID;
                         const appName = app.appName;

@@ -2,9 +2,9 @@
 session_start();
 header('Content-Type: application/json'); // Sicherstellen, dass die Antwort im JSON-Format erfolgt
 
-require '../config/db.php';
+require'../config/db.php';
 
-if (!isset($_SESSION['userID'])) {
+if(!isset($_SESSION['userID'])) {
     echo json_encode(["status" => "error", "message" => "Nicht autorisiert"]);
     exit;
 }
@@ -27,4 +27,5 @@ if ($apps) {
 } else {
     echo json_encode(["status" => "error", "message" => "Keine verfügbaren Apps"]);
 }
+exit; // Stoppt unerwartete Ausgabe
 ?>

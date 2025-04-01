@@ -99,9 +99,9 @@ body {
     transition: opacity 2s ease-in-out;}
 
 .left { left: 0; top: 0; 
-  background: url("./../public/img/alltogether.JPG") center/cover no-repeat;}
+  background: url("./../public/img/Hochzeit.JPG") center/cover no-repeat;}
 .right { right: 0; top: 0; transform: scaleX(-1);
-  background: url("./../public/img/alltogether.JPG") center/cover no-repeat;} 
+  background: url("./../public/img/hochzeitBack.JPG") center/cover no-repeat;} 
 
 /* 📷 Bottom Image */
 .bottom-image {
@@ -109,9 +109,7 @@ body {
     bottom: 0;
     width: 100%;
    height: calc(100% - var(--triangle-height));  /* Fills the space below the triangle */
-    background: url(./../public/img/alltogether2.JPG) center center/cover no-repeat;
-    
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    background: url(./../public/img/hochzeitBack.JPG) center center/cover no-repeat;
     opacity: 0;
     transition: opacity 2s ease-in-out;
 }

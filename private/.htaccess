@@ -29,3 +29,12 @@
 <FilesMatch "addItems.php$|getItems.php$|deleteItems.php$">
     Require all granted
 </FilesMatch>
+
+<FilesMatch "generatePDF.php$|shoppingListWidget.php$">
+    Require all granted
+</FilesMatch>
+
+
+<FilesMatch "toDoList.php$|add_todo.php$|delete_todo.php$|toggle_task.php$">
+    Require all granted
+</FilesMatch>

@@ -2,7 +2,7 @@
 session_start();
 header('Content-Type: application/json'); // Immer JSON zurückgeben
 
-require '../config/db.php'; // Pfad zur DB-Verbindung
+require'../config/db.php'; // Pfad zur DB-Verbindung
 
 if (!isset($_SESSION['userID'])) {
     echo json_encode(["status" => "error", "message" => "Nicht autorisiert"]);

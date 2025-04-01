@@ -156,15 +156,13 @@ if (isset($_POST['sendInvite'])) {
     }
 }
 ?>
- <!-- Aktivitäten Bereich -->
- <section class="activity-board">
-            <h3>Neueste Familienaktivitäten</h3>
-            <ul>
-                <li>Max hat ein neues Rezept hinzugefügt.</li>
-                <li>Lisa hat ein Familienfoto hochgeladen.</li>
-                <li>Jonas hat eine Einkaufsliste erstellt.</li>
-            </ul>
-        </section>
+ <!-- ShoppingList Widget -->
+ <div class="calendar-widget">
+        <h3>Shopping List</h3>
+        <iframe src="http://localhost/files/Do-IT/private/apps/shoppingListWidget.php" 
+                style="border: 0" width="100%" height="300" frameborder="0" scrolling="no"></iframe>
+    </div>
+
 
             <!-- Kalender Widget -->
     <div class="calendar-widget">
@@ -172,6 +170,9 @@ if (isset($_POST['sendInvite'])) {
         <iframe src="http://localhost/files/Do-IT/private/apps/calender.php" 
                 style="border: 0" width="100%" height="300" frameborder="0" scrolling="no"></iframe>
     </div>
+
+
+
 
 </div>
  </main>
@@ -183,7 +184,7 @@ if (isset($_POST['sendInvite'])) {
         <br>
 
         <div class="modal-apps">
-    <button class="add-app" data-app="1" data-icon="fas fa-shopping-cart" data-url=""> 
+    <button class="add-app" data-app="1" data-icon="fas fa-shopping-cart" data-url="http://localhost/files/Do-IT/public/index.php"> 
         <span class="app-title">Einkaufsliste</span>
         <i class="fas fa-shopping-cart"></i>
     </button>

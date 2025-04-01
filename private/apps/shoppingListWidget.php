@@ -83,86 +83,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="../../public/stylesApps.css">
 </head>
 <body>
-        <!-- Sidebar Navigation -->
-        <nav class="sidebar">
-        <br>
-        <h2>Hey, <?php echo htmlspecialchars($row["vorname"]); ?>!</h2>
-        <ul class="sidebar-menu">
-            <li><a href="/files/Do-IT/public/dashboard.php"><i class="fas fa-home"></i> <span>Startseite</span></a></li>
-            <li><a href="#"><i class="fas fa-user"></i> <span>Profil</span></a></li>
-            <li><a href="#"><i class="fas fa-users"></i> <span>Familienmitglieder</span></a></li>
-        </ul>
-        <ul class="sidebar-bottom">
-            <li><a href="#"><i class="fas fa-cog"></i> <span>Einstellungen</span></a></li>
-            <li><a href="/files/Do-IT/private/auth/logout-handler.php"><i class="fas fa-sign-out-alt"></i>
-                    <span>Logout</span></a></li>
-        </ul>
-    </nav>
+      
 
-        <!-- Header mit Familienbild und Namen -->
-        <header class="dashboard-header">
-
-<div class="family-info">
-    <p>Shopping Liste Familie
-        <?php echo !empty($row['famName']) ? htmlspecialchars($row['famName']) : 'Noch keine Familie'; ?></p>
-</div>
 </header>
 <h2 class="captionShoppingList">Einkaufsliste</h2>
 <div class="shopping-container">
-    <!-- Formular zum Hinzufügen eines Artikels -->
-    <form method="POST" action="shoppingList.php">
-        <label for="itemName">Artikelname:</label>
-        <input type="text" id="itemName" name="itemName" required>
-        
-        <label for="itemQuantity">Menge:</label>
-        <input type="number" id="itemQuantity" name="itemQuantity" value="1" required>
-        
-        <label for="itemStore">Shop (Aldi, Lidl, Rewe):</label>
-        <select id="itemStore" name="itemStore" required>
-            <option value="1">Aldi</option>
-            <option value="2">Lidl</option>
-            <option value="3">Rewe</option>
-        </select>
-
-        <button type="submit">Artikel hinzufügen</button>
-    </form>
-    <form action="generatePDF.php" method="get">
-    <button type="submit">📄 Einkaufsliste als PDF herunterladen</button>
-</form>
-
-
-
-    <?php if (isset($_GET['success'])): ?>
-    <div id="successMessage" style="
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: #d4edda;
-        color: #155724;
-        padding: 20px;
-        border-radius: 10px;
-        font-size: 24px;
-        font-weight: bold;
-        text-align: center;
-        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    ">
-        ✅ <?php echo htmlspecialchars($_GET['success']); ?>
-    </div>
-
-    <script>
-        // Warte 3 Sekunden und blendet die Erfolgsmeldung aus
-        setTimeout(function() {
-            var successMessage = document.getElementById('successMessage');
-            if (successMessage) {
-                successMessage.style.display = 'none';
-            }
-        }, 3000); // 3000 Millisekunden = 3 Sekunden
-    </script>
-    <?php endif; ?>
-
-  
-    <br>
     <ul id="shoppingList"></ul> <!-- Hier werden die Artikel dynamisch angezeigt -->
     </div>
     <script>
