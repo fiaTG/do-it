@@ -38,3 +38,7 @@
 <FilesMatch "toDoList.php$|add_todo.php$|delete_todo.php$|toggle_task.php$">
     Require all granted
 </FilesMatch>
+
+<FilesMatch "dashboard.php$|events.php$|calenderWidget.php$">
+    Require all granted
+</FilesMatch>

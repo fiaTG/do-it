@@ -167,7 +167,7 @@ if (isset($_POST['sendInvite'])) {
             <!-- Kalender Widget -->
     <div class="calendar-widget">
         <h3>Familienkalender</h3>
-        <iframe src="http://localhost/files/Do-IT/private/apps/calender.php" 
+        <iframe src="http://localhost/files/Do-IT/private/apps/calenderWidget.php" 
                 style="border: 0" width="100%" height="300" frameborder="0" scrolling="no"></iframe>
     </div>
 
