@@ -25,49 +25,87 @@ $famID = $user['famID'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $stmt = $pdo->prepare("
-        SELECT eventID AS id, title, startDate AS start, endDate AS end, carReserved 
+        SELECT eventID AS id, title, startDate AS start, endDate AS end, carReserved, category 
         FROM Events 
         WHERE famID = ?
     ");
     $stmt->execute([$famID]);
     $events = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    // Überprüfen, ob carReserved korrekt gesetzt ist
+    foreach ($events as &$event) {
+        // carReserved in extendedProps einfügen
+        $event['extendedProps'] = [
+            'carReserved' => $event['carReserved'],
+            'category' => $event['category']
+        ];
+        unset($event['carReserved']);  // carReserved aus der Hauptantwort entfernen
+    }
     echo json_encode($events);
     exit();
 }
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Neues Event erstellen
     $data = json_decode(file_get_contents("php://input"), true);
 
-    if (!isset($data['title'], $data['start'], $data['end'])) {
+    if (!isset($data['title'], $data['start'], $data['end'], $data['category'])) {
         http_response_code(400);
         echo json_encode(["error" => "Fehlende Parameter"]);
         exit();
     }
 
-    $stmt = $pdo->prepare("INSERT INTO Events (title, startDate, endDate, userID, famID, carReserved) VALUES (?, ?, ?, ?, ?, ?)");
-    $stmt->execute([
-        $data['title'],
-        $data['start'],
-        $data['end'],
-        $userID,
-        $famID,
-        $data['carReserved'] ?? 0
-    ]);
+
+$carReserved = isset($data['carReserved']) ? $data['carReserved'] : 0;  // Hier wird carReserved nur gesetzt, wenn es explizit übergeben wird.
+
+$stmt = $pdo->prepare("INSERT INTO Events (title, startDate, endDate, userID, famID, carReserved, category) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?)");
+$stmt->execute([
+    $data['title'],
+    $data['start'],
+    $data['end'],
+    $userID,
+    $famID,
+    $carReserved,  // carReserved wird hier korrekt übergeben
+    $data['category'] ?? 'Sonstiges' // Kategorie hier übergeben
+]);
 
     echo json_encode(["success" => true]);
     exit();
 }
 
-$stmt = $pdo->prepare("
-    SELECT eventID, title, startDate AS start, endDate AS end, carReserved 
-    FROM Events 
-    WHERE famID = ?
-");
-$stmt->execute([$famID]);
-$events = $stmt->fetchAll(PDO::FETCH_ASSOC);
+if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
+    // Event aktualisieren
+    $data = json_decode(file_get_contents("php://input"), true);
 
-echo json_encode($events);
+    // Überprüfen, ob die erforderlichen Daten vorhanden sind
+    if (!isset($data['eventID'], $data['title'], $data['start'], $data['end'], $data['category'])) {
+        http_response_code(400);
+        echo json_encode(["error" => "Fehlende Parameter"]);
+        exit();
+    }
+
+    $carReserved = isset($data['carReserved']) ? $data['carReserved'] : 0;
+
+    // Event aktualisieren (einschließlich Kategorie)
+    $stmt = $pdo->prepare("
+        UPDATE Events 
+        SET title = ?, startDate = ?, endDate = ?, carReserved = ?, category = ?
+        WHERE eventID = ?
+    ");
+    $stmt->execute([
+        $data['title'],
+        $data['start'],
+        $data['end'],
+        $carReserved,  
+        $data['category'],  // Hier die Kategorie einfügen
+        $data['eventID']
+    ]);
+
+    // Erfolgsmeldung zurückgeben
+    echo json_encode(["success" => true]);
+    exit();
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
     // Event löschen (nur Ersteller oder Admin)
@@ -86,7 +124,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
         $userID,
         $famID
     ]);
-    ob_clean(); // Vorherigen Output entfernen
+
     echo json_encode(["success" => true]);
     exit();
 }
+?>

@@ -43,143 +43,7 @@ if (!$row) {
     <link rel="stylesheet" href="../../public/stylesdashb.css">
 </head>
 <style>
-    body,
-    html {
-        font-family: 'Montserrat', sans-serif;
-        overflow: visible;
-
-        background-color: #e3eef5;
-    }
-
-    .calenderWrapper {
-        max-width: 1200px;
-        width: calc(100% - 260px);
-        /* Zieht die Sidebar-Breite (z. B. 260px) ab */
-        margin-left: 260px;
-        /* Abstand zur Sidebar */
-        padding-top: 80px;
-        /* Abstand zum Header */
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-    }
-
-    /* Kalender richtig platzieren */
-    #calendar {
-        max-width: 1200px;
-        /* Begrenzt die maximale Breite */
-        width: 100%;
-        padding: 20px;
-        background-color: #f9f9f9;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        opacity: 1;
-        /* Stellt sicher, dass der Kalender sichtbar ist */
-        transform: translateY(0);
-        /* Kalender soll nicht außerhalb des sichtbaren Bereichs sein */
-    }
-
-    .fc-toolbar-title {
-        font-size: 1.5rem;
-        color: #406f8f;
-        font-weight: bold;
-    }
-
-    .fc-button {
-        background-color: #406f8f !important;
-        color: #fff !important;
-        border: none !important;
-        padding: 5px 10px !important;
-        border-radius: 5px !important;
-    }
-
-    .fc-button:hover {
-        background-color: #2c4d63 !important;
-    }
-
-    .fc-col-header-cell {
-        background-color: #2c4d63;
-        color: #ffffff;
-        padding: 10px;
-        font-weight: bold;
-    }
-
-    .fc-daygrid-day {
-        background-color: #e3eef5;
-        border: 1px solid #c0d6e4;
-    }
-
-    .fc-day-today {
-        background-color: #406f8f !important;
-        color: white !important;
-        font-weight: bold;
-        border-radius: 5px;
-    }
-
-    .fc-event {
-        background-color: #f4a261 !important;
-        border: none !important;
-        color: #fff !important;
-        border-radius: 5px;
-        padding: 5px;
-    }
-
-    .fc-event:hover {
-        transform: scale(1.05);
-        transition: transform 0.2s ease-in-out;
-    }
-
-    .fc-daygrid-day:hover {
-        background-color: #8fbfdc !important;
-        transition: background-color 0.3s ease-in-out;
-    }
-
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 1000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.4);
-    }
-
-    .modal-content {
-        background-color: #fefefe;
-        margin: 15% auto;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 300px;
-        text-align: center;
-        border-radius: 10px;
-    }
-
-    .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-        cursor: pointer;
-    }
-
-    .close:hover {
-        color: black;
-    }
-
-    .delete-btn {
-        background-color: #ff4c4c;
-        color: white;
-        border: none;
-        padding: 10px;
-        margin-top: 10px;
-        cursor: pointer;
-        border-radius: 5px;
-    }
-
-    .delete-btn:hover {
-        background-color: #c0392b;
-    }
+ 
 </style>
 
 <body>
@@ -204,7 +68,39 @@ if (!$row) {
             <p>Kalender Familie <?php echo !empty($row['famName']) ? htmlspecialchars($row['famName']) : 'Noch keine Familie'; ?></p>
         </div>
     </header>
-    
+
+    <div class="legend">
+    <h3>Legende:</h3>
+    <div class="legend-item">
+        <span class="legend-color" style="background-color: #4A90E2;"></span> Arbeit
+        <span class="legend-color" style="background-color: #2ECC71;"></span> Familie
+        <span class="legend-color" style="background-color: #9B59B6;"></span> Freizeit
+        <span class="legend-color" style="background-color: #95A5A6;"></span> Sonstiges
+        <span class="legend-icon">    <div class="car-container">
+      <div class="car" id="car">
+        <div class="window"></div>
+        <div class="window middle"></div> <!-- Drittes Fenster -->
+        <div class="window right"></div>
+        <div class="wheel left">
+          <div class="wheel-center"></div> <!-- Weißer Punkt in der Mitte des Rades -->
+        </div>
+        <div class="wheel right">
+          <div class="wheel-center"></div> <!-- Weißer Punkt in der Mitte des Rades -->
+        </div>
+        <div class="dust left"></div> <!-- Staubwolke links -->
+        <!-- Spiegel -->
+        <div class="mirror"></div> <!-- Spiegel -->
+        <!-- Antenne -->
+        <div class="antenna"></div> <!-- Antenne -->
+      </div>
+    </div></span> Auto reserviert
+    </div>
+
+
+
+
+    </div>
+
     <div class="calenderWrapper">
         <div id="calendar"></div>
     </div>
@@ -227,54 +123,98 @@ document.addEventListener('DOMContentLoaded', function() {
         editable: true,
         
         eventContent: function(arg) {
-            // Falls Auto reserviert ist, füge ein Icon hinzu
-            let carIcon = arg.event.extendedProps.carReserved ? ' 🚗' : '';
-            
-            return { 
-                html: `<span>${arg.event.title}${carIcon}</span>` 
-            };
-        },
+    // carReserved korrekt als Boolean umwandeln
+    let carIcon = (arg.event.extendedProps.carReserved === "1" || arg.event.extendedProps.carReserved === 1) ? ' 🚗' : '';
+    
+    return { 
+        html: `<span>${arg.event.title}${carIcon}</span>` 
+    };
+},
 
         select: function(info) {
-            let title = prompt("Titel des Termins:");
-            if (!title) return;
+    // Modal-Fenster erstellen
+    let modal = document.createElement("div");
+    modal.innerHTML = `
+        <div class="modal-content">
+            <h3>Neues Event erstellen</h3>
+            <label for="eventTitle">Titel:</label>
+            <input type="text" id="eventTitle" placeholder="Event-Titel" required>
 
-            let isAllDay = info.allDay;
-            let start = info.startStr;
-            let end = info.endStr;
-            
-            // Event-Daten vorbereiten
-            const eventData = {
-                title: title,
-                start: start,
-                end: end,
-                allDay: isAllDay,
-                carReserved: confirm("Soll ein Auto reserviert werden?") ? 1 : 0
-            };
+            <label for="eventCategory">Kategorie:</label>
+            <select id="eventCategory">
+                <option value="Arbeit">Arbeit</option>
+                <option value="Familie">Familie</option>
+                <option value="Freizeit">Freizeit</option>
+                <option value="Sonstiges">Sonstiges</option>
+            </select>
 
-            // Event an Server senden
-            fetch('/files/Do-IT/private/apps/events.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(eventData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    calendar.addEvent({
-                        id: data.eventID,
-                        title: eventData.title,
-                        start: eventData.start,
-                        end: eventData.end,
-                        allDay: eventData.allDay,
-                        extendedProps: { carReserved: eventData.carReserved }
-                    });
-                } else {
-                    alert('Fehler beim Hinzufügen des Termins');
+            <label>
+                <input type="checkbox" id="eventCarReserved"> Auto reservieren 🚗
+            </label>
+
+            <div class="modal-buttons">
+                <button id="saveEvent">Speichern</button>
+                <button id="closeModal">Abbrechen</button>
+            </div>
+        </div>
+    `;
+    modal.classList.add("modal");
+    document.body.appendChild(modal);
+    modal.style.display = "flex";
+
+    // Event speichern
+    document.getElementById("saveEvent").addEventListener("click", function() {
+    let title = document.getElementById("eventTitle").value;
+    let category = document.getElementById("eventCategory").value;
+    let carReserved = document.getElementById("eventCarReserved").checked ? 1 : 0;  // carReserved wird korrekt gesetzt, auch wenn es nicht aktiviert ist
+
+    if (!title) {
+        alert("Bitte einen Titel eingeben!");
+        return;
+    }
+
+    let eventData = {
+        title: title,
+        start: info.startStr,
+        end: info.endStr,
+        allDay: info.allDay,
+        carReserved: carReserved,  // carReserved wird hier korrekt übergeben
+        category: category
+    };
+
+    fetch('/files/Do-IT/private/apps/events.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(eventData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            calendar.addEvent({
+                id: data.eventID,
+                title: eventData.title,
+                start: eventData.start,
+                end: eventData.end,
+                allDay: eventData.allDay,
+                extendedProps: { 
+                    carReserved: eventData.carReserved,  // carReserved wird korrekt weitergegeben
+                    category: eventData.category
                 }
-            })
-            .catch(error => console.error('Fehler:', error));
-        },
+            });
+        } else {
+            alert('Fehler beim Hinzufügen des Termins');
+        }
+    })
+    .catch(error => console.error('Fehler:', error));
+
+    modal.remove();
+});
+
+    // Modal schließen
+    document.getElementById("closeModal").addEventListener("click", function() {
+        modal.remove();
+    });
+},
 
         eventClick: function(info) {
             if (confirm(`"${info.event.title}" löschen?`)) {
@@ -295,34 +235,51 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         },
 
-        eventChange: function(info) {
-            const updatedEvent = {
-                eventID: info.event.id,
-                title: info.event.title,
-                start: info.event.startStr,
-                end: info.event.endStr,
-                allDay: info.event.allDay,
-                carReserved: info.event.extendedProps.carReserved
-            };
+        eventDidMount: function(info) {
+    let category = info.event.extendedProps.category;
 
-            fetch('/files/Do-IT/private/apps/events.php', {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(updatedEvent)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (!data.success) {
-                    alert('Fehler beim Aktualisieren');
-                    info.revert();
-                }
-            })
-            .catch(error => console.error('Fehler:', error));
+    let colors = {
+    "Arbeit": "#4A90E2",  // Ein kräftiges, modernes Blau
+    "Familie": "#2ECC71",  // Ein angenehmes, lebendiges Grün
+    "Freizeit": "#9B59B6", // Ein edles Lila
+    "Sonstiges": "#95A5A6" // Ein dezentes Grau
+};
+
+    let color = colors[category] || colors["Sonstiges"];
+    info.el.style.backgroundColor = color;
+},
+
+
+eventChange: function(info) {
+    const updatedEvent = {
+        eventID: info.event.id,
+        title: info.event.title,
+        start: info.event.startStr,
+        end: info.event.endStr,
+        allDay: info.event.allDay,
+        carReserved: info.event.extendedProps.carReserved,
+        category: info.event.extendedProps.category // Kategorie hinzufügen
+    };
+
+    fetch('/files/Do-IT/private/apps/events.php', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedEvent) // Alle Event-Daten senden
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (!data.success) {
+            alert('Fehler beim Aktualisieren');
+            info.revert();
         }
+    })
+    .catch(error => console.error('Fehler:', error));
+}
     });
-
     calendar.render();
 });
+
+
 </script>
 </body>
 

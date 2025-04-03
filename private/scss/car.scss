@@ -1,0 +1,176 @@
+
+  
+  .car-container {
+    display: flex;
+    align-items: center;
+    animation: move 5s infinite linear, fadeInOut 5s infinite;
+  }
+  
+  .car {
+    position: relative;
+    width: 150px;
+    height: 60px;
+    background-color: #bf2556; /* Auto-Farbe */
+    border-radius: 15px 50px 15px 5px; /* Rundungen */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transform: skewX(-15deg) scale(0.3); /* Front schmaler machen */
+  }
+  
+  .window {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 40px;
+    height: 20px;
+    background-color: #baf1f9;
+    border-radius: 5px;
+  }
+  
+  .window.right {
+    left: 101px;
+    width: 40px;
+    top: 10px;
+    height: 20px;
+    border-radius: 15px 50px 15px 5px; /* Ecken des Fensters */
+  }
+  
+  .window.middle {
+    left: 60px;
+    width: 30px;
+    top: 10px;
+    height: 20px;
+    background-color: #baf1f9;
+    border-radius: 5px;
+  }
+  
+  /* Räder */
+  .wheel {
+    width: 20px;
+    height: 20px;
+    background-color: #333;
+    border-radius: 50%;
+    position: absolute;
+    bottom: -5px;
+    animation: rotateWheels 6s infinite linear; /* Auch hier die Dauer anpassen */
+  }
+  
+  .wheel.left {
+    left: 20px;
+  }
+  
+  .wheel.right {
+    right: 20px;
+  }
+  
+  .wheel-center {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 10px;
+    height: 10px;
+    background-color: white;
+    border-radius: 50%;
+  }
+
+
+  /* Animation für das langsame Ein- und Ausblenden */
+@keyframes fadeInOut {
+    0% {
+      opacity: 0; /* Zu Beginn ist das Auto unsichtbar */
+    }
+    20% {
+      opacity: 1; /* Auto wird sichtbar */
+    }
+    80% {
+      opacity: 1; /* Auto bleibt sichtbar */
+    }
+    100% {
+      opacity: 0; /* Am Ende des Zyklus blendet das Auto wieder aus */
+    }
+  }
+  
+  @keyframes move {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(50px); }
+  }
+
+
+  
+  @keyframes rotateWheels {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  .wheel {
+    animation: rotateWheels 1s infinite linear;
+  }
+  
+  /* Staubwolke hinter den hinteren Rädern */
+  .dust {
+    position: absolute;
+    bottom: -12px;
+    right: 20px;
+    width: 15px;
+    height: 15px;
+    background-color: rgba(169, 169, 169, 0.9);
+    border-radius:50%;
+    animation: dustAnimation 1.5s infinite ease-out;
+    opacity: 0;
+  }
+  
+  .dust.left {
+    left: 20px;
+    right: auto;
+  }
+  
+  @keyframes dustAnimation {
+    0% {
+      opacity: 0.5;
+      transform: scale(1) translateX(0);
+    }
+    50% {
+      opacity: 0.7;
+      transform: scale(1.8, 0.6) translateX(-30px); /* Streckt sich nach links */
+    }
+    100% {
+      opacity: 0;
+      transform: scale(2, 0.5) translateX(-60px); /* Verlängert sich weiter nach links */
+    }
+  }
+  
+  /* Spiegel (auf der linken Seite des Autos) */
+  .mirror {
+    position: absolute;
+    left: 135px; /* Spiegel ein wenig über das Auto hinausragen lassen */
+    top: 23px;
+    width: 6px;
+    height: 6px;
+    background-color: #b0b0b0; /* Grauton für den Spiegel */
+    border-radius: 50%;
+    border: 2px solid #888; /* Leichter Rand für den Spiegel */
+  }
+  
+  /* Antenne */
+  .antenna {
+    position: absolute;
+    top: -10px; /* Antenne oben auf dem Auto */
+    left: 70%; /* Mittig */
+    width: 2px;
+    height: 10px;
+    background-color: #333; /* Dunkel für die Antenne */
+    transform: translateX(-50%) rotate(-25deg); /* Zentrieren und leichte Neigung nach links */
+  }
+  
+  .antenna:after {
+    content: '';
+    position: absolute;
+    top: -5px; /* Spitze der Antenne */
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+    border-bottom: 5px solid #333; /* Spitze der Antenne */
+    transform: translateX(-50%);
+  }
+  
