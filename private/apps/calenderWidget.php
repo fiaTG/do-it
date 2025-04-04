@@ -41,6 +41,9 @@ if (!$row) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../../public/stylesdashb.css">
+   
+
+
 </head>
 <style>
     
@@ -56,10 +59,29 @@ if (!$row) {
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             padding: 8px;
         }
+        .fc-daygrid-event {
+            background-color: #4CAF50; /* Grüner Hintergrund für die Events */
+            color: white; /* Weißer Text */
+            border-radius: 5px;
+            padding: 5px;
+            margin: 2px 0;
+        }
+        .fc-daygrid-event:hover {
+            background-color: #45a049; /* Dunklerer Grünton beim Hover */
+        }
+        .calenderWrapper {
+    max-width: unset;
+    width: 100%; 
+     margin-left: 0px ; 
+     padding-top: 0px ; 
+    display: flex
+;
+    justify-content: center;
+    align-items: flex-start;
+    }
     </style>
 
 <body>
-<h3>Familienkalender – Termine heute</h3>
     <div class="calenderWrapper">
         <div id="calendar"></div>
     </div>
@@ -73,9 +95,14 @@ if (!$row) {
                 headerToolbar: false,    // ❗ Menü ausblenden
                 events: '/files/Do-IT/private/apps/events.php', // ❗ Deine bestehende Event-Quelle nutzen
                 eventContent: function(arg) {
-                    let carIcon = arg.event.extendedProps.carReserved ? ' 🚗' : '';
-                    return { html: `<span>${arg.event.title}${carIcon}</span>` };
-                }
+    const carReserved = arg.event.extendedProps.carReserved;
+    const carIcon = (carReserved === "1" || carReserved === 1) ? ' 🚗' : '';
+
+    return {
+        html: `<span>${arg.event.title}${carIcon}</span>`
+    };
+}
+
             });
 
             calendar.render();

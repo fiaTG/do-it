@@ -506,6 +506,20 @@ html, body {
   /* Spitze der Antenne */
   transform: translateX(-50%); }
 
+.car-container.small {
+  animation: move 5s  linear, fadeInOut 5s 1; }
+
+.car-container.small .car {
+  transform: scale(0.2);
+  /* Verkleinert das Auto */ }
+
+.car-container.small .dust {
+  width: 5px;
+  /* Staub ebenfalls kleiner machen */
+  height: 5px;
+  background-color: rgba(150, 150, 150, 0.5);
+  border-radius: 50%; }
+
 body,
 html {
   font-family: 'Montserrat', sans-serif;

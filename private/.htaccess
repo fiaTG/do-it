@@ -39,6 +39,6 @@
     Require all granted
 </FilesMatch>
 
-<FilesMatch "dashboard.php$|events.php$|calenderWidget.php$">
+<FilesMatch "dashboard.php$|events.php$|calenderWidget.php$|profile.php$">
     Require all granted
 </FilesMatch>

@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       
 
 </header>
-<h2 class="captionShoppingList">Einkaufsliste</h2>
+<h2 class="captionShoppingList"></h2>
 <div class="shopping-container">
     <ul id="shoppingList"></ul> <!-- Hier werden die Artikel dynamisch angezeigt -->
     </div>

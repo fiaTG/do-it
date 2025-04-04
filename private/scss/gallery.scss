@@ -4,6 +4,8 @@
           overflow: visible ;
           overflow-x: hidden ;
           max-width: 100%;
+          scrollbar-width: thin;
+    scrollbar-color: #3498db #f4f4f4;
       }
 
 
@@ -21,7 +23,6 @@
           align-items: center;
           margin-left: 250px;
           /* Abstand zur Sidebar erhöhen */
-          margin-right: auto;
 
       }
 

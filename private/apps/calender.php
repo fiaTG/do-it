@@ -123,13 +123,15 @@ document.addEventListener('DOMContentLoaded', function() {
         editable: true,
         
         eventContent: function(arg) {
-    // carReserved korrekt als Boolean umwandeln
-    let carIcon = (arg.event.extendedProps.carReserved === "1" || arg.event.extendedProps.carReserved === 1) ? ' 🚗' : '';
-    
+    let carIcon = (arg.event.extendedProps.carReserved === "1" || arg.event.extendedProps.carReserved === 1) 
+        ? ' 🚗'
+        : '';
+
     return { 
-        html: `<span>${arg.event.title}${carIcon}</span>` 
+        html: `<div class="event-content">${arg.event.title}${carIcon}</div>` 
     };
 },
+
 
         select: function(info) {
     // Modal-Fenster erstellen

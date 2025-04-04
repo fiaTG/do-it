@@ -4,7 +4,9 @@ body,
 html {
   overflow: visible;
   overflow-x: hidden;
-  max-width: 100%; }
+  max-width: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: #3498db #f4f4f4; }
 
 .family-info p {
   position: relative;
@@ -18,8 +20,7 @@ html {
   justify-content: center;
   align-items: center;
   margin-left: 250px;
-  /* Abstand zur Sidebar erhöhen */
-  margin-right: auto; }
+  /* Abstand zur Sidebar erhöhen */ }
 
 .column {
   width: calc(25% - 16px);
