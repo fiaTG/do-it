@@ -53,7 +53,7 @@ if (!$row) {
         <h2>Hey, <?php echo htmlspecialchars($row["vorname"]); ?>!</h2>
         <ul class="sidebar-menu">
             <li><a href="/files/Do-IT/public/dashboard.php"><i class="fas fa-home"></i> <span>Startseite</span></a></li>
-            <li><a href="#"><i class="fas fa-user"></i> <span>Profil</span></a></li>
+            <li><a href="/files/Do-IT/private/dashboard/profile.php?famID=<?= $row['famID'] ?>&userID=<?= $_SESSION['userID'] ?>"><i class="fas fa-user"></i> <span>Profil</span></a></li>
             <li><a href="#"><i class="fas fa-users"></i> <span>Familienmitglieder</span></a></li>
         </ul>
         <ul class="sidebar-bottom">

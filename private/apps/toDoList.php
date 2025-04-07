@@ -67,7 +67,7 @@ function getAssignedUserName($pdo, $assignedID) {
         <h2>Hey, <?php echo htmlspecialchars($userData["vorname"]); ?>!</h2>
         <ul class="sidebar-menu">
             <li><a href="/files/Do-IT/public/dashboard.php"><i class="fas fa-home"></i> Startseite</a></li>
-            <li><a href="#"><i class="fas fa-user"></i> Profil</a></li>
+            <li><a href="/files/Do-IT/private/dashboard/profile.php"><i class="fas fa-user"></i> <span>Profil</span></a></li>
             <li><a href="#"><i class="fas fa-users"></i> Familienmitglieder</a></li>
         </ul>
         <ul class="sidebar-bottom">
