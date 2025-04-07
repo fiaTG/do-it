@@ -67,5 +67,16 @@ function submitForm() {
     }
 }
 
+function toggleRegisterIcon(isHovered) {
+    const icon = document.getElementById("register-icon");
+    if (!icon) return;
+
+    if (isHovered) {
+        icon.classList.replace("fa-user-plus", "fa-user-check");
+    } else {
+        icon.classList.replace("fa-user-check", "fa-user-plus");
+    }
+}
+
 
 

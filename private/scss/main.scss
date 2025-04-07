@@ -1,28 +1,54 @@
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap");
-/* CSS Variables for Consistency */
+/* Google Fonts Import */
+@import url('https://fonts.googleapis.com/css2?family=Amatic+SC&family=Codystar&family=Fredericka+the+Great&family=Megrim&family=Syncopate&display=swap');
+
 :root {
-    --opacity-layer: 0.8;
-    --triangle-height: 60vh;
-    overflow: hidden;
+  /* Farben */
+  --primary-color: #406f8f;
+  --secondary-color: #968d86;
+  --light-bg-apps: #fdfbf2;
+  --body-bg: #bbb2ab;
+
+  --box-shadow: 0 0 3px var(--primary-color), 0 0 6px var(--primary-color), 0 0 10px var(--primary-color);
+
+  --triangle-gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+
+  /* Standard-Schriftarten */
+  --font-syncopate: 'Syncopate', sans-serif;
+  --font-amatic: 'Amatic SC', cursive;
+
+  /* Benutzer-Schriftarten */
+  --font-megrim: 'Megrim', cursive;
+  --font-fredericka: 'Fredericka the Great', cursive;
+  --font-codystar: 'Codystar', cursive;
+
+  --opacity-layer: 0.8;
+  --triangle-height: 60vh;
+  overflow: hidden;
 }
+
 
 /* General Reset */
 body {
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    display: flex;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  font-family: var(--font-syncopate), sans-serif;
+  background: var(--triangle-gradient);
+  min-height: 100vh;
 }
 
 .container {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
-
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column; /* Stack the content vertically */
+  justify-content: space-between; /* Ensures buttons stay at the bottom */
 }
-.logo{
+.logo {
   position: absolute;
-  top: 10%;
+  top: 5%;
   left: 50%;
   transform: translate(-50%, 50%);
   width: 350px;
@@ -30,10 +56,9 @@ body {
   background-image: url(./../public/img/logo.png);
   background-size: contain;
   background-repeat: no-repeat;
-  background-position:center;
-  /* animation: fadeIn 2s ease-in-out; */
+  background-position: center;
   animation: mergeLogos 1.5s ease-in-out forwards;
-  animation-delay: 3s; /* Startet nach 3 Sekunden */
+  animation-delay: 3s;
 }
 
 @keyframes mergeLogos {
@@ -58,10 +83,6 @@ body {
   }
 }
 
-
-
-
-
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -71,7 +92,7 @@ body {
   }
 }
 
-.logoMini{
+.logoMini {
   position: relative;
   top: 50%;
   left: 50%;
@@ -81,246 +102,193 @@ body {
   background-image: url(./../public/img/logoMini.png);
   background-size: contain;
   background-repeat: no-repeat;
-  background-position:center;
+  background-position: center;
   opacity: 0;
   animation: appearMiniLogo 1.5s ease-in-out forwards;
-  animation-delay: 4s; /* Startet leicht verzögert */
+  animation-delay: 4s;
 }
 
 /* 🔹 Left and Right Background Layers */
-/* 🔹 Linke und rechte Außenbereiche */
-/* 🔹 Left and Right Background Layers */
 .outer-layer {
-    position: absolute;
-    width: 50%;
-    height: var(--triangle-height); /* Same height as the triangle */
-    clip-path: polygon(0 0, 100% 0, 100% 1%, 0% 100%);; /* Cuts off to the triangle's bottom edge */
-    opacity: 0;
-    transition: opacity 2s ease-in-out;}
+  position: absolute;
+  width: 50%;
+  height: var(--triangle-height);
+  clip-path: polygon(0 0, 100% 0, 100% 1%, 0% 100%);
+  opacity: 0;
+  transition: opacity 2s ease-in-out;
+}
 
-.left { left: 0; top: 0; 
-  background: url("./../public/img/Hochzeit.JPG") center/cover no-repeat;}
-.right { right: 0; top: 0; transform: scaleX(-1);
-  background: url("./../public/img/hochzeitBack.JPG") center/cover no-repeat;} 
+.left {
+  left: 0;
+  top: 0;
+  background: url("./../public/img/Hochzeit.JPG") center/cover no-repeat;
+}
+
+.right {
+  right: 0;
+  top: 0;
+  transform: scaleX(-1);
+  background: url("./../public/img/hochzeitBack.JPG") center/cover no-repeat;
+}
 
 /* 📷 Bottom Image */
 .bottom-image {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-   height: calc(100% - var(--triangle-height));  /* Fills the space below the triangle */
-    background: url(./../public/img/hochzeitBack.JPG) center center/cover no-repeat;
-    opacity: 0;
-    transition: opacity 2s ease-in-out;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: calc(100% - var(--triangle-height));
+  background: url(./../public/img/hochzeitBack.JPG) center center/cover no-repeat;
+  opacity: 0;
+  transition: opacity 2s ease-in-out;
 }
 
 /* 🔺 Triangle */
 .triangle {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100%;
-    height: var(--triangle-height);
-    background: var(--triangle-color); 
-    clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
-    opacity: 0; /* Initially hidden */
-    transition: opacity .5s ease-in-out;
-    animation: fadeIn 1s ease-in-out 4s forwards;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  height: var(--triangle-height);
+  background: var(--triangle-gradient);
+  clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+  opacity: 0;
+  transition: opacity .5s ease-in-out;
+  animation: fadeIn 1s ease-in-out 4s forwards;
 }
 
-
-
-
+/* Login-Area */
 .login-area {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1;
+  position: relative; /* Keine absolute Positionierung */
+  z-index: 1;
+  text-align: center;
+  padding: 0 20px;
 }
 
-/* Inputs and Button */
+/* Formulareinstellungen */
+.login-area form {
+  display: block; /* Standardmäßig block, um die Felder untereinander anzuordnen */
+  margin-top: 20px; /* Abstand zwischen Formular und Logo */
+
+}
+
+/* Formulareingabefelder */
 .login-area label {
-
-    display: block;
-    margin: 5px 0 10px;
-    text-align: left;
-    color: var(--white-color);
+  display: block;
+  margin: 5px 0 10px;
+  text-align: center;
+  color: var(--light-bg-apps);
 }
+
+/* Eingabefelder */
 .login-area input {
-    width: 100%;
-    margin-bottom: 10px;
-    padding: 8px;
-    border: none;
-    border-radius: 5px;
+  width: 25%; /* Breite der Eingabefelder an den Container anpassen */
+  margin-bottom: 15px; /* Abstand zwischen den Eingabefeldern */
+  padding: 8px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
 }
+
+/* Login Button */
 .login-area button {
-    width: 100%;
-    padding: 8px;
-    background: var(--main-white);
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
+  width: 100%;
+  padding: 10px;
+  background: var(--secondary-color);
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-top: 10px; /* Abstand zwischen dem Passwortfeld und dem Button */
 }
 
-
-
-
-/* LightButton */
-
-/*=============== VARIABLES CSS ===============*/
-:root {
-  /*========== Colors ==========*/
-  --body-color: #6a4adb;  
-  --accent-color: #13d4ab; /* Taupe-Greige */
-  --text-color: #4f4a45;   /* Dunkles Greige */
-  --hover-color: #9f9587;  /* Etwas dunkleres Greige */
-  --box-shadow: 0 0 5px var(--body-color), 0 0 10px var(--accent-color), 
-                0 0 15px var(--accent-color), 0 0 20px var(--body-color);
-  --white-color: #f1efec;
-  --triangle-color: linear-gradient(135deg, #8e44ad, #3498db);;  
-
-
-
+/* Hover-Effekt für Button */
+.login-area button:hover {
+  background: var(--primary-color);
+  color: var(--light-bg-apps);
 }
-body {
-    font-family: var(--body-font);
-    font-size: var(--normal-font-size);
-    background: var(--body-color);
-    min-height: 100vh;
 
-  }
+/* Button-Container */
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px; /* Space between form and buttons */
+}
 
+/* Button styles */
+.button-animation {
+  position: relative;
+  display: inline-block;
+  padding: 5px 15px;
+  background-color: var(--secondary-color);
+  color: var(--light-bg-apps);
+  border-radius: 6px;
+  overflow: hidden;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+  animation: fadeIn 4s ease-in-out 4s forwards;
+}
 
-  
-  a {
-    text-decoration: none;
-  }
-  
-  .button-animation {
-    position: relative;
-    display: inline-block;
-    padding: 7px 19px;
-    background-color: #6780bed3;
-    text-transform: uppercase;
-    overflow: hidden;
-    width:fit-content;
-    transition: 0.5s;
-    margin: 10% 30%;
-    border-radius: 6px;
-    opacity: 0;
-    animation: fadeIn 4s ease-in-out 4s forwards;
+.button-animation::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  background: linear-gradient(90deg, var(--primary-color), transparent);
+  border-radius: 8px;
+  z-index: -1;
+  animation: borderGlow 6s linear infinite;
+  background-size: 400% 400%;
+  filter: blur(2px);
+}
 
-  }
-  
-  .button-animation span {
-    position: absolute;
-    display: block;
-  }
-  
-  .button-animation span:nth-child(1) {
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 4px;
-    background: linear-gradient(90deg, transparent, var(--accent-color));
-    animation: btn-anim1 3s linear infinite;
-  }
-  
-  @keyframes btn-anim1 {
-    0% {
-      left: -100%;
-    }
-    50%,
-    100% {
-      left: 100%;
-    }
-  }
-  
-  .button-animation span:nth-child(2) {
-    top: -100%;
-    right: 0;
-    width: 4px;
-    height: 100%;
-    background: linear-gradient(180deg, transparent, var(--accent-color));
-    animation: btn-anim2 3s linear infinite;
-    animation-delay: 0.75s;
-  }
-  
-  @keyframes btn-anim2 {
-    0% {
-      top: -100%;
-    }
-    50%,
-    100% {
-      top: 100%;
-    }
-  }
-  
-  .button-animation span:nth-child(3) {
-    bottom: 0;
-    right: -100%;
-    width: 100%;
-    height: 4px;
-    background: linear-gradient(270deg, transparent, var(--accent-color));
-    animation: btn-anim3 3s linear infinite;
-    animation-delay: 1.5s;
-  }
-  
-  @keyframes btn-anim3 {
-    0% {
-      right: -100%;
-    }
-    50%,
-    100% {
-      right: 100%;
-    }
-  }
-  
-  .button-animation span:nth-child(4) {
-    bottom: -100%;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    background: linear-gradient(360deg, transparent, var(--accent-color));
-    animation: btn-anim4 3s linear infinite;
-    animation-delay: 2.25s;
-  }
-  
-  @keyframes btn-anim4 {
-    0% {
-      bottom: -100%;
-    }
-    50%,
-    100% {
-      bottom: 100%;
-    }
-  }
-  
-  .button-animation:hover {
-    background-color: var(--accent-color);
-    color: var(--white-color);
-    border-radius: 5px;
-    box-shadow: var(--box-shadow);
-  }
-  
-  .box__link i {
-    font-size: 2.5rem;
-    color: #f1efec;
-      display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.3s ease-in-out, opacity 0.2s;
-  }
-  
-  .box__link:hover i {
-    transform: rotateY(180deg);
-    opacity: 0.8;
-  }
-  
+@keyframes borderGlow {
+0% {
+  background-position: 0% 50%;
+}
+25% {
+  background-position: 100% 50%;
+}
+50% {
+  background-position: 100% 100%;
+}
+75% {
+  background-position: 0% 100%;
+}
+100% {
+  background-position: 0% 50%;
+}
+}
 
+.button-animation:hover {
+  box-shadow: var(--box-shadow);
+}
 
+/* Icon Hover Effect */
+.box__link i {
+  font-size: 2rem;
+  color: var(--light-bg-apps);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease-in-out, opacity 0.2s;
+  text-decoration: none;
+}
 
+.box__link:hover #icon {
+  opacity: 0.8;
+}
 
+.box__link:hover #register-icon {
+  transform: none;
+  opacity: 0.8;
+}
 
+a {
+  text-decoration: none; /* Entfernt die Unterstreichung */
+}

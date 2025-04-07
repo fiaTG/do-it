@@ -28,22 +28,9 @@
 
                     <label for="password">Passwort</label>
                     <input id="password" name="password" type="password" required>
-
-               
-                    <!-- Login-Button mit Animation -->
-                <a class="box__link button-animation" href="#" onclick="submitForm(event, 'loginForm')"
-                    onmouseover="toggleIcon(true)" onmouseout="toggleIcon(false)">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <i id="icon" class="fa-solid fa-door-closed" style="font-size: 2rem; "></i>
-                </a>
                 </form>
 
-                <a href="register_public.php">
-                    <button>Registrieren</button></a>
-            </div>
+ 
             
             <!-- PHP-Code zur Anzeige einer Nachricht nach erfolgreicher Registrierung
              Überprüfung, ob eine Nachricht in der URL als GET-Parameter übergeben wurde -->
@@ -52,9 +39,26 @@
             <?php endif; ?>
         </div>
 
+        <!-- 🔹 Button-Container -->
+<div class="button-container">
+  
+  <!-- Login-Button -->
+  <a class="box__link button-animation" href="#" onclick="submitForm(event, 'loginForm')"
+     onmouseover="toggleIcon(true)" onmouseout="toggleIcon(false)">
+    <i id="icon" class="fa-solid fa-door-closed"></i>
+  </a>
+
+  <!-- Registrieren-Button -->
+  <a class="box__link button-animation" href="register_public.php"
+     onmouseover="toggleRegisterIcon(true)" onmouseout="toggleRegisterIcon(false)">
+    <i id="register-icon" class="fa-solid fa-user-plus"></i>
+  </a>
+
+</div>
+</div>
+
         <!-- Unterer Bildbereich -->
         <div class="bottom-image" aria-hidden="true"></div>
-    </div>
 
     <script src="js\main.js" defer></script>
 </body>
