@@ -85,7 +85,7 @@ if (!empty($row['famID'])) {
           <form method="POST">
               <input type="email" name="inviteEmail" placeholder="E-Mail-Adresse" required>
               <button class="invite-button" type="submit" name="sendInvite">Einladen</button>
-          </div></form>';
+          </div></form><hr>';
 } else {
     echo '<h3>Erstelle eine neue Familie</h3>
           <form method="POST">
@@ -155,20 +155,32 @@ if (isset($_POST['sendInvite'])) {
     }
 }
 ?>
+
+
+            <!-- Kalender Widget -->
+            <div class="calendar-widget">
+        <h3>Events</h3>
+        <iframe src="http://localhost/files/Do-IT/private/apps/calenderWidget.php" 
+                style="border: 0" width="100%" height="300" frameborder="0" scrolling="no"></iframe>
+    </div>
+
+    
+                <!-- ToDoList Widget -->
+                <div class="calendar-widget">
+        <h3>ToDo's</h3>
+        <iframe src="http://localhost/files/Do-IT/private/apps/toDoListWidget.php" 
+                style="border: 0" width="100%" height="300" frameborder="0" scrolling="yes"></iframe>
+    </div>
+
  <!-- ShoppingList Widget -->
  <div class="calendar-widget">
-        <h3>Einkaufsliste</h3>
+        <h3>Shopping List</h3>
         <iframe src="http://localhost/files/Do-IT/private/apps/shoppingListWidget.php" 
                 style="border: 0" width="100%" height="300" frameborder="0" scrolling="no"></iframe>
     </div>
 
 
-            <!-- Kalender Widget -->
-    <div class="calendar-widget">
-        <h3>Familienkalender</h3>
-        <iframe src="http://localhost/files/Do-IT/private/apps/calenderWidget.php" 
-                style="border: 0" width="100%" height="300" frameborder="0" scrolling="no"></iframe>
-    </div>
+
 
 
 
@@ -176,8 +188,8 @@ if (isset($_POST['sendInvite'])) {
 </div>
  </main>
 <!-- Modales Fenster für App-Auswahl -->
-<div id="appModal" class="modal">
-    <div class="modal-content">
+<div id="appModal" class="modalD">
+    <div class="modalD-content">
         <span class="close">&times;</span>
         <h3>Wähle deine Apps</h3>
         <br>

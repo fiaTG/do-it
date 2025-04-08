@@ -71,33 +71,43 @@ $latestBild = $stmtLatest->fetch(PDO::FETCH_ASSOC);
                 <?php echo !empty($row['famName']) ? htmlspecialchars($row['famName']) : 'Noch keine Familie'; ?></p>
         </div>
     </header>
-
-    <!-- Formular zum Hochladen eines Bildes -->
-    <div class="flex-container">
-        <!-- Upload-Bereich -->
+    <div class="uploadRow">
+    <div class="uploadContainer">
         <form action="upload_image.php" method="POST" enctype="multipart/form-data" class="uploadArea">
-            <label for="image">Bild auswählen:</label>
-            <input type="file" name="image" id="image" accept="image/jpeg, image/png, image/gif" required>
+        <label for="image" class="button-like" title="Datei auswählen">
+    <i class="fas fa-folder-open"></i> <span>Browse</span></i>
+</label>
+<input type="file" name="image" id="image" accept="image/jpeg, image/png, image/gif" required hidden>
 
-            <label for="titel">Titel des Bildes:</label>
+
+            <label for="titel">Titel:</label>
             <input type="text" name="titel" id="titel" placeholder="Titel des Bildes" required>
 
-            <button type="submit" name="submit">Bild hochladen</button>
+
+            <button class="button-like" type="submit" name="submit">
+    <i class="fas fa-plus"></i> <span>Upload</span>
+</button>
+
+
             <br>
         </form>
-
-        <!-- Fenster für das zuletzt hinzugefügte Bild -->
-        <div class="latestImageArea">
-            <?php if ($latestBild): ?>
-                <h3>Letztes hochgeladenes Bild:</h3>
-                <img src="data:image/jpeg;base64,<?= base64_encode($latestBild['bild']) ?>"
-                    alt="<?= htmlspecialchars($latestBild['titel']) ?>" style="max-width: 100%; border-radius: 8px;">
-                <p><?= htmlspecialchars($latestBild['titel']) ?></p>
-            <?php else: ?>
-                <p>Keine Bilder vorhanden.</p>
-            <?php endif; ?>
         </div>
+
+
+        <div class="latestImageWrapper">
+    <div class="latestLabel">
+        <h3>Latest Upload:</h3>
     </div>
+    <div class="latestImageBox">
+        <img src="data:image/jpeg;base64,<?= base64_encode($latestBild['bild']) ?>" 
+             alt="<?= htmlspecialchars($latestBild['titel']) ?>">
+        <p><?= htmlspecialchars($latestBild['titel']) ?></p>
+    </div>
+</div>
+
+
+</div>
+    
 
     <br>
 

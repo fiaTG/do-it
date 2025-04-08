@@ -72,10 +72,10 @@ if (!$row) {
     <div class="legend">
     <h3>Legende:</h3>
     <div class="legend-item">
-        <span class="legend-color" style="background-color: #4A90E2;"></span> Arbeit
-        <span class="legend-color" style="background-color: #2ECC71;"></span> Familie
-        <span class="legend-color" style="background-color: #9B59B6;"></span> Freizeit
-        <span class="legend-color" style="background-color: #95A5A6;"></span> Sonstiges
+        <span class="legend-color" style="background-color:rgba(64, 111, 143, 0.73) " ></span> Arbeit
+        <span class="legend-color" style="background-color:  #968d86 "></span> Familie
+        <span class="legend-color" style="background-color: #F39C12" ></span> Freizeit
+        <span class="legend-color" style="background-color:  #BDC3C7"></span> Sonstiges
         <span class="legend-icon">    <div class="car-container">
       <div class="car" id="car">
         <div class="window"></div>
@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function() {
         events: '/files/Do-IT/private/apps/events.php',
         selectable: true,
         editable: true,
-        
+        eventOverlap: false, // Verhindern, dass sich Events überlappen
         eventContent: function(arg) {
     let carIcon = (arg.event.extendedProps.carReserved === "1" || arg.event.extendedProps.carReserved === 1) 
         ? ' 🚗'
@@ -241,10 +241,10 @@ document.addEventListener('DOMContentLoaded', function() {
     let category = info.event.extendedProps.category;
 
     let colors = {
-    "Arbeit": "#4A90E2",  // Ein kräftiges, modernes Blau
-    "Familie": "#2ECC71",  // Ein angenehmes, lebendiges Grün
-    "Freizeit": "#9B59B6", // Ein edles Lila
-    "Sonstiges": "#95A5A6" // Ein dezentes Grau
+    "Arbeit": "rgba(64, 111, 143, 0.73)",  // Primärfarbe: Blau-Grün-Ton
+    "Familie": "#968d86", // Sekundärfarbe: Graubraun-Ton
+    "Freizeit": "#F39C12", // Ein lebendiges, sonniges Gelb für Freizeit
+    "Sonstiges": "#BDC3C7" // Ein dezentes, elegantes Silber-Grau für Sonstiges
 };
 
     let color = colors[category] || colors["Sonstiges"];

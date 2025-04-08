@@ -1,19 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Amatic+SC&family=Codystar&family=Fredericka+the+Great&family=Megrim&family=Syncopate&display=swap');
+
+:root {
+  /* Farben */
+  --primary-color: #406f8f;
+  --secondary-color: #968d86;
+  --light-bg-apps: #fdfbf2;
+  --body-bg: #bbb2ab;
+
+  --box-shadow: 0 0 3px var(--primary-color), 0 0 6px var(--primary-color), 0 0 10px var(--primary-color);
+
+  --triangle-gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+
+  /* Standard-Schriftarten */
+  --font-syncopate: 'Syncopate', sans-serif;
+  --font-amatic: 'Amatic SC', cursive;
+
+  /* Benutzer-Schriftarten */
+  --font-megrim: 'Megrim', cursive;
+  --font-fredericka: 'Fredericka the Great', cursive;
+  --font-codystar: 'Codystar', cursive;
+}
+
 body,
 html {
-    font-family: 'Montserrat', sans-serif;
     overflow: visible;
-
-    background-color: #e3eef5;
 }
 
 .calenderWrapper {
     max-width: 1200px;
     width: calc(100% - 260px);
-    /* Zieht die Sidebar-Breite (z. B. 260px) ab */
     margin-left: 260px;
-    /* Abstand zur Sidebar */
     padding-top: 80px;
-    /* Abstand zum Header */
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -22,107 +39,187 @@ html {
 /* Kalender richtig platzieren */
 #calendar {
     max-width: 1200px;
-    /* Begrenzt die maximale Breite */
     width: 100%;
     padding: 20px;
-    background-color: #f9f9f9;
+    background-color: var(--light-bg-apps);  /* Hintergrundfarbe angepasst */
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-
+    box-shadow: var(--box-shadow);  /* Schatten angepasst */
 }
+
 .legend {
-background: #f9f9f9;
-padding: 10px 15px;
-border-radius: 8px;
-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-font-family: 'Montserrat', sans-serif;
-display: flex;
-align-items: center;
-gap: 10px;
-max-width: 1200px;
-width: calc(100% - 260px);
-margin-left: 260px;
+    background: var(--light-bg-apps);  /* Hintergrundfarbe angepasst */
+    padding: 10px 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    font-family: 'Montserrat', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 1200px;
+    width: calc(100% - 260px);
+    margin-left: 260px;
 }
 
 .legend h3 {
-margin: 0;
-font-size: 1rem;
-color: #406f8f;
+    margin: 0;
+    font-size: 1rem;
+    color: var(--primary-color);  /* Textfarbe angepasst */
 }
 
 .legend-item {
-display: flex;
-align-items: center;
-gap: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 
 .legend-color {
-display: inline-block;
-width: 15px;
-height: 15px;
-border-radius: 3px;
-margin-right: 5px;
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 3px;
+    margin-right: 5px;
 }
 
 .legend-icon {
-
-margin-left: 350px;
+    margin-left: 350px;
 }
 
 .modal {
-display: none;
-position: fixed;
-z-index: 1000;
-left: 0;
-top: 0;
-width: 100%;
-height: 100%;
-background-color: rgba(0, 0, 0, 0.4);
-justify-content: center;
-align-items: center;
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    justify-content: center;
+    align-items: center;
 }
 
 .modal-content {
-background-color: #fff;
-padding: 20px;
-border-radius: 10px;
-text-align: center;
-box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-width: 300px;
-display: flex;
-flex-direction: column;
-gap: 10px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .modal-content label {
-font-weight: bold;
-margin-top: 5px;
+    font-weight: bold;
+    margin-top: 5px;
 }
 
 .modal-content input,
 .modal-content select {
-width: 100%;
-padding: 8px;
-margin-top: 5px;
-border: 1px solid #ccc;
-border-radius: 5px;
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
 
 .modal-content button {
-background-color: #406f8f;
-color: white;
-border: none;
-padding: 10px;
-cursor: pointer;
-border-radius: 5px;
-margin-top: 10px;
+    background-color: var(--primary-color);  /* Button-Hintergrund angepasst */
+    color:var(--light-bg-apps);
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
 }
 
 .modal-content button:hover {
-background-color: #2c4d63;
+    background-color: var(--secondary-color);  /* Hover-Hintergrundfarbe angepasst */
 }
 
 .modal-buttons {
-display: flex;
-justify-content: space-between;
+    display: flex;
+    justify-content: space-between;
+}
+
+
+/* Kalender-Ansichtsauswahl-Buttons (Monat, Woche, Tag) anpassen */
+.fc-header-toolbar {
+    background-color: var(--body-bg); /* Hintergrundfarbe des Headers */
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    color:var(--light-bg-apps); /* Textfarbe bleibt weiß */
+}
+
+.fc-button {
+    background-color: var(--secondary-color)!important; /* Hintergrundfarbe der Buttons */
+    color: white; /* Textfarbe */
+    border: none !important;
+  
+    cursor: pointer;
+    border-radius: 5px;
+    font-family: var(--font-syncopate); /* Schriftart */
+    font-weight: 600; /* Stärkeres Gewicht */
+    transition: background-color 0.3s ease, color 0.3s ease; /* sanfter Übergang */
+}
+
+.fc-button:hover {
+    background-color: var(--primary-color)!important; /* Hover-Effekt: Änderung der Hintergrundfarbe */
+    color:var(--secondary-color)!important; /* Textfarbe bleibt weiß */
+}
+
+.fc-button-active {
+    background-color: var(--primary-color); /* Aktiver Button */
+    color: white; /* Text bleibt weiß */
+    border: 2px solid var(--primary-color); /* Border für aktiven Button */
+}
+
+.fc-button:disabled {
+    background-color: #e0e0e0; /* Disabled-Buttons in grau */
+    color: #b0b0b0; /* Textfarbe bei Disabled-Buttons */
+    cursor: not-allowed; /* Zeigt den "nicht erlaubt"-Cursor an */
+}
+
+/* Icon Styling für die Kalender-Ansichtsauswahl-Buttons */
+.fc-button i {
+    margin-right: 5px; /* Abstand zwischen Icon und Text */
+    font-size: 16px; /* Größe des Icons */
+}
+
+
+
+/* Weitere Anpassungen für die Gestaltung der Events in mehreren Zeilen */
+.fc-daygrid-event .fc-event-title {
+    word-wrap: break-word;
+    max-width: 100%;
+    text-overflow: ellipsis; /* Fügt "..." hinzu, wenn der Text zu lang ist */
+}
+.fc-daygrid-event.fc-event {
+    padding: 5px 10px; /* Padding für die Events */
+    border-radius: 5px; /* Abgerundete Ecken */
+    margin-bottom: 5px; /* Abstand zwischen den Events */
+    font-family: var(--font-syncopate); /* Schriftart */
+    font-size: 11px; /* Schriftgröße */
+    color: var(--light-bg-apps); /* Textfarbe */
+}
+
+/* Verhindert das Überlaufen von Events und ermöglicht Zeilenumbrüche */
+.fc-daygrid-event {
+    display: block;               /* Block-Level-Element für Events */
+    word-wrap: break-word;        /* Ermöglicht das Umfließen von langen Texten */
+    white-space: normal;          /* Verhindert, dass der Text abgeschnitten wird */
+    overflow: hidden;             /* Verhindert das Überlaufen von Text */
+    max-width: 100%;              /* Stellt sicher, dass das Event den verfügbaren Raum nicht überschreitet */
+    height: auto;                 /* Eventhöhe automatisch anpassen */
+    margin-bottom: 3px;           /* Kleiner Abstand zwischen den Events */
+}
+
+/* Hier kannst du zusätzliche Anpassungen für das Event-Design vornehmen */
+.fc-daygrid-event .fc-event-title {
+    word-wrap: break-word;        /* Text innerhalb des Events umschließen */
+    white-space: normal;          /* Normaler Textfluss */
+    overflow: hidden;             /* Verhindert Überlaufen */
 }

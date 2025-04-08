@@ -103,68 +103,65 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <header class="dashboard-header">
 
 <div class="family-info">
-    <p>Shopping Liste Familie
+    <p>Shopping List Familie
         <?php echo !empty($row['famName']) ? htmlspecialchars($row['famName']) : 'Noch keine Familie'; ?></p>
 </div>
 </header>
-<h2 class="captionShoppingList">Einkaufsliste</h2>
 <div class="shopping-container">
-    <!-- Formular zum Hinzufügen eines Artikels -->
-    <form method="POST" action="shoppingList.php">
-        <label for="itemName">Artikelname:</label>
-        <input type="text" id="itemName" name="itemName" required>
-        
-        <label for="itemQuantity">Menge:</label>
-        <input type="number" id="itemQuantity" name="itemQuantity" value="1" required>
-        
-        <label for="itemStore">Shop (Aldi, Lidl, Rewe):</label>
-        <select id="itemStore" name="itemStore" required>
-            <option value="1">Aldi</option>
-            <option value="2">Lidl</option>
-            <option value="3">Rewe</option>
-        </select>
+    <form method="POST" action="shoppingList.php" class="shopping-form">
+        <div class="top-row">
+            <input type="text" id="itemName" name="itemName" placeholder="Artikelname" required>
+            <button type="submit">  <i class="fas fa-plus"></i> Add article</button>
+            <a href="generatePDF.php" class="pdf-button">📄 PDF</a>
+        </div>
 
-        <button type="submit">Artikel hinzufügen</button>
+        <div class="second-row">
+            <input type="number" id="itemQuantity" name="itemQuantity" value="1" required placeholder="Menge">
+            <select id="itemStore" name="itemStore" required>
+                <option value="1">Aldi</option>
+                <option value="2">Lidl</option>
+                <option value="3">Rewe</option>
+            </select>
+        </div>
     </form>
-    <form action="generatePDF.php" method="get">
-    <button type="submit">📄 Einkaufsliste als PDF herunterladen</button>
-</form>
-
 
 
     <?php if (isset($_GET['success'])): ?>
-    <div id="successMessage" style="
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: #d4edda;
-        color: #155724;
-        padding: 20px;
-        border-radius: 10px;
-        font-size: 24px;
-        font-weight: bold;
-        text-align: center;
-        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    ">
-        ✅ <?php echo htmlspecialchars($_GET['success']); ?>
+
+        <div id="successMessage">
+    <span style="font-size: 26px;">✔️</span><br>
+    <?php echo htmlspecialchars($_GET['success']); ?>
+
+    <div class="progress-container">
+        <div class="progress-bar"></div>
     </div>
+</div>
 
     <script>
-        // Warte 3 Sekunden und blendet die Erfolgsmeldung aus
-        setTimeout(function() {
-            var successMessage = document.getElementById('successMessage');
-            if (successMessage) {
-                successMessage.style.display = 'none';
-            }
-        }, 3000); // 3000 Millisekunden = 3 Sekunden
-    </script>
-    <?php endif; ?>
+setTimeout(function() {
+    const box = document.getElementById('successMessage');
+    if (box) {
+        box.style.opacity = '0';
+        setTimeout(() => box.remove(), 500);
+    }
+}, 1200);
+</script>
+<?php endif; ?>
 
-  
-    <br>
+    <div class="shopping-list-container">
+
     <ul id="shoppingList"></ul> <!-- Hier werden die Artikel dynamisch angezeigt -->
     </div>
+
+    <div id="confirmBox" style="display: none;">
+    <div class="confirm-content">
+        <p>Möchtest du diesen Artikel wirklich löschen?</p>
+        <button id="confirmYes">Ja</button>
+        <button id="confirmNo">Nein</button>
+    </div>
+</div>
+
+    
     <script>
 // Lädt die Artikel per Fetch und fügt sie der Seite hinzu
 function loadItems() {
@@ -186,8 +183,8 @@ function loadItems() {
                     
                     // Button-HTML mit "disabled" falls nicht der Ersteller
                     const deleteButton = isOwner 
-                        ? `<button onclick="deleteItem(${item.shopItemsID}, '${item.itemName.replace(/'/g, "\\'")}', ${item.shopID})">Löschen</button>` 
-                        : `<button disabled style="opacity: 0.5; cursor: not-allowed;">Löschen</button>`;
+                        ? `<button class="delete-btn" title="Löschen" onclick="deleteItem(${item.shopItemsID}, '${item.itemName.replace(/'/g, "\\'")}', ${item.shopID})">❌</button>` 
+                        : `<button class="delete-btn" title="Löschen" disabled style="opacity: 0.5; cursor: not-allowed;">❌</button>`;
 
                     li.innerHTML = `${item.itemName} (${item.menge}) bei ${item.shopname} ${deleteButton}`;
                     shoppingList.appendChild(li);
@@ -204,16 +201,20 @@ function loadItems() {
 // Lädt die Artikel, wenn die Seite geladen wird
 window.onload = loadItems;
 
-        // Löscht den Artikel
 function deleteItem(shopItemsID, itemName, shopID) {
-    if (confirm('Möchten Sie diesen Artikel wirklich löschen?')) {
+    const confirmBox = document.getElementById('confirmBox');
+    confirmBox.style.display = 'flex';
+
+    document.getElementById('confirmYes').onclick = () => {
+        confirmBox.style.display = 'none';
+
         fetch('deleteItems.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                userID: <?= $_SESSION['userID'] ?>,  // Die Nutzer-ID aus der PHP-Session
+                userID: <?= $_SESSION['userID'] ?>,
                 itemName: itemName,
                 shopID: shopID,
                 shopItemsID: shopItemsID
@@ -222,18 +223,22 @@ function deleteItem(shopItemsID, itemName, shopID) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert(data.success);
-                loadItems(); // Lädt die Liste nach dem Löschen neu
+                loadItems();
             } else {
                 alert(data.error);
             }
         })
         .catch(error => {
             console.error('Fehler:', error);
-            alert('Es gab einen Fehler beim Löschen des Artikels.');
+            alert('Es gab einen Fehler beim Löschen.');
         });
-    }
+    };
+
+    document.getElementById('confirmNo').onclick = () => {
+        confirmBox.style.display = 'none';
+    };
 }
+
     </script>
 </body>
 </html>

@@ -111,8 +111,9 @@ function loadItems() {
                     
                     // Button-HTML mit "disabled" falls nicht der Ersteller
                     const deleteButton = isOwner 
-                        ? `<button onclick="deleteItem(${item.shopItemsID}, '${item.itemName.replace(/'/g, "\\'")}', ${item.shopID})">Löschen</button>` 
-                        : `<button disabled style="opacity: 0.5; cursor: not-allowed;">Löschen</button>`;
+                    ? `<button class="delete-btn" title="Löschen" onclick="deleteItem(${item.shopItemsID}, '${item.itemName.replace(/'/g, "\\'")}', ${item.shopID})">❌</button>` 
+                        : `<button class="delete-btn" title="Löschen" disabled style="opacity: 0.5; cursor: not-allowed;">❌</button>`;
+
 
                     li.innerHTML = `${item.itemName} (${item.menge}) bei ${item.shopname} ${deleteButton}`;
                     shoppingList.appendChild(li);

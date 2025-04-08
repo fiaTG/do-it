@@ -69,22 +69,58 @@ try {
         $stmt->bindParam(':userID', $userID, PDO::PARAM_INT);
         $stmt->execute();
        
-        echo "<div style='
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: #d4edda;
-        color: #155724;
-        padding: 20px;
-        border-radius: 10px;
-        font-size: 24px;
-        font-weight: bold;
-        text-align: center;
-        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    '>
-    ✅ Bild erfolgreich hochgeladen! <br> Du wirst weitergeleitet...
-</div>";
+        echo "<style>
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translate(-50%, -60%); }
+          to { opacity: 1; transform: translate(-50%, -50%); }
+        }
+        
+        @keyframes loadBar {
+          from { width: 0%; }
+          to { width: 100%; }
+        }
+        
+        .fadeInBox {
+          animation: fadeIn 0.8s ease-in-out;
+        }
+        .progress-container {
+          margin-top: 15px;
+          height: 6px;
+          width: 100%;
+          background: rgba(255, 255, 255, 0.3);
+          border-radius: 5px;
+          overflow: hidden;
+        }
+        .progress-bar {
+          height: 100%;
+          background: #fdfbf2;
+          animation: loadBar 2s ease-in-out forwards;
+        }
+        </style>";
+        
+        echo "<div class='fadeInBox' style='
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: linear-gradient(135deg, #406f8f, #fdfbf2);
+          color: #fdfbf2;
+          padding: 20px 30px;
+          border-radius: 12px;
+          font-size: 22px;
+          font-weight: bold;
+          text-align: center;
+          box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+          min-width: 280px;
+        '>
+          <span style='font-size: 30px;'>✔️</span><br>
+          Bild erfolgreich hochgeladen!
+          
+          <div class='progress-container'>
+            <div class='progress-bar'></div>
+          </div>
+        </div>";
+        
 
 echo "<script>
     setTimeout(() => { window.location.href = 'gallery.php'; }, 2000);
@@ -100,3 +136,11 @@ exit();
     die(json_encode(["status" => "error", "message" => "Datenbankfehler: " . $e->getMessage()]));
 }
 ?>
+
+
+
+
+--primary-color: #406f8f;
+  --secondary-color: #968d86;
+  --light-bg-apps: #fdfbf2;
+  --body-bg: #bbb2ab;

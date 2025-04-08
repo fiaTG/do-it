@@ -1,16 +1,34 @@
 @charset "UTF-8";
-/* Allgemeine Styles */
+@import url("https://fonts.googleapis.com/css2?family=Amatic+SC&family=Codystar&family=Fredericka+the+Great&family=Megrim&family=Syncopate&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Amatic+SC&family=Codystar&family=Fredericka+the+Great&family=Megrim&family=Syncopate&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Amatic+SC&family=Codystar&family=Fredericka+the+Great&family=Megrim&family=Syncopate&display=swap");
+:root {
+  /* Farben */
+  --primary-color: #406f8f;
+  --secondary-color: #968d86;
+  --light-bg-apps: #fdfbf2;
+  --body-bg: #bbb2ab;
+  --box-shadow: 0 0 3px var(--primary-color), 0 0 6px var(--primary-color), 0 0 10px var(--primary-color);
+  --triangle-gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  /* Standard-Schriftarten */
+  --font-syncopate: 'Syncopate', sans-serif;
+  --font-amatic: 'Amatic SC', cursive;
+  /* Benutzer-Schriftarten */
+  --font-megrim: 'Megrim', cursive;
+  --font-fredericka: 'Fredericka the Great', cursive;
+  --font-codystar: 'Codystar', cursive; }
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-size: 100%;
-  font-family: Arial, sans-serif; }
+  font-size: 100%; }
 
 html, body {
   display: flex;
   min-height: 100vh;
-  background-color: #f4f4f4;
+  background-color: var(--body-bg);
+  font-family: var(--font-syncopate), sans-serif;
   flex-direction: column;
   overflow: hidden;
   height: 100%; }
@@ -18,12 +36,13 @@ html, body {
 /* Sidebar */
 .sidebar {
   width: fit-content;
-  background-color: #406f8f;
-  color: black;
+  background: var(--triangle-gradient);
+  color: var(--light-bg-apps);
   padding-top: 20px;
   position: fixed;
   height: 100%;
-  transition: width 0.3s ease-in-out;
+  transition: width 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  /* Transition für width und opacity */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -32,7 +51,7 @@ html, body {
   opacity: 0.8; }
 
 .sidebar:hover {
-  width: 250px;
+  width: 235px;
   opacity: 1; }
 
 .sidebar ul {
@@ -58,29 +77,31 @@ html, body {
   margin-top: auto; }
 
 .sidebar ul li a {
-  color: black;
+  color: var(--light-bg-apps);
   text-decoration: none;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 15px;
-  transition: background 0.3s; }
+  transition: background-color 0.3s, color 0.3s;
+  /* Hintergrund und Textfarbe animieren */ }
 
 .sidebar ul li a:hover {
-  background-color: #34495e;
-  color: white; }
+  background-color: var(--secondary-color);
+  color: var(--light-bg-apps); }
 
 /* Icons */
 .sidebar ul li a i {
   width: 30px;
   text-align: center;
-  font-size: 1.5rem; }
+  font-size: 1.2rem;
+  margin-bottom: 10px; }
 
 .sidebar ul li a span {
   opacity: 0;
   transition: opacity 0.3s;
-  font-size: 1rem; }
+  font-size: 0.8rem; }
 
 .sidebar:hover ul li a span {
   opacity: 1; }
@@ -93,8 +114,10 @@ html, body {
   white-space: nowrap; }
 
 .family-info {
-  background: linear-gradient(rgba(0, 0, 0, 0.3), #406f8f), url(./../public/img/alltogether.JPG) center/cover no-repeat;
+  background: linear-gradient(rgba(0, 0, 0, 0.3), #406f8f), url(./../public/img/alltogether.JPG) center 10%/cover no-repeat;
+  /* Bild nach unten verschieben */
   min-height: 40vh;
+  height: auto;
   color: white;
   text-align: center;
   text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
@@ -105,6 +128,7 @@ html, body {
 
 .family-info p {
   font-size: 2rem;
+  font-family: var(--font-fredericka);
   text-align: center;
   position: absolute;
   top: 15%;
@@ -128,13 +152,14 @@ html, body {
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 20px;
   padding: 20px;
-  flex: 2;
+  flex: 1;
   width: 50%;
   align-items: start;
   align-content: start;
   background-color: #fff;
   margin-left: 10%;
-  border-radius: 5px; }
+  border-radius: 5px;
+  background-color: var(--light-bg-apps); }
 
 .apps-container div {
   aspect-ratio: 1 / 1;
@@ -144,15 +169,15 @@ html, body {
 
 .app {
   width: 100%;
-  height: 20vh;
+  height: 19vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #3498db;
+  background-color: var(--primary-color);
   color: white;
   border: none;
   border-radius: 10px;
-  font-size: 1rem;
+  font-size: 0.8rem;
   text-align: center;
   text-decoration: none;
   transition: background 0.3s ease, transform 0.2s ease;
@@ -160,11 +185,11 @@ html, body {
   cursor: pointer; }
 
 .app i {
-  font-size: 2rem;
+  font-size: 1.5rem;
   /* Größe des Symbols */ }
 
 .app:hover {
-  background-color: #2980b9;
+  background-color: var(--secondary-color);
   transform: scale(1.05); }
 
 /* Rechte Dashboard Sektion */
@@ -173,10 +198,10 @@ html, body {
   flex-direction: column;
   align-items: center;
   flex: 1;
-  min-width: 300px;
-  max-width: 400px;
+  min-width: 500px;
+  max-width: 800px;
   padding: 20px;
-  background: #fff;
+  background: var(--light-bg-apps);
   border-radius: 10px;
   box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
   height: 100%;
@@ -184,40 +209,16 @@ html, body {
   overflow-y: scroll;
   /* Scrollen im rechten Bereich erlauben */ }
 
-/* Aktivitäten Bereich */
-.activity-board {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 280px;
-  margin-bottom: 20px;
-  margin-top: 20px; }
-
-.activity-board h3 {
-  margin-bottom: 10px; }
-
-.activity-board ul {
-  list-style: none; }
-
-.activity-board li {
-  padding: 10px;
-  border-bottom: 1px solid #ddd; }
-
-.activity-board li:last-child {
-  border-bottom: none; }
-
 /* Kalender Widget */
 .calendar-widget {
-  width: 100%;
-  max-width: 280px;
-  background: white;
+  width: calc(100% - 40px);
+  /* 100% minus Padding von 20px auf jeder Seite */
+  background-color: var(--body-bg);
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
   text-align: center;
-  margin-top: 20px; }
+  margin-top: 10%; }
 
 .calendar-widget h3 {
   margin-bottom: 10px; }
@@ -226,81 +227,107 @@ html, body {
 .inviteButtonArea {
   text-align: center;
   margin-top: auto;
-  width: 100%; }
+  width: 100%;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 20px;
+  padding: 10px; }
 
 .invite-button {
   align-self: center;
   padding: 5px;
-  background-color: #3498db;
-  color: white;
+  background-color: var(--primary-color);
+  color: var(--light-bg-apps);
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background 0.3s; }
+  transition: background-color 0.3s ease, color 0.3s ease;
+  /* Hintergrund und Textfarbe */ }
 
 .invite-button:hover {
-  background-color: #2980b9; }
+  background-color: var(--secondary-color);
+  color: var(--light-bg-apps);
+  /* Stellen Sie sicher, dass die Textfarbe auch eine Transition hat */ }
 
 .invite-header {
   margin-bottom: 20px;
-  padding: 10px;
-  border-bottom: 1px solid #ddd; }
+  padding: 10px; }
 
-/* Breite der Scrollbar */
+/* WebKit (Chrome, Edge, Safari) */
 .dashboard-rightSection::-webkit-scrollbar {
-  width: 8px;
-  /* Dünnere Scrollbar */ }
+  width: 8px; }
 
-/* Hintergrund der Scrollbar */
 .dashboard-rightSection::-webkit-scrollbar-track {
-  background: #f4f4f4;
-  /* Heller Hintergrund */
+  background: var(--light-bg-apps);
   border-radius: 10px; }
 
-/* Der eigentliche Scrollbalken */
 .dashboard-rightSection::-webkit-scrollbar-thumb {
-  background: #3498db;
-  /* Blaue Scrollbar */
+  background: var(--primary-color);
   border-radius: 10px; }
 
-/* Hover-Effekt auf den Scrollbalken */
 .dashboard-rightSection::-webkit-scrollbar-thumb:hover {
-  background: #2980b9;
-  /* Dunkleres Blau beim Hover */ }
+  background: var(--secondary-color); }
 
+/* Firefox */
 .dashboard-rightSection {
   scrollbar-width: thin;
-  /* Dünnere Scrollbar */
-  scrollbar-color: #3498db #f4f4f4;
-  /* Farbe des Scrollbalkens und Track */ }
+  scrollbar-color: var(--primary-color) var(--light-bg-apps); }
+
+:root {
+  /* Farben */
+  --primary-color: #406f8f;
+  --secondary-color: #968d86;
+  --light-bg-apps: #fdfbf2;
+  --body-bg: #bbb2ab;
+  --box-shadow: 0 0 3px var(--primary-color), 0 0 6px var(--primary-color), 0 0 10px var(--primary-color);
+  --triangle-gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  /* Standard-Schriftarten */
+  --font-syncopate: 'Syncopate', sans-serif;
+  --font-amatic: 'Amatic SC', cursive;
+  /* Benutzer-Schriftarten */
+  --font-megrim: 'Megrim', cursive;
+  --font-fredericka: 'Fredericka the Great', cursive;
+  --font-codystar: 'Codystar', cursive; }
 
 /* Modales Fenster */
-.modal {
+.modalD {
   display: none;
   position: fixed;
   z-index: 1000;
-  left: 0;
   top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background: var(--triangle-gradient);
+  /* Farbverlauf */
+  opacity: 0.96;
+  /* Leicht transparent */
   justify-content: center;
   align-items: center; }
 
 /* Inhalt des Modals */
-.modal-content {
-  background-color: white;
+.modalD-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--light-bg-apps);
+  /* Kein Transparent-Effekt */
   padding: 20px;
   border-radius: 10px;
+  max-width: 90%;
+  max-height: 90vh;
   width: 50%;
-  max-width: 400px;
-  text-align: center; }
+  text-align: center;
+  z-index: 1001;
+  box-shadow: var(--box-shadow); }
 
 /* Schließen-Button */
 .close {
   float: right;
   font-size: 24px;
-  cursor: pointer; }
+  cursor: pointer;
+  color: var(--primary-color);
+  /* Primärfarbe für den Schließen-Button */ }
 
 /* App Buttons */
 .modal-apps {
@@ -311,7 +338,8 @@ html, body {
 
 .add-app {
   padding: 10px;
-  background-color: #3498db;
+  background-color: var(--primary-color);
+  /* Primärfarbe für den Hinzufügen-Button */
   color: white;
   border: none;
   border-radius: 5px;
@@ -319,13 +347,15 @@ html, body {
   font-size: 1rem; }
 
 .add-app:hover {
-  background-color: #2980b9; }
+  background-color: var(--secondary-color);
+  /* Sekundärfarbe für den Hover-Effekt */ }
 
 .remove-app {
   position: absolute;
   top: 5px;
   right: 5px;
-  background: red;
+  background: var(--primary-color);
+  /* Primärfarbe für den Entfernen-Button */
   color: white;
   border: none;
   border-radius: 50%;
@@ -520,20 +550,31 @@ html, body {
   background-color: rgba(150, 150, 150, 0.5);
   border-radius: 50%; }
 
+:root {
+  /* Farben */
+  --primary-color: #406f8f;
+  --secondary-color: #968d86;
+  --light-bg-apps: #fdfbf2;
+  --body-bg: #bbb2ab;
+  --box-shadow: 0 0 3px var(--primary-color), 0 0 6px var(--primary-color), 0 0 10px var(--primary-color);
+  --triangle-gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  /* Standard-Schriftarten */
+  --font-syncopate: 'Syncopate', sans-serif;
+  --font-amatic: 'Amatic SC', cursive;
+  /* Benutzer-Schriftarten */
+  --font-megrim: 'Megrim', cursive;
+  --font-fredericka: 'Fredericka the Great', cursive;
+  --font-codystar: 'Codystar', cursive; }
+
 body,
 html {
-  font-family: 'Montserrat', sans-serif;
-  overflow: visible;
-  background-color: #e3eef5; }
+  overflow: visible; }
 
 .calenderWrapper {
   max-width: 1200px;
   width: calc(100% - 260px);
-  /* Zieht die Sidebar-Breite (z. B. 260px) ab */
   margin-left: 260px;
-  /* Abstand zur Sidebar */
   padding-top: 80px;
-  /* Abstand zum Header */
   display: flex;
   justify-content: center;
   align-items: flex-start; }
@@ -541,15 +582,17 @@ html {
 /* Kalender richtig platzieren */
 #calendar {
   max-width: 1200px;
-  /* Begrenzt die maximale Breite */
   width: 100%;
   padding: 20px;
-  background-color: #f9f9f9;
+  background-color: var(--light-bg-apps);
+  /* Hintergrundfarbe angepasst */
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
+  box-shadow: var(--box-shadow);
+  /* Schatten angepasst */ }
 
 .legend {
-  background: #f9f9f9;
+  background: var(--light-bg-apps);
+  /* Hintergrundfarbe angepasst */
   padding: 10px 15px;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -564,7 +607,8 @@ html {
 .legend h3 {
   margin: 0;
   font-size: 1rem;
-  color: #406f8f; }
+  color: var(--primary-color);
+  /* Textfarbe angepasst */ }
 
 .legend-item {
   display: flex;
@@ -617,8 +661,9 @@ html {
   border-radius: 5px; }
 
 .modal-content button {
-  background-color: #406f8f;
-  color: white;
+  background-color: var(--primary-color);
+  /* Button-Hintergrund angepasst */
+  color: var(--light-bg-apps);
   border: none;
   padding: 10px;
   cursor: pointer;
@@ -626,8 +671,112 @@ html {
   margin-top: 10px; }
 
 .modal-content button:hover {
-  background-color: #2c4d63; }
+  background-color: var(--secondary-color);
+  /* Hover-Hintergrundfarbe angepasst */ }
 
 .modal-buttons {
   display: flex;
   justify-content: space-between; }
+
+/* Kalender-Ansichtsauswahl-Buttons (Monat, Woche, Tag) anpassen */
+.fc-header-toolbar {
+  background-color: var(--body-bg);
+  /* Hintergrundfarbe des Headers */
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  color: var(--light-bg-apps);
+  /* Textfarbe bleibt weiß */ }
+
+.fc-button {
+  background-color: var(--secondary-color) !important;
+  /* Hintergrundfarbe der Buttons */
+  color: white;
+  /* Textfarbe */
+  border: none !important;
+  cursor: pointer;
+  border-radius: 5px;
+  font-family: var(--font-syncopate);
+  /* Schriftart */
+  font-weight: 600;
+  /* Stärkeres Gewicht */
+  transition: background-color 0.3s ease, color 0.3s ease;
+  /* sanfter Übergang */ }
+
+.fc-button:hover {
+  background-color: var(--primary-color) !important;
+  /* Hover-Effekt: Änderung der Hintergrundfarbe */
+  color: var(--secondary-color) !important;
+  /* Textfarbe bleibt weiß */ }
+
+.fc-button-active {
+  background-color: var(--primary-color);
+  /* Aktiver Button */
+  color: white;
+  /* Text bleibt weiß */
+  border: 2px solid var(--primary-color);
+  /* Border für aktiven Button */ }
+
+.fc-button:disabled {
+  background-color: #e0e0e0;
+  /* Disabled-Buttons in grau */
+  color: #b0b0b0;
+  /* Textfarbe bei Disabled-Buttons */
+  cursor: not-allowed;
+  /* Zeigt den "nicht erlaubt"-Cursor an */ }
+
+/* Icon Styling für die Kalender-Ansichtsauswahl-Buttons */
+.fc-button i {
+  margin-right: 5px;
+  /* Abstand zwischen Icon und Text */
+  font-size: 16px;
+  /* Größe des Icons */ }
+
+/* Weitere Anpassungen für die Gestaltung der Events in mehreren Zeilen */
+.fc-daygrid-event .fc-event-title {
+  word-wrap: break-word;
+  max-width: 100%;
+  text-overflow: ellipsis;
+  /* Fügt "..." hinzu, wenn der Text zu lang ist */ }
+
+.fc-daygrid-event.fc-event {
+  padding: 5px 10px;
+  /* Padding für die Events */
+  border-radius: 5px;
+  /* Abgerundete Ecken */
+  margin-bottom: 5px;
+  /* Abstand zwischen den Events */
+  font-family: var(--font-syncopate);
+  /* Schriftart */
+  font-size: 11px;
+  /* Schriftgröße */
+  color: var(--light-bg-apps);
+  /* Textfarbe */ }
+
+/* Verhindert das Überlaufen von Events und ermöglicht Zeilenumbrüche */
+.fc-daygrid-event {
+  display: block;
+  /* Block-Level-Element für Events */
+  word-wrap: break-word;
+  /* Ermöglicht das Umfließen von langen Texten */
+  white-space: normal;
+  /* Verhindert, dass der Text abgeschnitten wird */
+  overflow: hidden;
+  /* Verhindert das Überlaufen von Text */
+  max-width: 100%;
+  /* Stellt sicher, dass das Event den verfügbaren Raum nicht überschreitet */
+  height: auto;
+  /* Eventhöhe automatisch anpassen */
+  margin-bottom: 3px;
+  /* Kleiner Abstand zwischen den Events */ }
+
+/* Hier kannst du zusätzliche Anpassungen für das Event-Design vornehmen */
+.fc-daygrid-event .fc-event-title {
+  word-wrap: break-word;
+  /* Text innerhalb des Events umschließen */
+  white-space: normal;
+  /* Normaler Textfluss */
+  overflow: hidden;
+  /* Verhindert Überlaufen */ }

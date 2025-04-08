@@ -66,13 +66,14 @@ function getAssignedUserName($pdo, $assignedID) {
     <nav class="sidebar">
         <h2>Hey, <?php echo htmlspecialchars($userData["vorname"]); ?>!</h2>
         <ul class="sidebar-menu">
-            <li><a href="/files/Do-IT/public/dashboard.php"><i class="fas fa-home"></i> Startseite</a></li>
-            <li><a href="/files/Do-IT/private/dashboard/profile.php"><i class="fas fa-user"></i> <span>Profil</span></a></li>
-            <li><a href="#"><i class="fas fa-users"></i> Familienmitglieder</a></li>
+            <li><a href="/files/Do-IT/public/dashboard.php"><i class="fas fa-home"></i> <span>Startseite</span></a></li>
+            <li><a href="/files/Do-IT/private/dashboard/profile.php?famID=<?= $row['famID'] ?>&userID=<?= $_SESSION['userID'] ?>"><i class="fas fa-user"></i> <span>Profil</span></a></li>
+            <li><a href="#"><i class="fas fa-users"></i> <span>Familienmitglieder</span></a></li>
         </ul>
         <ul class="sidebar-bottom">
-            <li><a href="#"><i class="fas fa-cog"></i> Einstellungen</a></li>
-            <li><a href="/files/Do-IT/private/auth/logout-handler.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            <li><a href="#"><i class="fas fa-cog"></i> <span>Einstellungen</span></a></li>
+            <li><a href="/files/Do-IT/private/auth/logout-handler.php"><i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span></a></li>
         </ul>
     </nav>
 
@@ -83,13 +84,12 @@ function getAssignedUserName($pdo, $assignedID) {
         </div>
     </header>
 
-<!-- Container für die ToDo-Liste und das Formular nebeneinander -->
+<!-- Container für die ToDo-Liste und das Formular -->
 <section class="todo-list-wrapper">
-
     <!-- Neues ToDo hinzufügen -->
     <form action="add_todo.php" method="POST" class="add-todo-form">
         <input type="text" name="task" placeholder="Neue Aufgabe" required>
-        <button type="submit">Hinzufügen</button>
+        <button type="submit">Add ToDo</button>
     </form>
     
     <!-- ToDo Liste -->
@@ -98,18 +98,17 @@ function getAssignedUserName($pdo, $assignedID) {
         <ul class="todo-list">
             <?php foreach ($todos as $todo): ?>
                 <li class="todo-item">
-                    <input type="checkbox" class="todo-checkbox" <?php echo $todo['ischecked'] ? 'checked' : ''; ?> onclick="toggleTask(<?php echo $todo['toDoID']; ?>)">
-                    <span class="todo-text"><?php echo htmlspecialchars($todo['toDoName']); ?></span>
-                    <small class="todo-small">Erstellt von: <?php echo htmlspecialchars($todo['creator']); ?></small>
-                    <?php if ($todo['assignedID']): ?>
-                    <?php endif; ?>
-                    <a href="delete_todo.php?todo_id=<?php echo $todo['toDoID']; ?>" class="todo-delete-link">Löschen</a>
-                </li>
+    <input type="checkbox" class="todo-checkbox" <?php echo $todo['ischecked'] ? 'checked' : ''; ?> onclick="toggleTask(<?php echo $todo['toDoID']; ?>)">
+    <span class="todo-text"><?php echo htmlspecialchars($todo['toDoName']); ?></span>
+    <small class="todo-small">Added from: <?php echo htmlspecialchars($todo['creator']); ?></small>
+    <?php if ($todo['assignedID']): ?>
+        <?php endif; ?>
+    <a href="delete_todo.php?todo_id=<?php echo $todo['toDoID']; ?>" class="todo-delete-link">×</a>
+</li>
+
             <?php endforeach; ?>
         </ul>
     </section>
-
-
 </section>
 
 

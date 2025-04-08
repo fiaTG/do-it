@@ -1,11 +1,37 @@
-      /* Galerie Layout */
+@import url('https://fonts.googleapis.com/css2?family=Amatic+SC&family=Codystar&family=Fredericka+the+Great&family=Megrim&family=Syncopate&display=swap');
+
+:root {
+  /* Farben */
+  --primary-color: #406f8f;
+  --secondary-color: #968d86;
+  --light-bg-apps: #fdfbf2;
+  --body-bg: #bbb2ab;
+
+  --box-shadow: 0 0 3px var(--primary-color), 0 0 6px var(--primary-color), 0 0 10px var(--primary-color);
+
+  --triangle-gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+
+  /* Standard-Schriftarten */
+  --font-syncopate: 'Syncopate', sans-serif;
+  --font-amatic: 'Amatic SC', cursive;
+
+  /* Benutzer-Schriftarten */
+  --font-megrim: 'Megrim', cursive;
+  --font-fredericka: 'Fredericka the Great', cursive;
+  --font-codystar: 'Codystar', cursive;
+}
+     
+     
+     /* Galerie Layout */
+     
+     
       body,
       html {
           overflow: visible ;
           overflow-x: hidden ;
           max-width: 100%;
           scrollbar-width: thin;
-    scrollbar-color: #3498db #f4f4f4;
+    scrollbar-color: var(--primary-color) var(--light-bg-apps);
       }
 
 
@@ -22,6 +48,7 @@
           justify-content: center;
           align-items: center;
           margin-left: 250px;
+          margin-bottom: 50px;
           /* Abstand zur Sidebar erhöhen */
 
       }
@@ -55,24 +82,23 @@
 
       /* Modal Styles */
       .modalG {
-          display: none;
-          /* Standardmäßig versteckt */
-          position: fixed;
-          z-index: 1000;
-          left: 50%;
-          top: 50%;
-          width: 100%;
-          height: 100%;
-          background-color: #0e3550de;
-          transform: translate(-50%, -50%);
-          /* Exakte Zentrierung */
-      }
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--triangle-gradient);
+        opacity: 0.96; /* Optional: leicht transparent */
+    }
 
       .modal-contentG {
           position: absolute;
           left: 50%;
           top: 50%;
-          background-color: #fff;
+          background-color: var(--light-bg-apps);
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
           padding: 20px;
           border-radius: 8px;
           max-width: 90%;
@@ -91,7 +117,7 @@
       }
 
       .close {
-          color: white;
+          color:var(--light-bg-apps);
           position: absolute;
           top: 10px;
           right: 25px;
@@ -105,94 +131,102 @@
           color: #999;
           text-decoration: none;
       }
-
-      /* Upload-Bereich */
-
-
-      .uploadArea label {
-          font-size: 1.2rem;
-          font-weight: bold;
+      .close:focus {
+          outline: none;
       }
 
-      .uploadArea input,
-      .uploadArea button {
-          width: 100%;
-          padding: 10px;
-          margin: 10px 0;
-          border-radius: 5px;
-          border: 1px solid #ccc;
+      .uploadArea input[type="file"] {
+        flex: 1;
+        min-width: 200px;
+      }
+      
+      .button-like {
+        background: var(--primary-color);
+        color:var(--light-bg-apps);
+        font-family: var(--font-syncopate);
+        border: none;
+        padding: 10px 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+        transition: background 0.3s;
+    }
+    
+    .button-like:hover {
+        background: var(--secondary-color);
+    }
+    
+
+/* Letztes Bild bleibt groß */
+.latestImageArea {
+  flex: 1;
+  max-width: 800px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.latestImageArea img {
+  max-width: 100%;
+  max-height: 400px;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: block;
+  margin: 0 auto;
+}
+    
+    
+
+    .latestImageArea p {
+        font-size: 1rem;
+        margin-top: 10px;
+        color: #333;
       }
 
-      .uploadArea button {
-          background: #2980b9;
-          color: white;
-          font-size: 1rem;
-          cursor: pointer;
-          transition: background 0.3s;
+      .uploadContainer {
+        display: flex;
+        justify-content: center;
+        margin-top: 40px;
       }
 
-      .uploadArea button:hover {
-          background: rgb(52, 158, 230);
-      }
+      
 
-
-      .latestImageArea img {
-          width: 100%;
-          max-width: 300px;
-          height: auto;
-          border-radius: 8px;
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      }
-
-      .latestImageArea p {
-          font-size: 1rem;
-          text-align: center;
-      }
-
-      .flex-container {
+      .uploadRow {
           display: flex;
-          gap: 100px;
-          /* Abstand zwischen den beiden Bereichen */
           justify-content: flex-start;
-          /* Beide Bereiche nebeneinander ausrichten */
-          align-items: stretch;
-          /* Beide Bereiche gleichmäßig ausrichten */
-          margin: 20px auto;
-          /* Zentrierung des Containers */
-          max-width: 800px;
-          /* Begrenzte Gesamtbreite */
+          align-items: flex-start;
+          gap: 40px;
+          margin-left: 260px; /* Abstand zur Sidebar */
+          margin-right: 40px;
+          flex-wrap: wrap;
       }
 
-      .uploadArea,
-      .latestImageArea {
-          background: #fff;
-          /* Einheitlicher Hintergrund */
-          padding: 20px;
-          /* Gleicher Innenabstand */
-          border-radius: 10px;
-          /* Abgerundete Ecken */
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-          /* Einheitliche Schatten */
-          width: 50%;
-          /* Beide Bereiche nehmen gleiche Breite ein */
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          /* Inhalt vertikal zentrieren */
-          box-sizing: border-box;
-          /* Sicherstellen, dass Padding berücksichtigt wird */
-          height: auto;
-          /* Höhe gleich für beide */
-      }
+/* Upload-Bereich kompakter */
+.uploadArea {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  background: var(--light-bg-apps);
+  border-radius: 10px;
+  box-shadow: var(--box-shadow);
+  width: 280px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
 
     
 
       /* Caption text */
       .caption-container {
           text-align: center;
-          background-color: #2980b9;
+          background-color: var(--primary-color);
           padding: 2px 16px;
-          color: white;
+          color: var(--light-bg-apps);
       }
 
 
@@ -212,3 +246,40 @@
       .hover-shadow:hover {
           box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
       }
+
+
+      .latestImageWrapper {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 30px;
+        margin: 30px auto;
+        max-width: 1200px;
+        box-sizing: border-box;
+    }
+    
+    .latestLabel h3 {
+        font-size: 1.2rem;
+        color: var(--primary-color);
+        margin: 0;
+        white-space: nowrap;
+    }
+    
+    .latestImageBox {
+        text-align: center;
+    }
+    
+    .latestImageBox img {
+        max-width: 100%;
+        height: auto;
+        max-height: 400px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .latestImageBox p {
+        margin-top: 10px;
+        font-size: 1rem;
+        color: var(--primary-color);
+    }
+    

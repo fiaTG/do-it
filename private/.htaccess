@@ -35,7 +35,7 @@
 </FilesMatch>
 
 
-<FilesMatch "toDoList.php$|add_todo.php$|delete_todo.php$|toggle_task.php$">
+<FilesMatch "toDoList.php$|add_todo.php$|delete_todo.php$|toggle_task.php$|toDoListWidget.php$">
     Require all granted
 </FilesMatch>
 
