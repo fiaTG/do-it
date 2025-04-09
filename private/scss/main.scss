@@ -35,7 +35,6 @@ body {
   display: flex;
   font-family: var(--font-syncopate), sans-serif;
   background: var(--triangle-gradient);
-  min-height: 100vh;
 }
 
 .container {
@@ -97,8 +96,8 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, 10%);
-  width: 150px;
-  height: 150px;
+  width: 120px;
+  height: 120px;
   background-image: url(./../public/img/logoMini.png);
   background-size: contain;
   background-repeat: no-repeat;
@@ -178,6 +177,7 @@ body {
   z-index: 1;
   text-align: center;
   padding: 0 20px;
+  margin-top: 25%;
 }
 
 /* Formulareinstellungen */
@@ -197,7 +197,7 @@ body {
 
 /* Eingabefelder */
 .login-area input {
-  width: 25%; /* Breite der Eingabefelder an den Container anpassen */
+  width: 40%; /* Breite der Eingabefelder an den Container anpassen */
   margin-bottom: 15px; /* Abstand zwischen den Eingabefeldern */
   padding: 8px;
   border: none;
@@ -286,7 +286,7 @@ body {
 
 /* Icon Hover Effect */
 .box__link i {
-  font-size: 2rem;
+  font-size: 1.8rem;
   color: var(--light-bg-apps);
   display: flex;
   align-items: center;
@@ -306,4 +306,75 @@ body {
 
 a {
   text-decoration: none; /* Entfernt die Unterstreichung */
+}
+
+/* 🔁 Responsive Breakpoints (Mobile First) */
+
+/* min-width: 480px – kleine Tablets */
+@media (min-width: 480px) {
+  .login-area {
+    margin-top: 18%;
+  }
+  .login-area label {
+    font-size: 0.9rem;
+  }
+  .box__link i{
+    font-size: 2rem;
+  }
+}
+
+/* min-width: 768px – Tablets quer / Standard */
+@media (min-width: 768px) {
+  .login-area input {
+    width: 50%;
+  }
+  .logoMini {
+    width: 150px;
+    height: 150px;
+  }
+  .login-area {
+    margin-top: 10%;
+  }
+  .login-area label {
+    font-size: 1rem;
+  }
+  .box__link i{
+    font-size: 2.2rem;
+  }
+}
+
+/* min-width: 1024px – Laptops */
+@media (min-width: 1024px) {
+  .login-area input {
+    width: 40%;
+  }
+  .login-area {
+    margin-top: 7%;
+  }
+  .login-area label {
+    font-size: 1.1rem;
+  }
+  .box__link i{
+    font-size: 2.4rem;
+  }
+}
+
+/* min-width: 1280px – Große Desktops */
+@media (min-width: 1280px) {
+  .login-area {
+    margin-top: 1%;
+  }
+  .login-area label {
+    font-size: 1.2rem;
+}
+.box__link i{
+  font-size: 2.6rem;
+}
+.login-area input {
+  width: 40%;
+}
+  .logoMini {
+    width: 200px;
+    height: 200px;
+  }
 }
