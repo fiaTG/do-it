@@ -35,7 +35,7 @@
             <!-- PHP-Code zur Anzeige einer Nachricht nach erfolgreicher Registrierung
              Überprüfung, ob eine Nachricht in der URL als GET-Parameter übergeben wurde -->
             <?php if (isset($_GET['message']) && $_GET['message'] === 'registered'): ?>
-                <p style="color: green;">Erfolgreich registriert! Bitte logge dich ein.</p>
+                <p style="color: white;font-size:9px;">Erfolgreich registriert! Bitte logge dich ein.</p>
             <?php endif; ?>
         </div>
 

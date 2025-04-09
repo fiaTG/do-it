@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (triangle) {
         setTimeout(() => {
             triangle.style.opacity = "1";
-        }, 5000); // 6 Sekunden Verzögerung
+        }, 5500); // 6 Sekunden Verzögerung
     }
 
     if (buttonAnimation) {

@@ -93,20 +93,25 @@ body {
   position: absolute;
   width: 50%;
   height: var(--triangle-height);
-  clip-path: polygon(0 0, 100% 0, 100% 1%, 0% 100%);
   opacity: 0;
   transition: opacity 2s ease-in-out; }
 
 .left {
   left: 0;
-  top: 0;
-  background: url("./../public/img/Hochzeit.JPG") center/cover no-repeat; }
+  background: url("./../public/img/decke.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position-y: center;
+  background-position-x: center; }
 
 .right {
   right: 0;
-  top: 0;
   transform: scaleX(-1);
-  background: url("./../public/img/hochzeitBack.JPG") center/cover no-repeat; }
+  background: url("./../public/img/see.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position-y: center;
+  background-position-x: center; }
 
 /* 📷 Bottom Image */
 .bottom-image {
@@ -114,7 +119,10 @@ body {
   bottom: 0;
   width: 100%;
   height: calc(100% - var(--triangle-height));
-  background: url(./../public/img/hochzeitBack.JPG) center center/cover no-repeat;
+  background: url("./../public/img/alltogether2.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position-y: center;
   opacity: 0;
   transition: opacity 2s ease-in-out; }
 

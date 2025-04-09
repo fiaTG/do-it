@@ -27,6 +27,11 @@ if (!$row) {
     echo "<p style='color:red;'>Benutzer nicht gefunden oder keine Familieninformationen vorhanden.</p>";
 }
 
+// Alter berechnen
+$birthdate = new DateTime($row['birthdate']);
+$today = new DateTime();
+$age = $today->diff($birthdate)->y;
+
 // Wenn das Formular abgesendet wurde (Daten aktualisieren und Bild hochladen)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $facebook = $_POST['facebook'] ?? '';
@@ -85,82 +90,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Profil</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../../public/stylesdashb.css">
-    <style>
-        .profile-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            height: 100vh;
-            background-color: #f7f7f7;
-        }
-        .profile-header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-        .profile-pic {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin-right: 20px;
-        }
-        .profile-pic img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .profile-info {
-            text-align: center;
-            background-color: #fff;
-            padding: 20px;
-            width: 100%;
-            max-width: 500px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .profile-info p {
-            font-size: 16px;
-            margin: 10px 0;
-        }
-        .form-group {
-            margin: 10px 0;
-        }
-        .form-group label {
-            font-weight: bold;
-        }
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 8px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-        .form-group button {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 10px 20px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        .form-group button:hover {
-            background-color: #2980b9;
-        }
-        .social-icons {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-        }
-        .social-icons a {
-            font-size: 24px;
-            color: #3498db;
-            text-decoration: none;
-        }
-    </style>
 </head>
 <body>
     <!-- Sidebar Navigation -->
@@ -184,9 +113,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <p> Profil von <?php echo !empty($row['vorname']) ? htmlspecialchars($row['vorname']) : 'Noch keine Familie'; ?></p>
         </div>
     </header>
- <!-- Profilcontainer -->
- <div class="profile-container">
- <div class="profile-header">
+<!-- Profilcontainer -->
+<div class="profile-container">
+    <!-- Profil Header mit Profilbild -->
+    <div class="profile-header">
         <div class="profile-pic">
             <?php
             // Profilbild anzeigen
@@ -200,62 +130,84 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 
-        <div class="profile-info">
-            <h3>Persönliche Angaben</h3>
-            <p><strong>Name:</strong> <?php echo htmlspecialchars($row['vorname'] . ' ' . $row['nachname']); ?></p>
-            <p><strong>Email:</strong> <?php echo htmlspecialchars($row['email']); ?></p>
-
-            <!-- Social Media Links -->
-            <div class="social-icons">
-                <?php if (!empty($row['facebook'])): ?>
-                    <a href="<?php echo htmlspecialchars($row['facebook']); ?>" target="_blank" title="Facebook"><i class="fab fa-facebook"></i></a>
-                <?php endif; ?>
-                <?php if (!empty($row['instagram'])): ?>
-                    <a href="<?php echo htmlspecialchars($row['instagram']); ?>" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
-                <?php endif; ?>
-                <?php if (!empty($row['linkedin'])): ?>
-                    <a href="<?php echo htmlspecialchars($row['linkedin']); ?>" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
-                <?php endif; ?>
-            </div>
+    <!-- Persönliche Angaben -->
+    <div class="profile-info">
+        <h3>Persönliche Angaben</h3>
+        <p><strong>Name:</strong> <?php echo htmlspecialchars($row['vorname'] . ' ' . $row['nachname']); ?></p>
+        <p><strong>Email:</strong> <?php echo htmlspecialchars($row['email']); ?></p>
+        <p><strong>Geburtsdatum:</strong> <?php echo htmlspecialchars($row['birthdate']); ?></p>
+        <p><strong>Alter:</strong> <?php echo $age; ?> Jahre</p>
+        <p><strong>Geschlecht:</strong> <?php echo $row['gender'] === 'm' ? 'Männlich' : ($row['gender'] === 'w' ? 'Weiblich' : 'Andere'); ?></p>
+        
+        <!-- Social Media Links -->
+        <div class="social-icons">
+            <?php if (!empty($row['facebook'])): ?>
+                <a href="<?php echo htmlspecialchars($row['facebook']); ?>" target="_blank" title="Facebook"><i class="fab fa-facebook"></i></a>
+            <?php endif; ?>
+            <?php if (!empty($row['instagram'])): ?>
+                <a href="<?php echo htmlspecialchars($row['instagram']); ?>" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+            <?php endif; ?>
+            <?php if (!empty($row['linkedin'])): ?>
+                <a href="<?php echo htmlspecialchars($row['linkedin']); ?>" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            <?php endif; ?>
         </div>
+    </div>
 
+    <!-- Formular zur Bearbeitung der Angaben -->
+    <div class="form-container">
         <form action="profile.php?userID=<?= $userID ?>" method="post" enctype="multipart/form-data">
-    <div class="form-group">
-        <label for="facebook">Facebook:</label>
-        <input type="url" name="facebook" id="facebook" value="<?= htmlspecialchars($row['facebook'] ?? '') ?>" placeholder="https://www.facebook.com/username">
+            <!-- Facebook Input -->
+            <div class="form-group">
+                <label for="facebook">Facebook:</label>
+                <input type="url" name="facebook" id="facebook" value="<?= htmlspecialchars($row['facebook'] ?? '') ?>" placeholder="https://www.facebook.com/username">
+            </div>
+            
+            <!-- Instagram Input -->
+            <div class="form-group">
+                <label for="instagram">Instagram:</label>
+                <input type="url" name="instagram" id="instagram" value="<?= htmlspecialchars($row['instagram'] ?? '') ?>" placeholder="https://www.instagram.com/username">
+            </div>
+            
+            <!-- LinkedIn Input -->
+            <div class="form-group">
+                <label for="linkedin">LinkedIn:</label>
+                <input type="url" name="linkedin" id="linkedin" value="<?= htmlspecialchars($row['linkedin'] ?? '') ?>" placeholder="https://www.linkedin.com/in/username">
+            </div>
+
+            <!-- Geburtsdatum -->
+            <div class="form-group" id="birthdateGroup">
+                <label for="birthdate">Geburtsdatum:</label>
+                <input type="date" name="birthdate" id="birthdate" value="<?= htmlspecialchars($row['birthdate'] ?? '') ?>" onchange="toggleInputFields()">
+            </div>
+
+            <!-- Geschlecht -->
+            <div class="form-group" id="genderGroup">
+                <label for="gender">Geschlecht:</label>
+                <select name="gender" id="gender" onchange="toggleInputFields()">
+                    <option value="m" <?= ($row['gender'] == 'm') ? 'selected' : ''; ?>>Männlich</option>
+                    <option value="w" <?= ($row['gender'] == 'w') ? 'selected' : ''; ?>>Weiblich</option>
+                    <option value="other" <?= ($row['gender'] == 'other') ? 'selected' : ''; ?>>Andere</option>
+                </select>
+            </div>
+
+            <!-- Profilbild hochladen -->
+            <div class="form-group">
+                <label for="profileImageUpload">Profilbild hochladen:</label>
+                <input type="file" name="image" id="profileImageUpload" accept="image/*" onchange="previewImage(event)">
+            </div>
+
+            <!-- Speichern Button -->
+            <div class="form-group">
+                <button type="submit">Speichern</button>
+            </div>
+        </form>
     </div>
-    <div class="form-group">
-        <label for="instagram">Instagram:</label>
-        <input type="url" name="instagram" id="instagram" value="<?= htmlspecialchars($row['instagram'] ?? '') ?>" placeholder="https://www.instagram.com/username">
-    </div>
-    <div class="form-group">
-        <label for="linkedin">LinkedIn:</label>
-        <input type="url" name="linkedin" id="linkedin" value="<?= htmlspecialchars($row['linkedin'] ?? '') ?>" placeholder="https://www.linkedin.com/in/username">
-    </div>
-    <div class="form-group">
-        <label for="birthdate">Geburtsdatum:</label>
-        <input type="date" name="birthdate" id="birthdate" value="<?= htmlspecialchars($row['birthdate'] ?? '') ?>">
-    </div>
-    <div class="form-group">
-        <label for="gender">Geschlecht:</label>
-        <select name="gender" id="gender">
-            <option value="m" <?= ($row['gender'] == 'm') ? 'selected' : ''; ?>>Männlich</option>
-            <option value="w" <?= ($row['gender'] == 'w') ? 'selected' : ''; ?>>Weiblich</option>
-            <option value="other" <?= ($row['gender'] == 'other') ? 'selected' : ''; ?>>Andere</option>
-        </select>
-    </div>
-    <div class="form-group">
-        <label for="profileImageUpload">Profilbild hochladen:</label>
-        <input type="file" name="image" id="profileImageUpload" accept="image/*" onchange="previewImage(event)">
-    </div>
-    <div class="form-group">
-        <button type="submit">Speichern</button>
-    </div>
-</form>
+</div>
 
 
 
-    <script>
+
+<script>
 document.addEventListener('DOMContentLoaded', function () {
     // Zeigt das ausgewählte Bild vorübergehend an
     function previewImage(event) {
@@ -273,8 +225,38 @@ document.addEventListener('DOMContentLoaded', function () {
     if (fileInput) {
         fileInput.addEventListener('change', previewImage);
     }
+
+    // Eingabefelder ausblenden, wenn Social Link schon gesetzt
+    const socialFields = [
+        { id: 'facebook', value: '<?= htmlspecialchars($row["facebook"] ?? "") ?>' },
+        { id: 'instagram', value: '<?= htmlspecialchars($row["instagram"] ?? "") ?>' },
+        { id: 'linkedin', value: '<?= htmlspecialchars($row["linkedin"] ?? "") ?>' }
+    ];
+
+    socialFields.forEach(field => {
+        if (field.value.trim() !== '') {
+            const inputGroup = document.getElementById(field.id)?.closest('.form-group');
+            if (inputGroup) inputGroup.style.display = 'none';
+        }
+    });
+
+    // Eingabefelder für Geburtsdatum und Geschlecht ausblenden, wenn beide ausgefüllt sind
+    function toggleInputFields() {
+        const birthdate = document.getElementById('birthdate').value;
+        const gender = document.getElementById('gender').value;
+
+        // Wenn beide Felder ausgefüllt sind, verstecke sie
+        if (birthdate && gender) {
+            document.getElementById('birthdateGroup').style.display = 'none';
+            document.getElementById('genderGroup').style.display = 'none';
+        }
+    }
+
+    // Die Funktion wird aufgerufen, um das Bild und die Felder nach dem Laden anzuzeigen
+    toggleInputFields();
 });
 </script>
+
 
 </body>
 </html>
