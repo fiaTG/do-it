@@ -52,10 +52,10 @@ if (!$row) {
     <ul class="sidebar-menu">
         <li><a href="dashboard.php?famID=<?= $row['famID'] ?>&userID=<?= $_SESSION['userID'] ?>"><i class="fas fa-home"></i> <span>Startseite</span></a></li>
         <li><a href="/files/Do-IT/private/dashboard/profile.php?famID=<?= $row['famID'] ?>&userID=<?= $_SESSION['userID'] ?>"><i class="fas fa-user"></i> <span>Profil</span></a></li>
-        <li><a href="#"><i class="fas fa-users"></i> <span>Familienmitglieder</span></a></li>
+        <li><a href="/files/Do-IT/private/dashboard/family_members.php?famID=<?= $row['famID'] ?>&userID=<?= $_SESSION['userID'] ?>"><i class="fas fa-users"></i> <span>Familienmitglieder</span></a></li>
     </ul>
     <ul class="sidebar-bottom">
-        <li><a href="#"><i class="fas fa-cog"></i> <span>Einstellungen</span></a></li>
+        <li><a href="/files/Do-IT/private/dashboard/setup.php?famID=<?= $row['famID'] ?>&userID=<?= $_SESSION['userID'] ?>"><i class="fas fa-cog"></i> <span>Einstellungen</span></a></li>
         <li><a href="../private/auth/logout-handler.php"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
     </ul>
 </nav>
@@ -88,12 +88,6 @@ if (!empty($row['famID'])) {
               <input type="email" name="inviteEmail" placeholder="E-Mail-Adresse" required>
               <button class="invite-button" type="submit" name="sendInvite">Einladen</button>
           </div></form><hr>';
-} else {
-    echo '<h3>Erstelle eine neue Familie</h3>
-          <form method="POST">
-              <input type="text" name="famName" placeholder="Familienname" required>
-              <button type="submit" name="createFamily">Familie erstellen</button>
-          </form>';
 }
 
 // Familie erstellen
@@ -222,7 +216,42 @@ if (isset($_POST['sendInvite'])) {
     </div>
 </div>
 
+<div id="familyModal" class="modalD" style="display:none;">
+  <div class="modalD-content">
+    <span class="close">&times;</span>
+    <h2 class="firstModalh2"><i class="fas fa-users"></i> Willkommen!</h2>
+    <p class="firstParagraphModal">Du hast noch keine Familie – leg jetzt los:</p>
+    <form method="POST" class="family-form">
+      <input type="text" name="famName" placeholder="Familienname" required>
+      <button type="submit" name="createFamily" class="fancy-button">
+        <i class="fas fa-plus-circle"></i> Familie erstellen
+      </button>
+    </form>
+  </div>
+</div>
+
  <script src="..\public\js\dashboard.js" defer></script>
 
+
+ <script>
+    document.addEventListener("DOMContentLoaded", function () {
+    if (typeof showFamilyModal !== 'undefined' && showFamilyModal) {
+        const familyModal = document.getElementById("familyModal");
+        if (familyModal) {
+            familyModal.style.display = "flex";
+        }
+    }
+
+    // Optional: schließen des Modals, wenn du z. B. ein "X"-Button willst
+    const closeBtns = document.querySelectorAll(".modalD .close");
+    closeBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+            btn.closest(".modalD").style.display = "none";
+        });
+    });
+});
+// Funktion zum Öffnen des Modals
+    const showFamilyModal = <?php echo empty($row['famID']) ? 'true' : 'false'; ?>;
+</script>
 </body>
 </html>

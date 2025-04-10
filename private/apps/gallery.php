@@ -54,10 +54,10 @@ $latestBild = $stmtLatest->fetch(PDO::FETCH_ASSOC);
         <ul class="sidebar-menu">
             <li><a href="/files/Do-IT/public/dashboard.php"><i class="fas fa-home"></i> <span>Startseite</span></a></li>
             <li><a href="/files/Do-IT/private/dashboard/profile.php?famID=<?= $row['famID'] ?>&userID=<?= $_SESSION['userID'] ?>"><i class="fas fa-user"></i> <span>Profil</span></a></li>
-            <li><a href="#"><i class="fas fa-users"></i> <span>Familienmitglieder</span></a></li>
-        </ul>
+            <li><a href="/files/Do-IT/private/dashboard/family_members.php?famID=<?= $row['famID'] ?>&userID=<?= $_SESSION['userID'] ?>"><i class="fas fa-users"></i> <span>Familienmitglieder</span></a></li>
+            </ul>
         <ul class="sidebar-bottom">
-            <li><a href="#"><i class="fas fa-cog"></i> <span>Einstellungen</span></a></li>
+        <li><a href="/files/Do-IT/private/dashboard/setup.php?famID=<?= $row['famID'] ?>&userID=<?= $_SESSION['userID'] ?>"><i class="fas fa-cog"></i> <span>Einstellungen</span></a></li>
             <li><a href="/files/Do-IT/private/auth/logout-handler.php"><i class="fas fa-sign-out-alt"></i>
                     <span>Logout</span></a></li>
         </ul>
@@ -117,6 +117,12 @@ $latestBild = $stmtLatest->fetch(PDO::FETCH_ASSOC);
                 <img src="data:image/jpeg;base64,<?= base64_encode($bild['bild']) ?>"
                     onclick="openModal('<?= base64_encode($bild['bild']) ?>', '<?= addslashes($bild['titel']) ?>')"
                     class="hover-shadow">
+                  
+                    <form method="POST" class="delete-form" data-bilderid="<?= $bild['bilderID'] ?>">
+    <button type="button" class="delete-btnG" title="Bild löschen">
+        <i class="fas fa-trash-alt"></i>
+    </button>
+</form>
             </div>
         <?php endforeach; ?>
     </div>
@@ -149,6 +155,126 @@ function closeModal() {
     document.getElementById("myModal").style.display = "none";
 }
     </script>
+
+<?php if (isset($_GET['deleted'])): ?>
+    <style>
+        .fadeInBox {
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        .fadeInBox,
+        .progress-container {
+            font-family: 'Syncopate', sans-serif;
+        }
+
+        .fadeInBox {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #406f8f, #fdfbf2);
+            color: #fdfbf2;
+            padding: 20px 30px;
+            border-radius: 12px;
+            font-size: 22px;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+            min-width: 280px;
+            z-index: 9999;
+        }
+
+        .progress-container {
+            margin-top: 15px;
+            height: 6px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #fdfbf2;
+            animation: loadBar 2s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -60%); }
+            to { opacity: 1; transform: translate(-50%, -50%); }
+        }
+
+        @keyframes loadBar {
+            from { width: 0%; }
+            to { width: 100%; }
+        }
+    </style>
+
+    <div class="fadeInBox">
+        <span style="font-size: 30px;">🗑️</span><br>
+        Bild erfolgreich gelöscht!
+        <div class="progress-container">
+            <div class="progress-bar"></div>
+        </div>
+    </div>
+
+    <script>
+setTimeout(() => {
+    const box = document.querySelector('.fadeInBox');
+    if (box) {
+        box.style.transition = 'opacity 0.5s ease';
+        box.style.opacity = '0';
+        setTimeout(() => {
+            box.style.display = 'none';
+            const url = new URL(window.location);
+            url.searchParams.delete("deleted");
+            window.history.replaceState({}, document.title, url.toString());
+        }, 500);
+    }
+}, 2000);
+
+    </script>
+<?php endif; ?>
+
+<!-- Modal: Bestätigung -->
+<div id="confirmModal" class="modalG" style="display:none;">
+    <div class="modal-contentG" style="text-align:center; padding: 20px;">
+        <p>Bild wirklich löschen?</p>
+        <button id="confirmYes" class="button-like" style="margin: 10px;">Ja</button>
+        <button id="confirmNo" class="button-like" style="margin: 10px;">Abbrechen</button>
+    </div>
+</div>
+
+<script>
+    let currentForm = null;
+
+    document.querySelectorAll('.delete-btnG').forEach(button => {
+        button.addEventListener('click', function () {
+            currentForm = this.closest('form');
+            document.getElementById('confirmModal').style.display = 'block';
+        });
+    });
+
+    document.getElementById('confirmYes').addEventListener('click', function () {
+        const bilderID = currentForm.dataset.bilderid;
+
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'bilderID';
+        hiddenInput.value = bilderID;
+        currentForm.appendChild(hiddenInput);
+
+        currentForm.action = 'delete_image.php';
+        currentForm.submit();
+    });
+
+    document.getElementById('confirmNo').addEventListener('click', function () {
+        document.getElementById('confirmModal').style.display = 'none';
+        currentForm = null;
+    });
+</script>
+
+
 </body>
 
 

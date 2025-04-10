@@ -90,8 +90,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Profil</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../../public/stylesdashb.css">
+    <style>
+          body,
+      html {
+          overflow: visible ;
+          overflow-x: hidden!important; 
+          scrollbar-width: thin;
+    scrollbar-color: var(--primary-color) var(--light-bg-apps);
+      }
+    </style>
 </head>
 <body>
+
+<?php if (isset($_GET['success'])): ?>
+    <div class="fadeInBox" style="position: fixed; top: 50px; left: 50%; transform: translateX(-50%); background: #dff0d8; color: #3c763d; padding: 10px 20px; border-radius: 8px; font-weight: bold; z-index: 999;">
+        <?= htmlspecialchars($_GET['success']) ?>
+    </div>
+    <script>
+        setTimeout(() => {
+            document.querySelector('.fadeInBox')?.remove();
+            const url = new URL(window.location);
+            url.searchParams.delete("success");
+            window.history.replaceState({}, document.title, url.toString());
+        }, 2000);
+    </script>
+<?php endif; ?>
+
+
     <!-- Sidebar Navigation -->
     <nav class="sidebar">
         <br>
@@ -99,11 +124,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <ul class="sidebar-menu">
         <li><a href="/files/Do-IT/public/dashboard.php?famID=<?= $row['famID'] ?>&userID=<?= $_SESSION['userID'] ?>"><i class="fas fa-home"></i> <span>Startseite</span></a></li>
         <li><a href="/files/Do-IT/private/dashboard/profile.php?famID=<?= $row['famID'] ?>&userID=<?= $_SESSION['userID'] ?>"><i class="fas fa-user"></i> <span>Profil</span></a></li>
-        <li><a href="#"><i class="fas fa-users"></i> <span>Familienmitglieder</span></a></li>
+        <li><a href="/files/Do-IT/private/dashboard/family_members.php?famID=<?= $row['famID'] ?>&userID=<?= $_SESSION['userID'] ?>"><i class="fas fa-users"></i> <span>Familienmitglieder</span></a></li>
     </ul>
     <ul class="sidebar-bottom">
-        <li><a href="#"><i class="fas fa-cog"></i> <span>Einstellungen</span></a></li>
-        <li><a href="../../private/auth/logout-handler.php"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+    <li><a href="/files/Do-IT/private/dashboard/setup.php?famID=<?= $row['famID'] ?>&userID=<?= $_SESSION['userID'] ?>"><i class="fas fa-cog"></i> <span>Einstellungen</span></a></li>
+    <li><a href="../../private/auth/logout-handler.php"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
     </ul>
 </nav>
 

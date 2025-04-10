@@ -81,11 +81,6 @@ html, body {
     width: 100%;
 }
 
-.sidebar ul li:last-child, 
-.sidebar ul li:nth-last-child(2) {
-    margin-top: auto;
-}
-
 .sidebar ul li a {
     color: var(--light-bg-apps);
     text-decoration: none;
@@ -94,12 +89,16 @@ html, body {
     align-items: center;
     justify-content: center;
     padding: 15px;
-    transition: background-color 0.3s, color 0.3s; /* Hintergrund und Textfarbe animieren */
+    transition: background-color 0.75s, color 0.3s; /* Hintergrund und Textfarbe animieren */
 }
 
 .sidebar ul li a:hover {
     background-color: var(--secondary-color);
-    color:var(--light-bg-apps);
+    color:var(--primary-color);
+    font-weight: bold;
+    opacity: 0.9;
+    border-radius: 5px;
+
 }
 
 /* Icons */

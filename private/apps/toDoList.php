@@ -11,17 +11,9 @@ if (!isset($_SESSION["userID"])) {
     exit();
 }
 
-// `famID` aus der Datenbank setzen, falls noch nicht in der Session
-if (!isset($_SESSION['famID'])) {
-    $stmt = $pdo->prepare("SELECT famID FROM User WHERE userID = :userID");
-    $stmt->execute(['userID' => $_SESSION['userID']]);
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-    $_SESSION['famID'] = $row['famID'] ?? null;
-}
-
 // Benutzerinformationen abrufen
 $stmt = $pdo->prepare("
-    SELECT User.vorname, Family.famName 
+    SELECT User.vorname,User.famID,  Family.famName 
     FROM User 
     LEFT JOIN Family ON User.famID = Family.famID 
     WHERE User.userID = :userID
@@ -67,11 +59,11 @@ function getAssignedUserName($pdo, $assignedID) {
         <h2>Hey, <?php echo htmlspecialchars($userData["vorname"]); ?>!</h2>
         <ul class="sidebar-menu">
             <li><a href="/files/Do-IT/public/dashboard.php"><i class="fas fa-home"></i> <span>Startseite</span></a></li>
-            <li><a href="/files/Do-IT/private/dashboard/profile.php?famID=<?= $row['famID'] ?>&userID=<?= $_SESSION['userID'] ?>"><i class="fas fa-user"></i> <span>Profil</span></a></li>
-            <li><a href="#"><i class="fas fa-users"></i> <span>Familienmitglieder</span></a></li>
-        </ul>
+            <li><a href="/files/Do-IT/private/dashboard/profile.php?famID=<?= $userData['famID'] ?>&userID=<?= $_SESSION['userID'] ?>"><i class="fas fa-user"></i> <span>Profil</span></a></li>
+            <li><a href="/files/Do-IT/private/dashboard/family_members.php?famID=<?= $userData['famID'] ?>&userID=<?= $_SESSION['userID'] ?>"><i class="fas fa-users"></i> <span>Familienmitglieder</span></a></li>
+            </ul>
         <ul class="sidebar-bottom">
-            <li><a href="#"><i class="fas fa-cog"></i> <span>Einstellungen</span></a></li>
+        <li><a href="/files/Do-IT/private/dashboard/setup.php?famID=<?= $userData['famID'] ?>&userID=<?= $_SESSION['userID'] ?>"><i class="fas fa-cog"></i> <span>Einstellungen</span></a></li>
             <li><a href="/files/Do-IT/private/auth/logout-handler.php"><i class="fas fa-sign-out-alt"></i>
                     <span>Logout</span></a></li>
         </ul>

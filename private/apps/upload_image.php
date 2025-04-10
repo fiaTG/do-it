@@ -70,6 +70,15 @@ try {
         $stmt->execute();
        
         echo "<style>
+
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #406f8f, #968d86);
+            font-family: 'Syncopate', sans-serif;
+            color: #fdfbf2;
+        }
         @keyframes fadeIn {
           from { opacity: 0; transform: translate(-50%, -60%); }
           to { opacity: 1; transform: translate(-50%, -50%); }
@@ -136,11 +145,3 @@ exit();
     die(json_encode(["status" => "error", "message" => "Datenbankfehler: " . $e->getMessage()]));
 }
 ?>
-
-
-
-
---primary-color: #406f8f;
-  --secondary-color: #968d86;
-  --light-bg-apps: #fdfbf2;
-  --body-bg: #bbb2ab;

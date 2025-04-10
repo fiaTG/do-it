@@ -81,3 +81,62 @@
 .app:hover .remove-app {
     display: block; /* Zeige den Button nur beim Hover über die App */
 }
+
+
+/* Style-Ergänzung für das Familien-Modal */
+.family-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.family-form input[type="text"] {
+    padding: 12px 15px;
+    border: 1px solid var(--primary-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    transition: 0.3s ease;
+}
+
+.family-form input[type="text"]:focus {
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.fancy-button {
+    padding: 12px;
+    background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+    border: none;
+    color: white;
+    font-weight: bold;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.fancy-button:hover {
+    opacity: 0.9;
+    transform: scale(1.02);
+}
+
+.firstModalh2{
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    text-align: center;
+    font-family: var(--font-syncopate);
+}
+.firstParagraphModal{
+    font-size: 1.2rem;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    text-align: center;
+    font-family: var(--font-syncopate);
+}

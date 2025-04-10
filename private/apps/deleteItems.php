@@ -7,6 +7,7 @@ header('Content-Type: application/json');
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Daten aus dem POST-Body abrufen
     $data = json_decode(file_get_contents('php://input'), true);
+    error_log(print_r($data, true));
 
     // Überprüfen, ob die erforderlichen Parameter gesetzt sind
     if (!isset($data['userID']) || !isset($data['itemName']) || !isset($data['shopID'])) {
@@ -66,5 +67,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     echo json_encode(['error' => 'Ungültige Anfrage']);
     http_response_code(405); // Method Not Allowed
 }
-error_log(print_r($data, true));
+
 ?>

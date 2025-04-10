@@ -35,10 +35,10 @@
 </FilesMatch>
 
 
-<FilesMatch "toDoList.php$|add_todo.php$|delete_todo.php$|toggle_task.php$|toDoListWidget.php$">
+<FilesMatch "toDoList.php$|add_todo.php$|delete_todo.php$|toggle_task.php$|toDoListWidget.php$|setup.php$">
     Require all granted
 </FilesMatch>
 
-<FilesMatch "dashboard.php$|events.php$|calenderWidget.php$|profile.php$">
+<FilesMatch "dashboard.php$|events.php$|calenderWidget.php$|profile.php$|delete_image.php$|family_members.php$">
     Require all granted
 </FilesMatch>

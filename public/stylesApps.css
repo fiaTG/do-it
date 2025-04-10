@@ -22,7 +22,7 @@
 body,
 html {
   overflow: visible;
-  overflow-x: hidden;
+  overflow-x: hidden !important;
   max-width: 100%;
   scrollbar-width: thin;
   scrollbar-color: var(--primary-color) var(--light-bg-apps); }
@@ -39,10 +39,12 @@ html {
   justify-content: center;
   align-items: center;
   margin-left: 250px;
-  margin-bottom: 50px;
+  margin-bottom: 50px !important;
+  /* Abstand nach unten */
   /* Abstand zur Sidebar erhöhen */ }
 
 .column {
+  position: relative;
   width: calc(25% - 16px);
   max-width: 300px;
   box-sizing: border-box;
@@ -236,6 +238,28 @@ img.hover-shadow {
   margin-top: 10px;
   font-size: 1rem;
   color: var(--primary-color); }
+
+.delete-btnG {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  border: none;
+  padding: 6px;
+  font-size: 1.25rem;
+  background-color: unset;
+  color: crimson !important;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 2; }
+
+.column:hover .delete-btnG {
+  opacity: 1;
+  transform: scale(1.1) !important; }
+
+.delete-btnG:hover {
+  color: #fc1846 !important;
+  transform: scale(1.2) !important; }
 
 :root {
   /* Farben */
