@@ -43,8 +43,10 @@ if (!$row) {
     <link rel="stylesheet" href="./../public/stylesdashb.css">
 </head>
 <body>
+
     <!-- Sidebar Navigation -->
     <nav class="sidebar">
+
         <br>
     <h2>Hey, <?php echo htmlspecialchars($row["vorname"]); ?>!</h2>
     <ul class="sidebar-menu">

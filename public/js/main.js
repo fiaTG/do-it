@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const rightLayer = document.querySelector(".outer-layer.right");
     const bottomImage = document.querySelector(".bottom-image");
     const triangle = document.querySelector(".triangle");
-    const buttonAnimation = document.querySelector('.button-animation');
+    
     
 
     if (logo) {
@@ -35,12 +35,6 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => {
             triangle.style.opacity = "1";
         }, 5500); // 6 Sekunden Verzögerung
-    }
-
-    if (buttonAnimation) {
-        setTimeout(() => {
-            buttonAnimation.style.opacity = "1";
-        }, 6000); // 6 Sekunden Verzögerung
     }
     
 });

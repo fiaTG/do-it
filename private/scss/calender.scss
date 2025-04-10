@@ -1,25 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Amatic+SC&family=Codystar&family=Fredericka+the+Great&family=Megrim&family=Syncopate&display=swap');
-
-:root {
-  /* Farben */
-  --primary-color: #406f8f;
-  --secondary-color: #968d86;
-  --light-bg-apps: #fdfbf2;
-  --body-bg: #bbb2ab;
-
-  --box-shadow: 0 0 3px var(--primary-color), 0 0 6px var(--primary-color), 0 0 10px var(--primary-color);
-
-  --triangle-gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-
-  /* Standard-Schriftarten */
-  --font-syncopate: 'Syncopate', sans-serif;
-  --font-amatic: 'Amatic SC', cursive;
-
-  /* Benutzer-Schriftarten */
-  --font-megrim: 'Megrim', cursive;
-  --font-fredericka: 'Fredericka the Great', cursive;
-  --font-codystar: 'Codystar', cursive;
-}
 
 body,
 html {
