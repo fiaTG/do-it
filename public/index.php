@@ -3,12 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Landing Page mit Dreieck</title>
+    <meta name="robots" content="index, follow">
+    <meta name="description" content="Family Board - Die perfekte Lösung für Ihre Familie. Organisieren Sie Ihr Familienleben mit Leichtigkeit.">
+    <meta name="author" content="Timo Giese">
+    <title>Family Board</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
+    <!-- Meta-Tags für SEO -->
+   
+    <h1 style="visibility: hidden;width: 0%; height: 0%;">
+    Family Board - Die perfekte Lösung für Ihre Familie.</h1>
+
+
+
     <div class="container">
 
         <div class="logo"></div>

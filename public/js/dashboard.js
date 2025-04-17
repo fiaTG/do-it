@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             newApp.setAttribute("data-app-id", appID); // ID als Attribut setzen
                             appContainer.appendChild(newApp);
     
-                            // Hier loggen wir die URL und setzen den Event-Listener
+                            
                             console.log("App URL:", appUrl); // Debugging: Zeige die URL in der Konsole
                             
                             // Wenn URL existiert, öffne sie bei Klick, aber nur wenn nicht der Entfernen-Button geklickt wird
@@ -159,7 +159,7 @@ document.addEventListener("DOMContentLoaded", function () {
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
             body: `appID=${appID}`
         })
-        .then(response => response.json())  // JSON statt Text, damit wir den Status checken können
+        .then(response => response.json()) 
         .then(data => {
             console.log(data);  // Debugging
     
@@ -196,5 +196,5 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Benutzer-Apps beim Laden der Seite anzeigen
-    loadUserApps();  // Hier rufst du die Funktion auf, um die Apps zu laden
+    loadUserApps();  
 });
