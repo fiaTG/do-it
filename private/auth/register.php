@@ -32,6 +32,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit();
     }
 
+    
+/*
+Die Funktion isStrongPassword() verwendet eine Regex,  "regular expression", regex ist ein Muster oder eine "Suchabfrage", die verwendet wird, um Text zu durchsuchen, zu vergleichen oder zu manipulieren.
+Sie stellt hier sicher das das passwort bestimmte Kriterien erfüllt
+(mindestens 8 Zeichen, eine Zahl, ein Buchstabe und ein Sonderzeichen). 
+
+*/
     function isStrongPassword($password) {
         return preg_match('/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/', $password);
     }

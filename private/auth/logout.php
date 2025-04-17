@@ -1,12 +1,20 @@
 <?php
 session_start();
 // Alle Sitzungsvariablen löschen
-$_SESSION = [];
-// Session beenden
-session_destroy();
-//Session cookies löschen
-setcookie(session_name(), '', time() - 3600, '/');
+$_SESSION = [];     
+// Setzt das gesamte $_SESSION-Array zurück, also alle Sitzungsvariablen werden entfernt.
 
+session_destroy();  
+// Session beenden
+// Zerstört die aktuelle Sitzung und entfernt die zugehörige Sitzungsdatei.
+
+
+// Sitzungscookie löschen, um sicherzustellen, dass der Benutzer bei der nächsten Anfrage keine Sitzung mehr hat.
+setcookie(session_name(), '', time() - 3600, '/'); 
+// Löscht das Sitzungscookie, indem die Ablaufzeit auf eine Stunde in der Vergangenheit gesetzt wird.
+// session_name() gibt den Namen des Sitzungscookies zurück (normalerweise "PHPSESSID").
+// time() - 3600 setzt den Ablaufzeitpunkt auf eine Stunde in der Vergangenheit, damit das Cookie abläuft.
+// '/' sorgt dafür, dass das Cookie auf der gesamten Domain gelöscht wird.
 echo "<!DOCTYPE html>
 <html lang='de'>
 <head>

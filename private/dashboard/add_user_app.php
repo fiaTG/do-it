@@ -17,17 +17,20 @@ if (!$appID) {
     exit;
 }
 
-// Prüfen, ob die App bereits hinzugefügt wurde
+// Prüfen, ob der Nutzer diese App schon hinzugefügt hat
 $stmtCheck = $pdo->prepare("SELECT * FROM UserApps WHERE userID = ? AND appID = ?");
 $stmtCheck->execute([$userID, $appID]);
 
+// Falls schon vorhanden → Fehlermeldung
 if ($stmtCheck->rowCount() > 0) {
     echo json_encode(["status" => "error", "message" => "App bereits hinzugefügt"]);
     exit;
 }
 
-// Speichern der App
+
+// App mit dem Nutzer verknüpfen (in die Tabelle einfügen)
 $stmt = $pdo->prepare("INSERT INTO UserApps (userID, appID) VALUES (?, ?)");
+// Erfolg oder Fehler beim Einfügen zurückgeben
 if ($stmt->execute([$userID, $appID])) {
     echo json_encode(["status" => "success", "message" => "App erfolgreich hinzugefügt"]);
 } else {

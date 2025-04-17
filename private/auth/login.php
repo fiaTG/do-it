@@ -103,10 +103,10 @@ echo "<!DOCTYPE html>
 
             exit();
         } else {
-            echo "❌ Falsche E-Mail-Adresse oder Passwort!";
+            echo "Falsche E-Mail-Adresse oder Passwort!";
         }
     } else {
-        echo "⚠️ Bitte alle Felder ausfüllen!";
+        echo "Bitte alle Felder ausfüllen!";
     }
 }
 ?>

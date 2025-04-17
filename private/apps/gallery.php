@@ -19,15 +19,15 @@ $stmt = $pdo->prepare("
     WHERE User.userID = :userID
 ");
 $stmt->execute(['userID' => $_SESSION['userID']]);
-$row = $stmt->fetch(PDO::FETCH_ASSOC);
+$row = $stmt->fetch(PDO::FETCH_ASSOC); // Ergebnis in ein assoziatives Array holen
 
-// Abrufen der Bilder aus der Datenbank
+// Alle Bilder der Familie abrufen, sortiert nach Upload-Datum absteigend
 $stmt = $pdo->prepare("SELECT bilderID, titel, bild FROM Bilder WHERE famID = :famID ORDER BY uploaded DESC");
 $stmt->execute(['famID' => $row['famID']]);
 $bilder = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
-// Abrufen des zuletzt hochgeladenen Bildes
+// Das neueste hochgeladene Bild separat abrufen
 $stmtLatest = $pdo->prepare("SELECT titel, bild FROM Bilder WHERE famID = :famID ORDER BY uploaded DESC LIMIT 1");
 $stmtLatest->execute(['famID' => $row['famID']]);
 $latestBild = $stmtLatest->fetch(PDO::FETCH_ASSOC);
@@ -239,7 +239,7 @@ $latestBild = $stmtLatest->fetch(PDO::FETCH_ASSOC);
                     setTimeout(() => {
                         box.style.display = 'none';
                         const url = new URL(window.location);
-                        url.searchParams.delete("deleted");
+                        url.searchParams.delete("deleted");       // Entfernt ?deleted aus der URL
                         window.history.replaceState({}, document.title, url.toString());
                     }, 500);
                 }
@@ -247,7 +247,7 @@ $latestBild = $stmtLatest->fetch(PDO::FETCH_ASSOC);
         </script>
     <?php endif; ?>
 
-    <!-- Modal: Bestätigung -->
+    <!-- Bestätigungs-Modal für das Löschen -->
     <div id="confirmModal" class="modalG" style="display:none;">
         <div class="modal-contentG" style="text-align:center; padding: 20px;">
             <p>Bild wirklich löschen?</p>
@@ -258,6 +258,22 @@ $latestBild = $stmtLatest->fetch(PDO::FETCH_ASSOC);
 
     <script>
         let currentForm = null;
+/*
+Diese Funktion sorgt dafür, dass beim Klick auf den Papierkorb ein Bestätigungsfenster erscheint,
+und das Bild nur dann gelöscht wird, wenn der Benutzer dies bestätigt.
+
+1. Zuerst werden alle Buttons mit der Klasse .delete-btnG ausgewählt – das sind die Papierkorb-Icons unter den Bildern.
+2. Für jeden dieser Buttons wird ein Klick-Event registriert. Wenn ein Button geklickt wird:
+   - Wird das zugehörige Formular (das sich direkt um das Bild befindet) ermittelt und in der Variable currentForm gespeichert.
+   - Danach wird das Bestätigungs-Modal (confirmModal) sichtbar gemacht, indem das display auf "block" gesetzt wird.
+
+3. Wenn der Benutzer im Modal auf "Ja" klickt:
+   - Wird die bilderID aus dem data-Attribut des Formulars ausgelesen.
+   - Ein neues, verstecktes input-Feld wird erzeugt, in dem die bilderID als Wert eingetragen ist.
+     Dieses Feld wird dem Formular hinzugefügt, damit die ID beim Absenden mitgeschickt wird.
+   - Dann wird das action-Attribut des Formulars auf "delete_image.php" gesetzt, sodass das Formular dorthin gesendet wird.
+   - Schließlich wird das Formular abgesendet, und die Bildlöschung wird serverseitig durchgeführt.
+*/
 
         document.querySelectorAll('.delete-btnG').forEach(button => {
             button.addEventListener('click', function() {

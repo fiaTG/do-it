@@ -34,20 +34,23 @@ $userID = $_SESSION['userID'];
 $famID = $_SESSION['famID'];
 
 try {
+  // Prüfen, ob ein Bild per POST hochgeladen wurde
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['image'])) {
         $image = $_FILES['image'];
 
+ // Fehler beim Hochladen prüfen
         if ($image['error'] !== UPLOAD_ERR_OK) {
             header('Content-Type: application/json');
             die(json_encode(["status" => "error", "message" => "Fehler beim Hochladen: Code " . $image['error']]));
         }
 
+           // Maximale Dateigröße von 10 MB prüfen
         if ($image['size'] > 10 * 1024 * 1024) {
             header('Content-Type: application/json');
             die(json_encode(["status" => "error", "message" => "Bild zu groß! Max: 10 MB"]));
         }
 
-        // Sicherstellen, dass der MIME-Typ gültig ist
+         // MIME-Typ ermitteln und prüfen, ob es sich um ein erlaubtes Bildformat handelt
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $mimeType = finfo_file($finfo, $image['tmp_name']);
         finfo_close($finfo);
@@ -57,11 +60,12 @@ try {
             die(json_encode(["status" => "error", "message" => "Ungültiger Dateityp! Erlaubt: JPG, PNG, GIF"]));
         }
 
-        // Bildinhalt aus Datei lesen
+  // Bildinhalt aus der temporären Datei lesen
         $imageData = file_get_contents($image['tmp_name']);
+          // Titel aus dem Formular auslesen, Standardwert falls nicht vorhanden
         $titel = isset($_POST['titel']) ? $_POST['titel'] : 'Kein Titel';
 
-        // Bild in die Datenbank einfügen
+      // Bild zusammen mit Metadaten in die Datenbank schreiben
         $stmt = $pdo->prepare("INSERT INTO Bilder (titel, bild, famID, userID) VALUES (:titel, :bild, :famID, :userID)");
         $stmt->bindParam(':titel', $titel);
         $stmt->bindParam(':bild', $imageData, PDO::PARAM_LOB);
@@ -130,16 +134,19 @@ try {
           </div>
         </div>";
         
-
+     // Automatische Weiterleitung zurück zur Galerie nach 2 Sekunden
 echo "<script>
     setTimeout(() => { window.location.href = 'gallery.php'; }, 2000);
 </script>";
 
+// Wichtig: Ausstieg, um weiteren Code nicht mehr auszuführen
 exit();
+
     } else {
         header('Content-Type: application/json');
         die(json_encode(["status" => "error", "message" => "Kein Bild hochgeladen"]));
     }
+        // Fehlerbehandlung bei Datenbankfehlern
 } catch (PDOException $e) {
     header('Content-Type: application/json');
     die(json_encode(["status" => "error", "message" => "Datenbankfehler: " . $e->getMessage()]));

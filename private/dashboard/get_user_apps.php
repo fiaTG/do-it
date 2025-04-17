@@ -11,16 +11,47 @@ if (!isset($_SESSION['userID'])) {
 
 $userID = $_SESSION['userID'];
 
-// Apps des Benutzers aus der Datenbank abrufen
+// SQL: Verknüpfte Apps für diesen Benutzer abrufen
+// Die UserApps-Tabelle enthält die Beziehung zwischen Benutzern und ihren aktiven Apps
 $stmt = $pdo->prepare("
       SELECT App.appID, App.appName, App.appIcon, App.appPfad
     FROM UserApps 
     INNER JOIN App ON UserApps.appID = App.appID
     WHERE UserApps.userID = ?
 ");
-
+// Statement mit der Benutzer-ID ausführen
 $stmt->execute([$userID]);
 
+
+
+/* Ergebnis als assoziatives Array holen
+Was ist ein „assoziatives Array“?
+
+Ein normales Array sieht so aus: ["Apfel", "Birne", "Banane"]
+Ein assoziatives Array verwendet Schlüssel-Wert-Paare, also z. B.:
+[
+  "appName" => "ToDo Liste",
+  "appIcon" => "fas fa-list-check",
+  "appPfad" => "todo.php"
+]
+
+bei mehreren Apps sieht das dann so aus 
+[
+  [
+    "appID" => 1,
+    "appName" => "ToDo Liste",
+    "appIcon" => "fas fa-list-check",
+    "appPfad" => "todo.php"
+  ],
+  [
+    "appID" => 2,
+    "appName" => "Kalender",
+    "appIcon" => "fas fa-calendar-alt",
+    "appPfad" => "kalender.php"
+  ],
+  // ... usw.
+]
+*/
 $apps = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Wenn der Benutzer Apps hat, gebe sie zurück

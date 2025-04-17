@@ -1,7 +1,4 @@
 <?php
-
-
-
 echo "<!DOCTYPE html>
 <html lang='de'>
 <head>

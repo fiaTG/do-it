@@ -24,4 +24,10 @@ if (!isset($_SESSION["userID"])) {
     __DIR__ gibt das aktuelle Verzeichnis der Datei zurück, um eine sichere Pfadangabe zu gewährleisten.
 */
 require_once __DIR__ . '/../private/dashboard/dashboard.php';
+
+/*
+    Der Ausdruck require_once entspricht im Wesentlichen require. 
+    PHP prüft hier allerdings, ob die gewünschte Datei bereits eingebunden wurde 
+    und wird sie in diesem Fall nicht ein weiteres Mal einbinden.
+*/
 ?>

@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     
 
-
+// Nur die Apps Laden, die noch nicht hinzugefügt wurden
     function loadAvailableApps() {
         fetch("../private/dashboard/get_aviable_apps.php")
             .then(response => response.json())

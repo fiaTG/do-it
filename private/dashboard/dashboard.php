@@ -3,22 +3,23 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-require_once __DIR__ . '/../config/db.php'; // Datenbankverbindung sicherstellen
-require_once __DIR__ . '/../../vendor/autoload.php'; // PHPMailer laden
+// Lädt die Datenbankverbindung und die PHPMailer-Bibliothek
+require_once __DIR__ . '/../config/db.php'; 
+require_once __DIR__ . '/../../vendor/autoload.php'; 
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-// Prüfen, ob der Nutzer eingeloggt ist
+// Sicherheitsprüfung: Wenn der Nutzer nicht eingeloggt ist, wird er zur Login-Seite umgeleitet
 if (!isset($_SESSION["userID"])) {
     header("Location: ../public/login.php?error=Bitte zuerst einloggen!");
     exit();
 }
-
-$famID = $_GET['famID'] ?? null; // Wenn kein Parameter vorhanden ist, wird null gesetzt
+// Holt die famID und userID aus der URL (falls übergeben), sonst bleibt es null
+$famID = $_GET['famID'] ?? null;
 $userID = $_GET['userID'] ?? null;
 
-// Daten des eingeloggten Nutzers inkl. Familiennamen abrufen
+// Holt Daten zum eingeloggten User (Vorname, Familien-ID und -Name).// Falls keine Daten gefunden wurden, gibt es eine Fehlermeldung
 $stmt = $pdo->prepare("
     SELECT User.vorname, User.famID, Family.famName 
     FROM User 
@@ -81,7 +82,7 @@ if (!$row) {
        
 
         <?php
-// Prüfen, ob der User einer Familie angehört
+// Wenn User bereits einer Familie angehört, wird das Einladungsformular angezeigt sonst wird ein Formular zur Erstellung einer neuen Familie angezeigt
 if (!empty($row['famID'])) { 
     echo ' <div class="inviteButtonArea"><h3 class="invite-header">Familienmitglieder einladen</h3>
           <form method="POST">
@@ -95,13 +96,16 @@ if (isset($_POST['createFamily'])) {
     $famName = trim($_POST['famName']);
 
     if (!empty($famName)) {
+        // Neue Familie in die Datenbank einfügen
         $stmt = $pdo->prepare("INSERT INTO Family (famName) VALUES (:famName)");
         $stmt->execute(['famName' => $famName]);
-        $famID = $pdo->lastInsertId();
+        $famID = $pdo->lastInsertId();// ID der neuen Familie
 
+   // User mit der neuen Familie verknüpfen
         $stmt = $pdo->prepare("UPDATE User SET famID = :famID WHERE userID = :userID");
         $stmt->execute(['famID' => $famID, 'userID' => $_SESSION['userID']]);
 
+        // Seite neu laden, damit Änderungen sichtbar werden
         header("Location: dashboard.php");
         exit();
     } else {
@@ -109,27 +113,27 @@ if (isset($_POST['createFamily'])) {
     }
 }
 
-// Einladung senden mit PHPMailer
+// Wenn das Einladungsformular abgesendet wurde
 if (isset($_POST['sendInvite'])) {
     $inviteEmail = $_POST['inviteEmail'];
-    $token = bin2hex(random_bytes(16)); 
+    $token = bin2hex(random_bytes(16)); // Zufälliger Sicherheitstoken für Einladung
     $famID = $row['famID'];
 
-    // Einladung speichern
+      // Einladung in Datenbank speichern
     $sql = "INSERT INTO Invites (famID, email, token) VALUES (?, ?, ?)";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$famID, $inviteEmail, $token]);
 
-    // Mailer einrichten
+   // PHPMailer für den Mailversand vorbereiten
     $mail = new PHPMailer(true);
 
     try {
-        // SMTP Konfiguration
+      // Konfiguration für SMTP (hier: Mailtrap für Testzwecke)
         $mail->isSMTP();
         $mail->Host = 'smtp.mailtrap.io';
         $mail->SMTPAuth = true;
-        $mail->Username = '1d41e7cdc90efd';
-        $mail->Password = '85aa793cbea65d';
+        $mail->Username = '1d41e7cdc90efd';// Mailtrap-Zugangsdaten
+        $mail->Password = '85aa793cbea65d';// Mailtrap-Passwort
         $mail->SMTPSecure = ''; // Keine Verschlüsselung für Port 2525
         $mail->Port = 2525;
 

@@ -1,5 +1,8 @@
 <?php
 $fehler = isset($_GET['error']) ? htmlspecialchars($_GET['error']) : "";
+// Prüft, ob in der URL ein Fehlerparameter übergeben wurde (z. B. ?error=Registrierung+fehlgeschlagen).
+// Falls ja, wird der Fehlertext mit htmlspecialchars() gegen Cross-Site Scripting (XSS) abgesichert.
+// Der bereinigte Text wird in der Variablen $fehler gespeichert und später zur Anzeige im HTML verwendet.
 ?>
 
 <!DOCTYPE html>
@@ -122,6 +125,7 @@ p {
         <input id="password" name="password" type="password" required>
 
         <button type="submit">Registrieren</button>
+        
     </form>
 </body>
 </html>

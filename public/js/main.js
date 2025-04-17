@@ -40,7 +40,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-// lightButton
 
 function toggleIcon(isHovered) {
     const icon = document.getElementById("icon");
