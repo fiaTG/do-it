@@ -1,0 +1,151 @@
+
+
+body, html {
+  font-family: 'Syncopate', sans-serif;
+  background-color: var(--body-bg);
+  margin: 0;
+  padding: 0;
+}
+
+.family-info {
+  position: relative;
+  
+}
+
+/* Profil Container */
+.profile-container {
+  padding: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Header mit Profilbild und persönlichen Angaben */
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 40px;
+}
+
+.profile-pic {
+  width: 225px;
+  height: 225px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: var(--box-shadow);
+
+  margin-left:100px;
+}
+
+.profile-pic img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Persönliche Angaben */
+.profile-info {
+    background-color: var(--light-bg-apps);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: var(--box-shadow);
+    margin-left: 20px;
+    flex-grow: 1; /* Damit es den verfügbaren Platz ausfüllt */
+    max-width: 600px; /* Damit es nicht zu breit wird */
+  }
+  
+  .profile-info h3 {
+    font-size: 24px;
+    margin-bottom: 15px;
+    color: var(--primary-color);
+    text-align: left;
+    font-weight: 600;
+  }
+  
+  .profile-info p {
+    font-size: 18px;
+    margin: 5px 0;
+    color: var(--secondary-color); /* Etwas gedeckter für den Text */
+  }
+  
+  /* Formular Container */
+  .form-container {
+    background-color: var(--light-bg-apps);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: var(--box-shadow);
+    width: 100%;
+    max-width: 600px;
+    margin-top: 20px;
+    margin-left:100px;
+  }
+  
+  /* Formular Eingabefelder */
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-group label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+    color: var(--primary-color);
+  }
+  
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    background-color: #f9f9f9; /* Heller Hintergrund für Eingabefelder */
+    color: var(--primary-color);
+  }
+  
+  .form-group input:focus,
+  .form-group select:focus {
+    border-color: var(--primary-color);
+    outline: none;
+  }
+  
+  /* Speichern Button */
+  .form-group button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 20px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 18px;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .form-group button:hover {
+    background-color: var(--secondary-color);
+  }
+  
+  /* Social Media Icons */
+  .social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+  }
+  
+  .social-icons a {
+    font-size: 24px;
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .social-icons a:hover {
+    color: var(--secondary-color);
+  }

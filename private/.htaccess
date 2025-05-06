@@ -13,3 +13,32 @@
 <FilesMatch "register.php$">
     Require all granted
 </FilesMatch>
+
+<FilesMatch "add_user_app.php|remove_user_app.php|get_user_apps.php|get_aviable_apps.php">
+    Require all granted
+</FilesMatch>
+
+<FilesMatch "gallery.php$|toDoList.php$|calender.php$|shoppingList.php$">
+    Require all granted
+</FilesMatch>
+
+<FilesMatch "upload_image.php$|image_url.php$">
+    Require all granted
+</FilesMatch>
+
+<FilesMatch "addItems.php$|getItems.php$|deleteItems.php$">
+    Require all granted
+</FilesMatch>
+
+<FilesMatch "generatePDF.php$|shoppingListWidget.php$">
+    Require all granted
+</FilesMatch>
+
+
+<FilesMatch "toDoList.php$|add_todo.php$|delete_todo.php$|toggle_task.php$|toDoListWidget.php$|setup.php$">
+    Require all granted
+</FilesMatch>
+
+<FilesMatch "dashboard.php$|events.php$|calenderWidget.php$|profile.php$|delete_image.php$|family_members.php$">
+    Require all granted
+</FilesMatch>

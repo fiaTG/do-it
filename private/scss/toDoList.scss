@@ -1,0 +1,150 @@
+@import url('https://fonts.googleapis.com/css2?family=Amatic+SC&family=Codystar&family=Fredericka+the+Great&family=Megrim&family=Syncopate&display=swap');
+
+:root {
+  /* Farben */
+  --primary-color: #406f8f;
+  --secondary-color: #968d86;
+  --light-bg-apps: #fdfbf2;
+  --body-bg: #bbb2ab;
+
+  --box-shadow: 0 0 3px var(--primary-color), 0 0 6px var(--primary-color), 0 0 10px var(--primary-color);
+
+  --triangle-gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+
+  /* Standard-Schriftarten */
+  --font-syncopate: 'Syncopate', sans-serif;
+  --font-amatic: 'Amatic SC', cursive;
+
+  /* Benutzer-Schriftarten */
+  --font-megrim: 'Megrim', cursive;
+  --font-fredericka: 'Fredericka the Great', cursive;
+  --font-codystar: 'Codystar', cursive;
+}
+
+/* Wrapper für die beiden Bereiche */
+.todo-list-wrapper {
+    margin: 1% 10% 5% 10%; /* Etwas enger für den Abstand */
+    margin-left: 20%; /* Linker Abstand für das Layout */
+}
+
+/* Formular für neue Aufgaben */
+.add-todo-form {
+    width: 100%; /* Formular nimmt volle Breite ein */
+    margin-bottom: 20px; /* Abstand zur ToDo-Liste */
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: var(--box-shadow);
+    display: flex;
+    justify-content: space-between; /* Elemente in einer Zeile ausrichten */
+}
+
+.add-todo-form input[type="text"] {
+    width: 85%; /* Breite der Eingabe vergrößern */
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.add-todo-form input[type="text"]:focus {
+    border-color: #80bdff;
+}
+
+.add-todo-form button {
+    width: 12%; /* Button schmaler machen */
+    padding: 10px;
+    font-size: 16px;
+    color: white;
+    background-color: var(--primary-color); /* Button-Farbe mit der Variable */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-todo-form button:hover {
+    background-color: var(--secondary-color); /* Hover-Farbe mit der Variable */
+}
+
+/* Container für die ToDo-Liste */
+.todo-list-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: var(--box-shadow);
+}
+
+.todo-list-container h3 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.todo-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Stil für die ToDo-Elemente */
+.todo-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f8f9fa;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 16px;
+}
+
+/* "Added from" Text direkt hinter der Aufgabe */
+.todo-item .todo-small {
+    font-size: 10px;
+    color:var(--secondary-color);
+    margin-right: 50%; /* Abstand zum "X" */
+    display: inline-block;
+}
+
+.todo-item:hover {
+    background-color: #e9ecef;
+    transition: background-color 0.3s ease;
+}
+
+
+/* Checkbox-Style */
+.todo-checkbox {
+    margin-right: 10px;
+    transform: scale(1.2);
+}
+
+/* Stil für den Text der Aufgabe */
+.todo-text {
+    flex-grow: 1;
+    font-size: 16px;
+    color: #333;
+    font-family: var(--font-syncopate); /* Schriftart für den Text */
+    font-weight: bold; /* Fettdruck für den Text */
+}
+
+
+/* Stil für das "X" (Löschen-Link) */
+.todo-delete-link {
+    text-decoration: none;
+    font-size: 18px; /* Größeres "X" */
+    color: #dc3545;
+    background-color: transparent; /* Hintergrund transparent */
+    padding: 5px;
+    border-radius: 5px; /* Abgerundete Ecken */
+    transition: background-color 0.3s ease;
+}
+
+.todo-delete-link:hover {
+    background-color: #f5c6cb; /* Hintergrundfarbe beim Hover */
+}

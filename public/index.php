@@ -1,27 +1,34 @@
 <!DOCTYPE html>
 <html lang="de">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Landing Page mit Dreieck</title>
+    <meta name="robots" content="index, follow">
+    <meta name="description" content="Family Board - Die perfekte Lösung für Ihre Familie. Organisieren Sie Ihr Familienleben mit Leichtigkeit.">
+    <meta name="author" content="Timo Giese">
+    <title>Family Board</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
+
+    <!-- Meta-Tags für SEO -->
+   
+    <h1 style="visibility: hidden;width: 0%; height: 0%;">
+    Family Board - Die perfekte Lösung für Ihre Familie.</h1>
+
+
+
     <div class="container">
 
         <div class="logo"></div>
-
         <!-- Linkes Bild -->
         <div class="outer-layer left" aria-hidden="true"></div>
-
         <!-- Rechtes Bild -->
         <div class="outer-layer right" aria-hidden="true"></div>
 
-        <!-- Dreieck -->
+        <!-- Login-Formular und triangle Area -->
         <div class="triangle" aria-hidden="true">
             <div class="login-area">
                 <div class="logoMini"></div>
@@ -32,37 +39,38 @@
 
                     <label for="password">Passwort</label>
                     <input id="password" name="password" type="password" required>
-
                 </form>
-                <a class="box__link button-animation" href="#" onclick="submitForm(event, 'loginForm')"
-                    onmouseover="toggleIcon(true)" onmouseout="toggleIcon(false)">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <i id="icon" class="fa-solid fa-door-closed" style="font-size: 2rem; "></i>
-                </a>
 
-
-
-
-
-                <a href="register_public.php">
-                    <button>Registrieren</button></a>
-            </div>
+ 
+            
+            <!-- PHP-Code zur Anzeige einer Nachricht nach erfolgreicher Registrierung
+             Überprüfung, ob eine Nachricht in der URL als GET-Parameter übergeben wurde -->
             <?php if (isset($_GET['message']) && $_GET['message'] === 'registered'): ?>
-        <p style="color: green;">Erfolgreich registriert! Bitte logge dich ein.</p>
-    <?php endif; ?>
+                <p style="color: white;font-size:9px;">Erfolgreich registriert! Bitte logge dich ein.</p>
+            <?php endif; ?>
         </div>
+
+        <!-- 🔹 Button-Container -->
+<div class="button-container">
+  
+  <!-- Login-Button -->
+  <a class="box__link button-animation" href="#" onclick="submitForm(event, 'loginForm')"
+     onmouseover="toggleIcon(true)" onmouseout="toggleIcon(false)">
+    <i id="icon" class="fa-solid fa-door-closed"></i>
+  </a>
+
+  <!-- Registrieren-Button -->
+  <a class="box__link button-animation" href="register_public.php"
+     onmouseover="toggleRegisterIcon(true)" onmouseout="toggleRegisterIcon(false)">
+    <i id="register-icon" class="fa-solid fa-user-plus"></i>
+  </a>
+
+</div>
+</div>
 
         <!-- Unterer Bildbereich -->
         <div class="bottom-image" aria-hidden="true"></div>
-    </div>
-
-
- 
 
     <script src="js\main.js" defer></script>
 </body>
-
 </html>

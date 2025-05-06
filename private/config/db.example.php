@@ -1,3 +1,9 @@
+/*
+War anfänglich für GITHUB gedacht.
+ * Beispielkonfiguration für die Datenbankverbindung.
+ * Bitte die Platzhalter durch die tatsächlichen Werte ersetzen.
+ */
+
 <?php
 $host = "localhost";
 $dbname = "deine_datenbank";

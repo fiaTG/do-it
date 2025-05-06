@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const rightLayer = document.querySelector(".outer-layer.right");
     const bottomImage = document.querySelector(".bottom-image");
     const triangle = document.querySelector(".triangle");
-    const buttonAnimation = document.querySelector('.button-animation');
+    
     
 
     if (logo) {
@@ -34,19 +34,12 @@ document.addEventListener("DOMContentLoaded", () => {
     if (triangle) {
         setTimeout(() => {
             triangle.style.opacity = "1";
-        }, 5000); // 6 Sekunden Verzögerung
-    }
-
-    if (buttonAnimation) {
-        setTimeout(() => {
-            buttonAnimation.style.opacity = "1";
-        }, 6000); // 6 Sekunden Verzögerung
+        }, 5500); // 6 Sekunden Verzögerung
     }
     
 });
 
 
-// lightButton
 
 function toggleIcon(isHovered) {
     const icon = document.getElementById("icon");
@@ -64,6 +57,17 @@ function submitForm() {
         form.submit();
     } else {
         console.error("Formular nicht gefunden!");
+    }
+}
+
+function toggleRegisterIcon(isHovered) {
+    const icon = document.getElementById("register-icon");
+    if (!icon) return;
+
+    if (isHovered) {
+        icon.classList.replace("fa-user-plus", "fa-user-check");
+    } else {
+        icon.classList.replace("fa-user-check", "fa-user-plus");
     }
 }
 

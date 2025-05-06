@@ -1,27 +1,24 @@
-/* Breite der Scrollbar */
+/* WebKit (Chrome, Edge, Safari) */
 .dashboard-rightSection::-webkit-scrollbar {
-    width: 8px; /* Dünnere Scrollbar */
+    width: 8px;
 }
 
-/* Hintergrund der Scrollbar */
 .dashboard-rightSection::-webkit-scrollbar-track {
-    background: #f4f4f4; /* Heller Hintergrund */
+    background: var(--light-bg-apps);
     border-radius: 10px;
 }
 
-/* Der eigentliche Scrollbalken */
 .dashboard-rightSection::-webkit-scrollbar-thumb {
-    background: #3498db; /* Blaue Scrollbar */
+    background: var(--primary-color);
     border-radius: 10px;
 }
 
-/* Hover-Effekt auf den Scrollbalken */
 .dashboard-rightSection::-webkit-scrollbar-thumb:hover {
-    background: #2980b9; /* Dunkleres Blau beim Hover */
+    background: var(--secondary-color);
 }
 
-//Firefox
+/* Firefox */
 .dashboard-rightSection {
-    scrollbar-width: thin; /* Dünnere Scrollbar */
-    scrollbar-color: #3498db #f4f4f4; /* Farbe des Scrollbalkens und Track */
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-color) var(--light-bg-apps);
 }
