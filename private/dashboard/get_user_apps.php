@@ -13,6 +13,8 @@ $userID = $_SESSION['userID'];
 
 // SQL: Verknüpfte Apps für diesen Benutzer abrufen
 // Die UserApps-Tabelle enthält die Beziehung zwischen Benutzern und ihren aktiven Apps
+//„Gib mir die ID, den Namen, das Icon und den Pfad jeder App, die mit der Benutzer-ID aus der UserApps-Tabelle verknüpft ist, 
+// indem du die passenden App-Daten aus der App-Tabelle über einen INNER JOIN holst.
 $stmt = $pdo->prepare("
       SELECT App.appID, App.appName, App.appIcon, App.appPfad
     FROM UserApps 
