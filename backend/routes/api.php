@@ -1,7 +1,14 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\EventController;
+use App\Http\Controllers\FamilyController;
+use App\Http\Controllers\ImageController;
 use App\Http\Controllers\InviteController;
+use App\Http\Controllers\ShopController;
+use App\Http\Controllers\ShoppingItemController;
+use App\Http\Controllers\TodoController;
+use App\Http\Controllers\UserAppController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,11 +37,33 @@ Route::prefix('v1')->group(function () {
 
     // --- Geschützt (Sanctum: Cookie fürs SPA oder Bearer-Token) ---------------
     Route::middleware('auth:sanctum')->group(function () {
+        // Auth/Profil
         Route::get('/auth/me', [AuthController::class, 'me']);
         Route::post('/auth/logout', [AuthController::class, 'logout']);
         Route::put('/auth/password', [AuthController::class, 'updatePassword']);
 
-        // Familienmitglied einladen.
+        // Familie & Einladungen
+        Route::post('/family', [FamilyController::class, 'store']);
+        Route::get('/family/members', [FamilyController::class, 'members']);
         Route::post('/invites', [InviteController::class, 'store']);
+
+        // Dashboard-Apps (Katalog + eigene Auswahl)
+        Route::get('/apps', [UserAppController::class, 'index']);
+        Route::get('/me/apps', [UserAppController::class, 'mine']);
+        Route::post('/me/apps', [UserAppController::class, 'store']);
+        Route::delete('/me/apps/{app}', [UserAppController::class, 'destroy']);
+
+        // Stammdaten
+        Route::get('/shops', [ShopController::class, 'index']);
+
+        // Feature-Apps (familiengebunden, via Policies abgesichert)
+        Route::apiResource('shopping-items', ShoppingItemController::class)
+            ->only(['index', 'store', 'update', 'destroy']);
+        Route::apiResource('todos', TodoController::class)
+            ->only(['index', 'store', 'update', 'destroy']);
+        Route::apiResource('events', EventController::class)
+            ->only(['index', 'store', 'update', 'destroy']);
+        Route::apiResource('images', ImageController::class)
+            ->only(['index', 'store', 'destroy']);
     });
 });
