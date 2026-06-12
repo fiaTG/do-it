@@ -19,6 +19,7 @@ services:
             IGNITION_LOCAL_SITES_PATH: '${PWD}'
         volumes:
             - '.:/var/www/html'
+            - './docker/php/opcache.ini:/etc/php/8.5/cli/conf.d/99-opcache.ini'
         networks:
             - sail
         depends_on:
