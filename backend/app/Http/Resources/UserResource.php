@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @mixin \App\Models\User
@@ -22,7 +23,9 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'family_id' => $this->family_id,
             'family' => new FamilyResource($this->whenLoaded('family')),
-            'avatar_path' => $this->avatar_path,
+            'avatar_url' => $this->avatar_path
+                ? Storage::disk('public')->url($this->avatar_path)
+                : null,
             'birthdate' => $this->birthdate?->toDateString(),
             'gender' => $this->gender,
             'socials' => [

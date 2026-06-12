@@ -5,6 +5,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\FamilyController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\InviteController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\ShoppingItemController;
 use App\Http\Controllers\TodoController;
@@ -42,6 +43,10 @@ Route::prefix('v1')->group(function () {
         Route::post('/auth/logout', [AuthController::class, 'logout']);
         Route::put('/auth/password', [AuthController::class, 'updatePassword']);
 
+        // Profil
+        Route::put('/profile', [ProfileController::class, 'update']);
+        Route::post('/profile/avatar', [ProfileController::class, 'avatar']);
+
         // Familie & Einladungen
         Route::post('/family', [FamilyController::class, 'store']);
         Route::get('/family/members', [FamilyController::class, 'members']);
@@ -57,6 +62,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/shops', [ShopController::class, 'index']);
 
         // Feature-Apps (familiengebunden, via Policies abgesichert)
+        Route::get('shopping-items/pdf', [ShoppingItemController::class, 'pdf']);
         Route::apiResource('shopping-items', ShoppingItemController::class)
             ->only(['index', 'store', 'update', 'destroy']);
         Route::apiResource('todos', TodoController::class)
