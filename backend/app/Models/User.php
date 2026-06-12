@@ -5,13 +5,17 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -19,9 +23,17 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
         'email',
         'password',
+        'family_id',
+        'avatar_path',
+        'birthdate',
+        'gender',
+        'facebook',
+        'instagram',
+        'linkedin',
     ];
 
     /**
@@ -43,7 +55,40 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'birthdate' => 'date',
             'password' => 'hashed',
         ];
+    }
+
+    // --- Beziehungen --------------------------------------------------------
+
+    public function family(): BelongsTo
+    {
+        return $this->belongsTo(Family::class);
+    }
+
+    public function apps(): BelongsToMany
+    {
+        return $this->belongsToMany(App::class)->withTimestamps();
+    }
+
+    public function events(): HasMany
+    {
+        return $this->hasMany(Event::class);
+    }
+
+    public function images(): HasMany
+    {
+        return $this->hasMany(Image::class);
+    }
+
+    public function shoppingItems(): HasMany
+    {
+        return $this->hasMany(ShoppingItem::class);
+    }
+
+    public function todos(): HasMany
+    {
+        return $this->hasMany(Todo::class);
     }
 }
