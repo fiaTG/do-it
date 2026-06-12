@@ -1,0 +1,62 @@
+<?php
+
+use App\Models\Family;
+use App\Models\Invite;
+use App\Models\User;
+
+it('registers a new user', function () {
+    $response = $this->postJson('/api/v1/auth/register', [
+        'first_name' => 'Erika',
+        'last_name' => 'Muster',
+        'email' => 'erika@example.com',
+        'password' => 'Sup3r!pass',
+        'password_confirmation' => 'Sup3r!pass',
+    ]);
+
+    $response->assertCreated()->assertJsonPath('data.email', 'erika@example.com');
+    expect(User::where('email', 'erika@example.com')->exists())->toBeTrue();
+});
+
+it('rejects weak passwords', function () {
+    $this->postJson('/api/v1/auth/register', [
+        'first_name' => 'A',
+        'last_name' => 'B',
+        'email' => 'weak@example.com',
+        'password' => 'weak',
+        'password_confirmation' => 'weak',
+    ])->assertStatus(422)->assertJsonValidationErrorFor('password');
+});
+
+it('rejects a duplicate email', function () {
+    User::factory()->create(['email' => 'taken@example.com']);
+
+    $this->postJson('/api/v1/auth/register', [
+        'first_name' => 'A',
+        'last_name' => 'B',
+        'email' => 'taken@example.com',
+        'password' => 'Sup3r!pass',
+        'password_confirmation' => 'Sup3r!pass',
+    ])->assertStatus(422)->assertJsonValidationErrorFor('email');
+});
+
+it('joins a family via a valid invite token', function () {
+    $family = Family::factory()->create();
+    $invite = Invite::create([
+        'family_id' => $family->id,
+        'email' => 'join@example.com',
+        'token' => 'tok123',
+        'expires_at' => now()->addDay(),
+    ]);
+
+    $response = $this->postJson('/api/v1/auth/register', [
+        'first_name' => 'Joi',
+        'last_name' => 'Ner',
+        'email' => 'join@example.com',
+        'password' => 'Sup3r!pass',
+        'password_confirmation' => 'Sup3r!pass',
+        'token' => 'tok123',
+    ]);
+
+    $response->assertCreated()->assertJsonPath('data.family_id', $family->id);
+    expect($invite->fresh()->accepted_at)->not->toBeNull();
+});

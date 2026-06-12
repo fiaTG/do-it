@@ -12,7 +12,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // Aktiviert Sanctum-SPA-Authentifizierung (Cookie/Session) für Requests
+        // von den konfigurierten Stateful-Domains (SANCTUM_STATEFUL_DOMAINS).
+        $middleware->statefulApi();
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

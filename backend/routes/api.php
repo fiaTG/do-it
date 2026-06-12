@@ -1,6 +1,7 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\InviteController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -10,7 +11,7 @@ use Illuminate\Support\Facades\Route;
 | Versionierte API gemäß ADR-0011. Alle Endpunkte liegen unter /api/v1.
 */
 Route::prefix('v1')->group(function () {
-    // Health-Check: beweist, dass die API erreichbar ist (Phase 0).
+    // Health-Check: beweist, dass die API erreichbar ist.
     Route::get('/health', function () {
         return response()->json([
             'status' => 'ok',
@@ -19,8 +20,21 @@ Route::prefix('v1')->group(function () {
         ]);
     });
 
-    // Aktuell eingeloggter Nutzer (Sanctum) – wird ab Phase 2 genutzt.
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    })->middleware('auth:sanctum');
+    // --- Authentifizierung (öffentlich) --------------------------------------
+    Route::post('/auth/register', [AuthController::class, 'register']);
+    Route::post('/auth/login', [AuthController::class, 'login'])
+        ->middleware('throttle:auth'); // Brute-Force-Schutz (S4)
+
+    // Öffentliche Einladungs-Vorschau (für die Registrierungsseite).
+    Route::get('/invites/{token}', [InviteController::class, 'show']);
+
+    // --- Geschützt (Sanctum: Cookie fürs SPA oder Bearer-Token) ---------------
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/auth/me', [AuthController::class, 'me']);
+        Route::post('/auth/logout', [AuthController::class, 'logout']);
+        Route::put('/auth/password', [AuthController::class, 'updatePassword']);
+
+        // Familienmitglied einladen.
+        Route::post('/invites', [InviteController::class, 'store']);
+    });
 });
