@@ -2,7 +2,7 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useAuth } from '../store/auth'
 
 const NAV = [
-  { to: '/', label: 'Dashboard', icon: '🏠', end: true },
+  { to: '/dashboard', label: 'Dashboard', icon: '🏠', end: true },
   { to: '/shopping', label: 'Einkaufsliste', icon: '🛒' },
   { to: '/todos', label: 'ToDo', icon: '✅' },
   { to: '/calendar', label: 'Kalender', icon: '📅' },

@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { apiError } from '../api'
+import AuthLayout from '../components/AuthLayout'
 import { useAuth } from '../store/auth'
 
 export default function LoginPage() {
@@ -13,7 +14,7 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
 
-  if (user) return <Navigate to="/" replace />
+  if (user) return <Navigate to="/dashboard" replace />
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
@@ -21,7 +22,7 @@ export default function LoginPage() {
     setBusy(true)
     try {
       await login(email, password)
-      navigate('/')
+      navigate('/dashboard')
     } catch (err) {
       setError(apiError(err, 'Login fehlgeschlagen.'))
     } finally {
@@ -29,14 +30,12 @@ export default function LoginPage() {
     }
   }
 
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-brand to-sand p-4">
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-xl"
-      >
-        <h1 className="mb-6 text-center text-2xl font-bold text-brand">Family Board</h1>
+  const inputClass =
+    'mb-4 w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-brand'
 
+  return (
+    <AuthLayout title="Willkommen zurück" subtitle="Melde dich bei deinem Family Board an.">
+      <form onSubmit={handleSubmit}>
         {error && (
           <p className="mb-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
         )}
@@ -47,7 +46,7 @@ export default function LoginPage() {
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="mb-4 w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-brand"
+          className={inputClass}
         />
 
         <label className="mb-1 block text-sm font-medium text-slate-600">Passwort</label>
@@ -56,7 +55,7 @@ export default function LoginPage() {
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="mb-6 w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-brand"
+          className={inputClass}
         />
 
         <button
@@ -74,6 +73,6 @@ export default function LoginPage() {
           </Link>
         </p>
       </form>
-    </div>
+    </AuthLayout>
   )
 }

@@ -5,6 +5,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import CalendarPage from './pages/CalendarPage'
 import DashboardPage from './pages/DashboardPage'
 import GalleryPage from './pages/GalleryPage'
+import LandingPage from './pages/LandingPage'
 import LoginPage from './pages/LoginPage'
 import MembersPage from './pages/MembersPage'
 import RegisterPage from './pages/RegisterPage'
@@ -16,6 +17,7 @@ import { useAuth } from './store/auth'
 export default function App() {
   const init = useAuth((s) => s.init)
   const loading = useAuth((s) => s.loading)
+  const user = useAuth((s) => s.user)
 
   useEffect(() => {
     void init()
@@ -32,12 +34,14 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Öffentliche Landing Scene (eingeloggt -> Dashboard) */}
+        <Route path="/" element={user ? <Navigate to="/dashboard" replace /> : <LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
 
         <Route element={<ProtectedRoute />}>
           <Route element={<Layout />}>
-            <Route path="/" element={<DashboardPage />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/shopping" element={<ShoppingListPage />} />
             <Route path="/todos" element={<TodosPage />} />
             <Route path="/calendar" element={<CalendarPage />} />
