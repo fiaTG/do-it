@@ -10,7 +10,7 @@ export interface User {
   email: string
   family_id: number | null
   family?: Family | null
-  avatar_path: string | null
+  avatar_url: string | null
   birthdate: string | null
   gender: string | null
   socials: {

@@ -1,18 +1,21 @@
-import { useEffect } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import Layout from './components/Layout'
 import ProtectedRoute from './components/ProtectedRoute'
-import CalendarPage from './pages/CalendarPage'
 import DashboardPage from './pages/DashboardPage'
 import GalleryPage from './pages/GalleryPage'
 import LandingPage from './pages/LandingPage'
 import LoginPage from './pages/LoginPage'
 import MembersPage from './pages/MembersPage'
+import ProfilePage from './pages/ProfilePage'
 import RegisterPage from './pages/RegisterPage'
 import SettingsPage from './pages/SettingsPage'
 import ShoppingListPage from './pages/ShoppingListPage'
 import TodosPage from './pages/TodosPage'
 import { useAuth } from './store/auth'
+
+// FullCalendar ist groß -> nur beim Öffnen des Kalenders laden (Code-Splitting).
+const CalendarPage = lazy(() => import('./pages/CalendarPage'))
 
 export default function App() {
   const init = useAuth((s) => s.init)
@@ -44,9 +47,17 @@ export default function App() {
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/shopping" element={<ShoppingListPage />} />
             <Route path="/todos" element={<TodosPage />} />
-            <Route path="/calendar" element={<CalendarPage />} />
+            <Route
+              path="/calendar"
+              element={
+                <Suspense fallback={<div className="p-6 text-brand">Kalender lädt …</div>}>
+                  <CalendarPage />
+                </Suspense>
+              }
+            />
             <Route path="/gallery" element={<GalleryPage />} />
             <Route path="/members" element={<MembersPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
             <Route path="/settings" element={<SettingsPage />} />
           </Route>
         </Route>

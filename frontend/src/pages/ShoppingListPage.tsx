@@ -1,8 +1,10 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { apiError, shoppingApi, shopsApi } from '../api'
+import { apiError, shoppingApi, shoppingPdfUrl, shopsApi } from '../api'
+import { useAuth } from '../store/auth'
 import type { Shop, ShoppingItem } from '../types'
 
 export default function ShoppingListPage() {
+  const userId = useAuth((s) => s.user?.id)
   const [items, setItems] = useState<ShoppingItem[]>([])
   const [shops, setShops] = useState<Shop[]>([])
   const [name, setName] = useState('')
@@ -50,7 +52,17 @@ export default function ShoppingListPage() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      <h1 className="text-2xl font-bold text-brand">🛒 Einkaufsliste</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-brand">🛒 Einkaufsliste</h1>
+        <a
+          href={shoppingPdfUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="rounded-lg border border-brand px-3 py-1.5 text-sm text-brand hover:bg-brand/10"
+        >
+          📄 PDF
+        </a>
+      </div>
 
       <form onSubmit={add} className="flex flex-wrap items-end gap-2 rounded-2xl bg-white p-4 shadow">
         <input
@@ -98,13 +110,15 @@ export default function ShoppingListPage() {
               {item.name} <span className="text-slate-400">×{item.quantity}</span>
               {item.shop && <span className="ml-2 text-xs text-slate-400">@ {item.shop.name}</span>}
             </span>
-            <button
-              onClick={() => void remove(item.id)}
-              className="text-slate-300 hover:text-red-500"
-              aria-label="Löschen"
-            >
-              🗑️
-            </button>
+            {item.created_by === userId && (
+              <button
+                onClick={() => void remove(item.id)}
+                className="text-slate-300 hover:text-red-500"
+                aria-label="Löschen"
+              >
+                🗑️
+              </button>
+            )}
           </li>
         ))}
       </ul>

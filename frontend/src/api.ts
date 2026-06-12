@@ -47,6 +47,32 @@ export const authApi = {
   },
 }
 
+export interface ProfilePayload {
+  first_name: string
+  last_name: string
+  birthdate: string | null
+  gender: string | null
+  facebook: string | null
+  instagram: string | null
+  linkedin: string | null
+}
+
+export const profileApi = {
+  async update(payload: ProfilePayload): Promise<User> {
+    const { data } = await api.put<{ data: User }>('/profile', payload)
+    return data.data
+  },
+  async avatar(file: File): Promise<User> {
+    const form = new FormData()
+    form.append('avatar', file)
+    const { data } = await api.post<{ data: User }>('/profile/avatar', form)
+    return data.data
+  },
+}
+
+/** Direkt-URL zum PDF-Export der Einkaufsliste (per Cookie authentifiziert). */
+export const shoppingPdfUrl = `${import.meta.env.VITE_API_URL}/shopping-items/pdf`
+
 export const familyApi = {
   async create(name: string): Promise<Family> {
     const { data } = await api.post<{ data: Family }>('/family', { name })

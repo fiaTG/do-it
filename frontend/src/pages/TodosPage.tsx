@@ -1,8 +1,10 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { apiError, todosApi } from '../api'
+import { useAuth } from '../store/auth'
 import type { Todo } from '../types'
 
 export default function TodosPage() {
+  const userId = useAuth((s) => s.user?.id)
   const [todos, setTodos] = useState<Todo[]>([])
   const [title, setTitle] = useState('')
   const [error, setError] = useState('')
@@ -68,13 +70,15 @@ export default function TodosPage() {
             <span className={todo.is_done ? 'flex-1 text-slate-400 line-through' : 'flex-1'}>
               {todo.title}
             </span>
-            <button
-              onClick={() => void remove(todo.id)}
-              className="text-slate-300 hover:text-red-500"
-              aria-label="Löschen"
-            >
-              🗑️
-            </button>
+            {todo.created_by === userId && (
+              <button
+                onClick={() => void remove(todo.id)}
+                className="text-slate-300 hover:text-red-500"
+                aria-label="Löschen"
+              >
+                🗑️
+              </button>
+            )}
           </li>
         ))}
       </ul>

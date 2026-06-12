@@ -46,8 +46,12 @@ export default function MembersPage() {
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
         {members.map((m) => (
           <div key={m.id} className="flex flex-col items-center rounded-2xl bg-white p-5 shadow">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brand text-xl font-bold text-white">
-              {initials(m)}
+            <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-brand text-xl font-bold text-white">
+              {m.avatar_url ? (
+                <img src={m.avatar_url} alt="" className="h-full w-full object-cover" />
+              ) : (
+                initials(m)
+              )}
             </div>
             <div className="mt-2 text-center font-medium text-slate-700">
               {m.first_name} {m.last_name}
