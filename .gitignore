@@ -8,7 +8,7 @@ Thumbs.db
 
 # PHP-spezifische Ignore-Regeln
 /vendor/
-composer.lock
+# composer.lock wird bewusst eingecheckt (reproduzierbare Builds, siehe ADR-0007)
 
 
 # Sensible Dateien (Datenbank und Konfiguration)
