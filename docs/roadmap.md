@@ -135,3 +135,5 @@ Jede Phase ist eigenständig abschließbar. Reihenfolge = empfohlene Bearbeitung
 | [0010](adr/0010-tests-und-ci-cd.md) | Tests & CI/CD | Vorgeschlagen |
 | [0011](adr/0011-api-design.md) | API-Design & Vertrag Backend/Frontend | Vorgeschlagen |
 | [0012](adr/0012-multi-client-packaging.md) | Multi-Client-Strategie & Packaging | Vorgeschlagen |
+| [0013](adr/0013-monetarisierung-freemium.md) | Monetarisierung – werbefreies Freemium | Akzeptiert |
+| [0014](adr/0014-hosting-infrastruktur.md) | Hosting – entkoppelte Compute-/Objektspeicher-Architektur | Akzeptiert |
