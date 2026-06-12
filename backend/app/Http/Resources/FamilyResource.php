@@ -2,11 +2,12 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Family;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * @mixin \App\Models\Family
+ * @mixin Family
  */
 class FamilyResource extends JsonResource
 {

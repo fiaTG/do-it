@@ -3,9 +3,10 @@
 use App\Models\Family;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
-uses(Tests\TestCase::class, RefreshDatabase::class)->in('Feature');
-uses(Tests\TestCase::class)->in('Unit');
+uses(TestCase::class, RefreshDatabase::class)->in('Feature');
+uses(TestCase::class)->in('Unit');
 
 /**
  * Erzeugt einen Nutzer, der einer Familie angehört (eigene oder übergebene).

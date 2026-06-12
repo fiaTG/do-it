@@ -40,8 +40,11 @@ export default function LoginPage() {
           <p className="mb-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
         )}
 
-        <label className="mb-1 block text-sm font-medium text-slate-600">E-Mail</label>
+        <label htmlFor="email" className="mb-1 block text-sm font-medium text-slate-600">
+          E-Mail
+        </label>
         <input
+          id="email"
           type="email"
           required
           value={email}
@@ -49,8 +52,11 @@ export default function LoginPage() {
           className={inputClass}
         />
 
-        <label className="mb-1 block text-sm font-medium text-slate-600">Passwort</label>
+        <label htmlFor="password" className="mb-1 block text-sm font-medium text-slate-600">
+          Passwort
+        </label>
         <input
+          id="password"
           type="password"
           required
           value={password}

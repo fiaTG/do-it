@@ -2,11 +2,12 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Invite;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * @mixin \App\Models\Invite
+ * @mixin Invite
  */
 class InviteResource extends JsonResource
 {

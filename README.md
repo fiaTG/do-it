@@ -1,73 +1,73 @@
-# Familyboard – Installationsanleitung
+# Family Board
 
-## Testzugang
+Eine Web-App, mit der eine Familie ihren Alltag gemeinsam organisiert:
+Einkaufsliste, Kalender, ToDos und Bildergalerie – modular auswählbar pro Nutzer.
 
-Login-Daten zum Testen:
+> Ursprünglich ein Vanilla-PHP/XAMPP-Schulprojekt, inzwischen modernisiert zu
+> einer **Laravel-API + React-SPA in Docker**. Hintergrund, Entscheidungen und
+> Fahrplan: [`docs/roadmap.md`](docs/roadmap.md) und die ADRs unter
+> [`docs/adr/`](docs/adr/).
 
-- **E-Mail:** `dozent@example.com`  
+![CI](https://github.com/OWNER/REPO/actions/workflows/ci.yml/badge.svg)
+
+## Architektur
+
+| Teil | Stack | Läuft auf |
+|------|-------|-----------|
+| `backend/` | PHP 8 · **Laravel 11** (JSON-API, Sanctum) · MySQL | http://localhost:8080 |
+| `frontend/` | **React + TypeScript** (Vite, Tailwind, PWA) | http://localhost:5173 |
+
+Auth läuft über Sanctum (Cookie fürs Web-SPA, Token für spätere native Apps).
+Die Ports liegen bewusst neben einer evtl. laufenden XAMPP-Installation.
+
+## Schnellstart
+
+Voraussetzungen: **Docker Desktop** und **Node.js**.
+
+```bash
+# 1) Backend (API + MySQL + Mailpit) via Docker
+cd backend
+cp .env.example .env
+php artisan key:generate          # bzw. im Container
+docker compose up -d --build
+docker compose exec laravel.test php artisan migrate --seed
+
+# 2) Frontend (React-SPA)
+cd ../frontend
+npm install
+npm run dev
+```
+
+Dann **http://localhost:5173** öffnen. Demo-Login:
+
+- **E-Mail:** `dozent@example.com`
 - **Passwort:** `test123!`
 
----
+Weitere Dienste: **Mailpit** (abgefangene E-Mails) unter http://localhost:8025.
+Ausführliche Anleitung: [`docs/dev-setup.md`](docs/dev-setup.md).
 
-## 1. Projektdateien bereitstellen
+## Tests
 
-1. **Ordner erstellen:**  
-   Im XAMPP-Ordner `htdocs` muss ein Ordner namens `files` erstellt werden.  
-   Beispielpfad: `C:\xampp\htdocs\files`
+```bash
+# Backend (Pest) – im Container
+cd backend && docker compose exec laravel.test php artisan test
 
-2. **Projekt kopieren:**  
-   Den Familyboard-Projektordner in den neu erstellten Ordner `files` kopieren und den Ordner in `C:\xampp\htdocs\files\Do-IT` umbenennen.
-
----
-
-## 2. Mailtrap für E-Mail-Funktionalität einrichten
-
-1. Kostenloses Konto bei [Mailtrap](https://mailtrap.io) erstellen.
-2. SMTP-Zugangsdaten im Mailtrap-Dashboard abrufen.
-3. Datei `private/dashboard/dashboard.php` öffnen.
-4. An den Stellen (ca. Zeile 131–132) die Platzhalter mit den Mailtrap-Zugangsdaten ersetzen:
-
-   ```php
-   $mail->Username = 'DEIN_MAILTRAP_USERNAME';
-   $mail->Password = 'DEIN_MAILTRAP_PASSWORT';
-
----
-
-## 3. Datenbank importieren
-
-1. DBeaver (oder ein vergleichbares Datenbankverwaltungstool) starten und mit dem lokalen MySQL-Server verbinden.
-2. Neue Datenbank anlegen oder eine vorhandene Datenbank auswählen.
-3. Im Reiter **"Importieren"** folgende Datei auswählen:
-
-DatenbankDump/dump-familyboard-202504151239.sql
-
-
-4. Importvorgang bestätigen.  
-Nach Abschluss stehen die Testdaten zur Verfügung.
-
----
-
-## 4. Datenbankverbindung konfigurieren
-
-1. Datei `private/config/db.php` öffnen.
-2. Falls erforderlich, die Zugangsdaten für die Datenbankverbindung anpassen:
-
-```php
-$username = 'root';
-$password = '';
-(Standardwerte für XAMPP, andernfalls entsprechend der eigenen Konfiguration anpassen.)
+# Frontend (Vitest)
+cd frontend && npm test
 ```
----
 
+Bei jedem Push/PR laufen Backend- und Frontend-Checks automatisch über
+GitHub Actions ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
 
-## 5. Familyboard starten
+## Dokumentation
 
-1. Apache- und MySQL-Server über das XAMPP-Control-Panel starten.
+- [`docs/roadmap.md`](docs/roadmap.md) – Modernisierungs-Fahrplan & Befunde
+- [`docs/adr/`](docs/adr/) – Architecture Decision Records
+- [`docs/familyboard_markdown/`](docs/familyboard_markdown/) – ursprüngliche
+  Projektdokumentation (Schulprojekt)
 
-2. Familyboard im Browser aufrufen:
+## Legacy
 
-        Aufruf über: http://localhost/files/Do-IT/
-
-Die Anwendung sollte nun bereit zur Nutzung sein.
-
----
+Die ursprüngliche Vanilla-PHP-App (XAMPP) liegt weiterhin in `public/` und
+`private/` und ist über `http://localhost/files/Do-IT/` lauffähig. Sie wird
+durch den neuen Stack abgelöst.

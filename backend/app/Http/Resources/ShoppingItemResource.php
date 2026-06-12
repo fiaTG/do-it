@@ -2,11 +2,12 @@
 
 namespace App\Http\Resources;
 
+use App\Models\ShoppingItem;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * @mixin \App\Models\ShoppingItem
+ * @mixin ShoppingItem
  */
 class ShoppingItemResource extends JsonResource
 {

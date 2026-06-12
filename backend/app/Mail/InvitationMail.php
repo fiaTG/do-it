@@ -13,9 +13,7 @@ class InvitationMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public Invite $invite)
-    {
-    }
+    public function __construct(public Invite $invite) {}
 
     public function envelope(): Envelope
     {

@@ -18,5 +18,11 @@ export default defineConfig([
     languageOptions: {
       globals: globals.browser,
     },
+    rules: {
+      // Wir laden Daten bewusst beim Mount per Effect (fetch -> setState nach
+      // await). Der saubere Langfrist-Weg dafür ist TanStack Query (ADR-0008),
+      // bis dahin ist dieses Muster gewollt.
+      'react-hooks/set-state-in-effect': 'off',
+    },
   },
 ])
