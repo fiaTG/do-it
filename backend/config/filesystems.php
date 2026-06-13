@@ -17,6 +17,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Media Disk (ADR-0014)
+    |--------------------------------------------------------------------------
+    |
+    | Disk für nutzergenerierte Medien (Galerie, Avatare). Lokal "public",
+    | in Produktion auf "s3" stellbar (Hetzner Object Storage) – der Umstieg
+    | ist damit reine Konfiguration (MEDIA_DISK=s3 + AWS_*-Variablen).
+    |
+    */
+
+    'media' => env('MEDIA_DISK', 'public'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Filesystem Disks
     |--------------------------------------------------------------------------
     |
@@ -56,6 +69,7 @@ return [
             'url' => env('AWS_URL'),
             'endpoint' => env('AWS_ENDPOINT'),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+            'visibility' => 'public',
             'throw' => false,
             'report' => false,
         ],

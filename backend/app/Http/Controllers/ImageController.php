@@ -4,15 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Concerns\InteractsWithFamily;
 use App\Http\Resources\ImageResource;
+use App\Jobs\GenerateThumbnail;
 use App\Models\Image;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Drivers\Gd\Driver;
-use Intervention\Image\Encoders\JpegEncoder;
-use Intervention\Image\ImageManager;
 
 class ImageController extends Controller
 {
@@ -28,8 +26,8 @@ class ImageController extends Controller
     }
 
     /**
-     * Bild hochladen – Datei landet im Storage (public-Disk), in der DB steht
-     * nur der Pfad (ADR-0006).
+     * Bild hochladen – die Datei landet auf der media-Disk (lokal/S3, ADR-0014),
+     * in der DB steht nur der Pfad (ADR-0006). Das Thumbnail erzeugt ein Job.
      */
     public function store(Request $request): JsonResponse
     {
@@ -52,34 +50,27 @@ class ImageController extends Controller
             );
         }
 
-        $file = $request->file('image');
-        $path = $file->store("gallery/{$familyId}", 'public');
-
-        // Thumbnail (max. 600px Breite) erzeugen und ablegen – schnellere Galerie
-        // (ADR-0014). Verarbeitung hier synchron; später per Queue/Worker auslagerbar.
-        $thumbnail = (new ImageManager(new Driver))
-            ->decodePath($file->getRealPath())
-            ->scaleDown(width: 600)
-            ->encode(new JpegEncoder(quality: 75));
-        $thumbnailPath = "gallery/{$familyId}/thumbs/".pathinfo($path, PATHINFO_FILENAME).'.jpg';
-        Storage::disk('public')->put($thumbnailPath, (string) $thumbnail);
+        $path = $request->file('image')->store("gallery/{$familyId}", config('filesystems.media'));
 
         $image = Image::create([
             'family_id' => $familyId,
             'user_id' => $request->user()->id,
             'title' => $data['title'] ?? null,
             'path' => $path,
-            'thumbnail_path' => $thumbnailPath,
         ]);
 
-        return (new ImageResource($image))->response()->setStatusCode(201);
+        // Thumbnail entkoppelt erzeugen (lokal sync, in Produktion async via Worker).
+        GenerateThumbnail::dispatch($image);
+
+        return (new ImageResource($image->fresh()))->response()->setStatusCode(201);
     }
 
     public function destroy(Request $request, Image $image): Response
     {
         $this->authorize('delete', $image);
 
-        Storage::disk('public')->delete(array_filter([$image->path, $image->thumbnail_path]));
+        Storage::disk(config('filesystems.media'))
+            ->delete(array_filter([$image->path, $image->thumbnail_path]));
         $image->delete();
 
         return response()->noContent();

@@ -25,7 +25,7 @@ class UserResource extends JsonResource
             'family_id' => $this->family_id,
             'family' => new FamilyResource($this->whenLoaded('family')),
             'avatar_url' => $this->avatar_path
-                ? Storage::disk('public')->url($this->avatar_path)
+                ? Storage::disk(config('filesystems.media'))->url($this->avatar_path)
                 : null,
             'birthdate' => $this->birthdate?->toDateString(),
             'gender' => $this->gender,

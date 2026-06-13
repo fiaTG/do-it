@@ -20,8 +20,8 @@ class ImageResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'url' => Storage::disk('public')->url($this->path),
-            'thumbnail_url' => Storage::disk('public')->url($this->thumbnail_path ?? $this->path),
+            'url' => Storage::disk(config('filesystems.media'))->url($this->path),
+            'thumbnail_url' => Storage::disk(config('filesystems.media'))->url($this->thumbnail_path ?? $this->path),
             'created_by' => $this->user_id,
             'created_at' => $this->created_at?->toIso8601String(),
         ];

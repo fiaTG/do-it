@@ -39,10 +39,10 @@ class ProfileController extends Controller
         $user = $request->user();
 
         if ($user->avatar_path) {
-            Storage::disk('public')->delete($user->avatar_path);
+            Storage::disk(config('filesystems.media'))->delete($user->avatar_path);
         }
 
-        $path = $request->file('avatar')->store("avatars/{$user->id}", 'public');
+        $path = $request->file('avatar')->store("avatars/{$user->id}", config('filesystems.media'));
         $user->update(['avatar_path' => $path]);
 
         return new UserResource($user->fresh()->load('family.subscription'));
