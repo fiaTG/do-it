@@ -6,6 +6,7 @@ use App\Http\Controllers\Concerns\InteractsWithFamily;
 use App\Http\Resources\ImageResource;
 use App\Jobs\GenerateThumbnail;
 use App\Models\Image;
+use App\Support\ImageUpload;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -50,7 +51,7 @@ class ImageController extends Controller
             );
         }
 
-        $path = $request->file('image')->store("gallery/{$familyId}", config('filesystems.media'));
+        $path = ImageUpload::storeStripped($request->file('image'), "gallery/{$familyId}");
 
         $image = Image::create([
             'family_id' => $familyId,

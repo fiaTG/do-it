@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\UserResource;
+use App\Support\ImageUpload;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -42,7 +43,7 @@ class ProfileController extends Controller
             Storage::disk(config('filesystems.media'))->delete($user->avatar_path);
         }
 
-        $path = $request->file('avatar')->store("avatars/{$user->id}", config('filesystems.media'));
+        $path = ImageUpload::storeStripped($request->file('avatar'), "avatars/{$user->id}");
         $user->update(['avatar_path' => $path]);
 
         return new UserResource($user->fresh()->load('family.subscription'));
