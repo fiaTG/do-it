@@ -16,9 +16,15 @@ export default function ShoppingWidget({ onRemove }: { onRemove?: () => void }) 
 
   const open = items.filter((i) => !i.is_purchased)
 
+  // Optimistisch: Eintrag sofort als gekauft markieren (verschwindet aus der
+  // offenen Liste); bei Fehler zurückdrehen.
   async function markPurchased(item: ShoppingItem) {
-    await shoppingApi.update(item.id, { is_purchased: true })
-    load()
+    setItems((prev) => prev.map((i) => (i.id === item.id ? { ...i, is_purchased: true } : i)))
+    try {
+      await shoppingApi.update(item.id, { is_purchased: true })
+    } catch {
+      setItems((prev) => prev.map((i) => (i.id === item.id ? { ...i, is_purchased: false } : i)))
+    }
   }
 
   return (

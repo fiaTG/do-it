@@ -16,9 +16,15 @@ export default function TodoWidget({ onRemove }: { onRemove?: () => void }) {
 
   const open = todos.filter((t) => !t.is_done)
 
+  // Optimistisch: Eintrag sofort als erledigt markieren (verschwindet aus der
+  // offenen Liste); bei Fehler zurückdrehen.
   async function markDone(todo: Todo) {
-    await todosApi.update(todo.id, { is_done: true })
-    load()
+    setTodos((prev) => prev.map((t) => (t.id === todo.id ? { ...t, is_done: true } : t)))
+    try {
+      await todosApi.update(todo.id, { is_done: true })
+    } catch {
+      setTodos((prev) => prev.map((t) => (t.id === todo.id ? { ...t, is_done: false } : t)))
+    }
   }
 
   return (

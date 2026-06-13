@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { apiError, todosApi } from '../api'
+import ErrorBanner from '../components/ErrorBanner'
 import { useAuth } from '../store/auth'
 import type { Todo } from '../types'
 
@@ -21,28 +22,58 @@ export default function TodosPage() {
     void load()
   }, [])
 
+  // Optimistisch anlegen: Platzhalter sofort zeigen, nach der Antwort durch den
+  // echten Datensatz ersetzen; bei Fehler wieder entfernen + Eingabe zurück.
   async function add(e: FormEvent) {
     e.preventDefault()
-    await todosApi.create(title)
+    const value = title.trim()
+    if (!value) return
     setTitle('')
-    await load()
+    const temp: Todo = {
+      id: -Date.now(),
+      title: value,
+      is_done: false,
+      created_by: userId ?? null,
+      created_at: new Date().toISOString(),
+    }
+    setTodos((prev) => [...prev, temp])
+    try {
+      const created = await todosApi.create(value)
+      setTodos((prev) => prev.map((t) => (t.id === temp.id ? created : t)))
+    } catch (err) {
+      setTodos((prev) => prev.filter((t) => t.id !== temp.id))
+      setTitle(value)
+      setError(apiError(err))
+    }
   }
 
+  // Optimistisch abhaken: Zustand sofort umschalten, bei Fehler zurückdrehen.
   async function toggle(todo: Todo) {
-    await todosApi.update(todo.id, { is_done: !todo.is_done })
-    await load()
+    const next = !todo.is_done
+    setTodos((prev) => prev.map((t) => (t.id === todo.id ? { ...t, is_done: next } : t)))
+    try {
+      await todosApi.update(todo.id, { is_done: next })
+    } catch (err) {
+      setTodos((prev) => prev.map((t) => (t.id === todo.id ? { ...t, is_done: todo.is_done } : t)))
+      setError(apiError(err))
+    }
   }
 
-  async function remove(id: number) {
-    await todosApi.remove(id)
-    await load()
+  // Optimistisch löschen: sofort ausblenden, bei Fehler Eintrag wiederherstellen.
+  async function remove(todo: Todo) {
+    setTodos((prev) => prev.filter((t) => t.id !== todo.id))
+    try {
+      await todosApi.remove(todo.id)
+    } catch (err) {
+      setTodos((prev) => [...prev, todo].sort((a, b) => a.id - b.id))
+      setError(apiError(err))
+    }
   }
-
-  if (error) return <p className="text-red-600">{error}</p>
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <h1 className="text-2xl font-bold text-primary">✅ ToDo-Liste</h1>
+      <ErrorBanner message={error} onDismiss={() => setError('')} />
 
       <form onSubmit={add} className="flex gap-2 rounded-2xl bg-surface p-4 shadow">
         <input
@@ -59,28 +90,32 @@ export default function TodosPage() {
 
       <ul className="divide-y divide-border rounded-2xl bg-surface shadow">
         {todos.length === 0 && <li className="p-4 text-muted">Keine Aufgaben.</li>}
-        {todos.map((todo) => (
-          <li key={todo.id} className="flex items-center gap-3 p-4">
-            <input
-              type="checkbox"
-              checked={todo.is_done}
-              onChange={() => void toggle(todo)}
-              className="h-5 w-5 accent-primary"
-            />
-            <span className={todo.is_done ? 'flex-1 text-muted line-through' : 'flex-1'}>
-              {todo.title}
-            </span>
-            {todo.created_by === userId && (
-              <button
-                onClick={() => void remove(todo.id)}
-                className="text-muted hover:text-red-500"
-                aria-label="Löschen"
-              >
-                🗑️
-              </button>
-            )}
-          </li>
-        ))}
+        {todos.map((todo) => {
+          const pending = todo.id < 0 // optimistischer Platzhalter (noch nicht gespeichert)
+          return (
+            <li key={todo.id} className={`flex items-center gap-3 p-4 ${pending ? 'opacity-60' : ''}`}>
+              <input
+                type="checkbox"
+                checked={todo.is_done}
+                disabled={pending}
+                onChange={() => void toggle(todo)}
+                className="h-5 w-5 accent-primary"
+              />
+              <span className={todo.is_done ? 'flex-1 text-muted line-through' : 'flex-1'}>
+                {todo.title}
+              </span>
+              {!pending && todo.created_by === userId && (
+                <button
+                  onClick={() => void remove(todo)}
+                  className="text-muted hover:text-red-500"
+                  aria-label="Löschen"
+                >
+                  🗑️
+                </button>
+              )}
+            </li>
+          )
+        })}
       </ul>
     </div>
   )
