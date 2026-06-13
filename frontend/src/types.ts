@@ -65,6 +65,7 @@ export interface ImageItem {
   id: number
   title: string | null
   url: string
+  thumbnail_url: string
   created_by: number | null
   created_at: string
 }

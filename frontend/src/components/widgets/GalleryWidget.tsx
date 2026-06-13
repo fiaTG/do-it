@@ -21,7 +21,7 @@ export default function GalleryWidget({ onRemove }: { onRemove?: () => void }) {
           {preview.map((img) => (
             <img
               key={img.id}
-              src={img.url}
+              src={img.thumbnail_url}
               alt={img.title ?? ''}
               loading="lazy"
               className="aspect-square w-full rounded-lg object-cover"

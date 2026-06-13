@@ -10,6 +10,9 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\Encoders\JpegEncoder;
+use Intervention\Image\ImageManager;
 
 class ImageController extends Controller
 {
@@ -37,13 +40,24 @@ class ImageController extends Controller
             'image' => ['required', 'image', 'max:5120'], // max. 5 MB
         ]);
 
-        $path = $request->file('image')->store("gallery/{$familyId}", 'public');
+        $file = $request->file('image');
+        $path = $file->store("gallery/{$familyId}", 'public');
+
+        // Thumbnail (max. 600px Breite) erzeugen und ablegen – schnellere Galerie
+        // (ADR-0014). Verarbeitung hier synchron; später per Queue/Worker auslagerbar.
+        $thumbnail = (new ImageManager(new Driver))
+            ->decodePath($file->getRealPath())
+            ->scaleDown(width: 600)
+            ->encode(new JpegEncoder(quality: 75));
+        $thumbnailPath = "gallery/{$familyId}/thumbs/".pathinfo($path, PATHINFO_FILENAME).'.jpg';
+        Storage::disk('public')->put($thumbnailPath, (string) $thumbnail);
 
         $image = Image::create([
             'family_id' => $familyId,
             'user_id' => $request->user()->id,
             'title' => $data['title'] ?? null,
             'path' => $path,
+            'thumbnail_path' => $thumbnailPath,
         ]);
 
         return (new ImageResource($image))->response()->setStatusCode(201);
@@ -53,7 +67,7 @@ class ImageController extends Controller
     {
         $this->authorize('delete', $image);
 
-        Storage::disk('public')->delete($image->path);
+        Storage::disk('public')->delete(array_filter([$image->path, $image->thumbnail_path]));
         $image->delete();
 
         return response()->noContent();

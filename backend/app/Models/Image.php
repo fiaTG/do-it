@@ -12,6 +12,7 @@ class Image extends Model
         'user_id',
         'title',
         'path',
+        'thumbnail_path',
     ];
 
     public function family(): BelongsTo

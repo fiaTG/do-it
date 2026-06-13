@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\Event;
-use App\Models\Family;
 use Laravel\Sanctum\Sanctum;
 
 it('creates a calendar event with car reservation', function () {

@@ -8,6 +8,7 @@ export default function GalleryPage() {
   const [file, setFile] = useState<File | null>(null)
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
+  const [lightbox, setLightbox] = useState<string | null>(null)
   const fileInput = useRef<HTMLInputElement>(null)
 
   async function load() {
@@ -78,9 +79,18 @@ export default function GalleryPage() {
         {images.length === 0 && <p className="text-slate-500">Noch keine Bilder.</p>}
         {images.map((img) => (
           <figure key={img.id} className="group relative overflow-hidden rounded-2xl bg-white shadow">
-            <img src={img.url} alt={img.title ?? ''} className="aspect-square w-full object-cover" />
+            <img
+              src={img.thumbnail_url}
+              alt={img.title ?? ''}
+              loading="lazy"
+              onClick={() => setLightbox(img.url)}
+              className="aspect-square w-full cursor-pointer object-cover"
+            />
             <button
-              onClick={() => void remove(img.id)}
+              onClick={(e) => {
+                e.stopPropagation()
+                void remove(img.id)
+              }}
               className="absolute right-2 top-2 rounded-full bg-black/40 px-2 text-white opacity-0 transition group-hover:opacity-100"
               aria-label="Löschen"
             >
@@ -94,6 +104,15 @@ export default function GalleryPage() {
           </figure>
         ))}
       </div>
+
+      {lightbox && (
+        <div
+          onClick={() => setLightbox(null)}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+        >
+          <img src={lightbox} alt="" className="max-h-full max-w-full rounded-lg object-contain" />
+        </div>
+      )}
     </div>
   )
 }
