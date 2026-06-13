@@ -19,6 +19,7 @@ class FamilyResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'is_premium' => $this->isPremium(),
         ];
     }
 }

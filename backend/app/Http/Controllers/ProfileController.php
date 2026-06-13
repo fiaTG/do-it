@@ -25,7 +25,7 @@ class ProfileController extends Controller
 
         $request->user()->update($data);
 
-        return new UserResource($request->user()->fresh()->load('family'));
+        return new UserResource($request->user()->fresh()->load('family.subscription'));
     }
 
     /**
@@ -45,6 +45,6 @@ class ProfileController extends Controller
         $path = $request->file('avatar')->store("avatars/{$user->id}", 'public');
         $user->update(['avatar_path' => $path]);
 
-        return new UserResource($user->fresh()->load('family'));
+        return new UserResource($user->fresh()->load('family.subscription'));
     }
 }

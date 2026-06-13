@@ -43,7 +43,7 @@ class AuthController extends Controller
             $request->session()->regenerate();
         }
 
-        return (new UserResource($user->load('family')))
+        return (new UserResource($user->load('family.subscription')))
             ->response()
             ->setStatusCode(201);
     }
@@ -79,7 +79,7 @@ class AuthController extends Controller
             $request->session()->regenerate();
         }
 
-        return new UserResource($user->load('family'));
+        return new UserResource($user->load('family.subscription'));
     }
 
     /**
@@ -107,7 +107,7 @@ class AuthController extends Controller
      */
     public function me(Request $request): UserResource
     {
-        return new UserResource($request->user()->load('family'));
+        return new UserResource($request->user()->load('family.subscription'));
     }
 
     /**

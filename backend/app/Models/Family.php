@@ -6,6 +6,7 @@ use Database\Factories\FamilyFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Family extends Model
 {
@@ -42,5 +43,18 @@ class Family extends Model
     public function todos(): HasMany
     {
         return $this->hasMany(Todo::class);
+    }
+
+    public function subscription(): HasOne
+    {
+        return $this->hasOne(Subscription::class);
+    }
+
+    /**
+     * Ist diese Familie aktuell Premium? (ein aktives, nicht abgelaufenes Abo)
+     */
+    public function isPremium(): bool
+    {
+        return $this->subscription?->isActive() ?? false;
     }
 }

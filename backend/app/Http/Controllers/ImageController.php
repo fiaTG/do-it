@@ -40,6 +40,18 @@ class ImageController extends Controller
             'image' => ['required', 'image', 'max:5120'], // max. 5 MB
         ]);
 
+        // Entitlement-Gate (ADR-0013): Free-Familien haben ein Galerie-Limit,
+        // Premium ist unbegrenzt.
+        $family = $request->user()->family;
+        if ($family !== null && ! $family->isPremium()) {
+            $limit = (int) config('features.free_limits.gallery_images');
+            abort_if(
+                Image::where('family_id', $familyId)->count() >= $limit,
+                403,
+                "Galerie-Limit ($limit Bilder) erreicht. Mit Premium ist der Speicher unbegrenzt.",
+            );
+        }
+
         $file = $request->file('image');
         $path = $file->store("gallery/{$familyId}", 'public');
 

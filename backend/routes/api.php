@@ -8,6 +8,7 @@ use App\Http\Controllers\InviteController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\ShoppingItemController;
+use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\TodoController;
 use App\Http\Controllers\UserAppController;
 use Illuminate\Support\Facades\Route;
@@ -46,6 +47,11 @@ Route::prefix('v1')->group(function () {
         // Profil
         Route::put('/profile', [ProfileController::class, 'update']);
         Route::post('/profile/avatar', [ProfileController::class, 'avatar']);
+
+        // Abo / Premium (ADR-0013)
+        Route::get('/subscription', [SubscriptionController::class, 'show']);
+        Route::post('/subscription', [SubscriptionController::class, 'store']);
+        Route::delete('/subscription', [SubscriptionController::class, 'destroy']);
 
         // Familie & Einladungen
         Route::post('/family', [FamilyController::class, 'store']);
