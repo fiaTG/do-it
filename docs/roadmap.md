@@ -137,3 +137,6 @@ Jede Phase ist eigenständig abschließbar. Reihenfolge = empfohlene Bearbeitung
 | [0012](adr/0012-multi-client-packaging.md) | Multi-Client-Strategie & Packaging | Vorgeschlagen |
 | [0013](adr/0013-monetarisierung-freemium.md) | Monetarisierung – werbefreies Freemium | Akzeptiert |
 | [0014](adr/0014-hosting-infrastruktur.md) | Hosting – entkoppelte Compute-/Objektspeicher-Architektur | Akzeptiert |
+| [0015](adr/0015-medien-prinzipien.md) | Medien-Prinzipien (Immutability, Privacy/EXIF, responsive) | Vorgeschlagen |
+| [0016](adr/0016-skalierung-modularer-monolith.md) | Skalierung – modularer Monolith (kein verfrühtes Microservices/CQRS) | Akzeptiert |
+| [0017](adr/0017-design-system-tokens.md) | Design-System mit Tokens & „Heimathafen"-Theming | Vorgeschlagen |
