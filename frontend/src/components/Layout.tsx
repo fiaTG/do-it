@@ -11,7 +11,6 @@ const NAV = [
   { to: '/members', label: 'Familie', icon: '👪' },
   { to: '/profile', label: 'Profil', icon: '👤' },
   { to: '/premium', label: 'Premium', icon: '⭐' },
-  { to: '/settings', label: 'Einstellungen', icon: '⚙️' },
 ]
 
 export default function Layout() {

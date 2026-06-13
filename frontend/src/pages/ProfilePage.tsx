@@ -1,5 +1,5 @@
 import { useRef, useState, type ChangeEvent, type FormEvent } from 'react'
-import { apiError, profileApi } from '../api'
+import { apiError, authApi, profileApi } from '../api'
 import { useAuth } from '../store/auth'
 
 export default function ProfilePage() {
@@ -17,7 +17,33 @@ export default function ProfilePage() {
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
 
+  // Passwort ändern (früher eigene Einstellungen-Seite, jetzt hier gebündelt).
+  const [currentPw, setCurrentPw] = useState('')
+  const [newPw, setNewPw] = useState('')
+  const [confirmPw, setConfirmPw] = useState('')
+  const [pwMessage, setPwMessage] = useState('')
+  const [pwError, setPwError] = useState('')
+
   if (!user) return null
+
+  async function changePassword(e: FormEvent) {
+    e.preventDefault()
+    setPwMessage('')
+    setPwError('')
+    try {
+      await authApi.updatePassword({
+        current_password: currentPw,
+        password: newPw,
+        password_confirmation: confirmPw,
+      })
+      setPwMessage('Passwort erfolgreich geändert.')
+      setCurrentPw('')
+      setNewPw('')
+      setConfirmPw('')
+    } catch (err) {
+      setPwError(apiError(err))
+    }
+  }
 
   async function save(e: FormEvent) {
     e.preventDefault()
@@ -112,6 +138,43 @@ export default function ProfilePage() {
 
         <button className="w-full rounded-lg bg-primary py-2 font-semibold text-white hover:bg-primary-hover">
           Speichern
+        </button>
+      </form>
+
+      {/* Passwort ändern */}
+      <form onSubmit={changePassword} className="space-y-4 rounded-2xl bg-surface p-6 shadow">
+        <h2 className="font-semibold text-text">🔒 Passwort ändern</h2>
+        {pwMessage && <p className="text-sm text-green-700">{pwMessage}</p>}
+        {pwError && <p className="text-sm text-red-600">{pwError}</p>}
+        <input
+          type="password"
+          className={inputClass}
+          placeholder="Aktuelles Passwort"
+          required
+          value={currentPw}
+          onChange={(e) => setCurrentPw(e.target.value)}
+        />
+        <input
+          type="password"
+          className={inputClass}
+          placeholder="Neues Passwort"
+          required
+          value={newPw}
+          onChange={(e) => setNewPw(e.target.value)}
+        />
+        <input
+          type="password"
+          className={inputClass}
+          placeholder="Neues Passwort bestätigen"
+          required
+          value={confirmPw}
+          onChange={(e) => setConfirmPw(e.target.value)}
+        />
+        <p className="text-xs text-muted">
+          Mind. 8 Zeichen, mit Buchstabe, Zahl und Sonderzeichen.
+        </p>
+        <button className="w-full rounded-lg bg-primary py-2 font-semibold text-white hover:bg-primary-hover">
+          Passwort speichern
         </button>
       </form>
     </div>

@@ -10,7 +10,6 @@ import MembersPage from './pages/MembersPage'
 import PremiumPage from './pages/PremiumPage'
 import ProfilePage from './pages/ProfilePage'
 import RegisterPage from './pages/RegisterPage'
-import SettingsPage from './pages/SettingsPage'
 import ShoppingListPage from './pages/ShoppingListPage'
 import TodosPage from './pages/TodosPage'
 import { useAuth } from './store/auth'
@@ -60,7 +59,8 @@ export default function App() {
             <Route path="/members" element={<MembersPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/premium" element={<PremiumPage />} />
-            <Route path="/settings" element={<SettingsPage />} />
+            {/* Einstellungen sind ins Profil gewandert – alte Links umleiten. */}
+            <Route path="/settings" element={<Navigate to="/profile" replace />} />
           </Route>
         </Route>
 
