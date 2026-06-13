@@ -58,8 +58,8 @@ export default function DashboardPage() {
   if (!hasFamily) {
     return (
       <div className="mx-auto max-w-md rounded-2xl bg-white p-8 shadow">
-        <h1 className="mb-2 text-2xl font-bold text-brand">Willkommen! 👋</h1>
-        <p className="mb-6 text-slate-600">
+        <h1 className="mb-2 text-2xl font-bold text-primary">Willkommen! 👋</h1>
+        <p className="mb-6 text-muted">
           Du gehörst noch keiner Familie an. Gründe jetzt eine – oder nimm eine
           Einladung an.
         </p>
@@ -70,9 +70,9 @@ export default function DashboardPage() {
             required
             value={familyName}
             onChange={(e) => setFamilyName(e.target.value)}
-            className="flex-1 rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-brand"
+            className="flex-1 rounded-lg border border-border px-3 py-2 outline-none focus:border-primary"
           />
-          <button className="rounded-lg bg-brand px-4 py-2 font-semibold text-white hover:bg-brand-dark">
+          <button className="rounded-lg bg-primary px-4 py-2 font-semibold text-white hover:bg-primary-hover">
             Gründen
           </button>
         </form>
@@ -84,10 +84,10 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-2xl font-bold text-brand">Dashboard</h1>
+      <h1 className="text-2xl font-bold text-primary">Dashboard</h1>
 
       {mine.length === 0 ? (
-        <p className="text-slate-500">
+        <p className="text-muted">
           Noch keine Apps aktiv – füge unten welche hinzu, dann erscheinen hier ihre Widgets.
         </p>
       ) : (
@@ -101,13 +101,13 @@ export default function DashboardPage() {
 
       {available.length > 0 && (
         <section>
-          <h2 className="mb-3 text-lg font-semibold text-slate-700">App hinzufügen</h2>
+          <h2 className="mb-3 text-lg font-semibold text-text">App hinzufügen</h2>
           <div className="flex flex-wrap gap-3">
             {available.map((app) => (
               <button
                 key={app.id}
                 onClick={() => void addApp(app.id)}
-                className="rounded-full border border-brand px-4 py-2 text-sm text-brand transition hover:bg-brand hover:text-white"
+                className="rounded-full border border-primary px-4 py-2 text-sm text-primary transition hover:bg-primary hover:text-white"
               >
                 + {app.name}
               </button>

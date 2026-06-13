@@ -1,7 +1,7 @@
 <x-mail::message>
 # Einladung zur Familie {{ $familyName }}
 
-Du wurdest eingeladen, der Familie **{{ $familyName }}** auf Family Board beizutreten.
+Du wurdest eingeladen, der Familie **{{ $familyName }}** im {{ config('app.name') }} beizutreten.
 
 <x-mail::button :url="$url">
 Jetzt registrieren

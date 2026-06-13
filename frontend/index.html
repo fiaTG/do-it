@@ -4,12 +4,24 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/icon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#406f8f" />
+    <meta name="theme-color" content="#1f3347" />
     <meta
       name="description"
-      content="Family Board – organisiert euer Familienleben: Einkaufsliste, Kalender, ToDos und Galerie an einem Ort."
+      content="Heimathafen – organisiert euer Familienleben: Einkaufsliste, Kalender, ToDos und Galerie an einem Ort."
     />
-    <title>Family Board</title>
+    <title>Heimathafen</title>
+    <script>
+      // No-Flash: Theme vor dem ersten Paint setzen (vgl. ADR-0017).
+      (function () {
+        try {
+          var t = localStorage.getItem('heimathafen-theme')
+          if (t !== 'light' && t !== 'dark') {
+            t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+          }
+          document.documentElement.dataset.theme = t
+        } catch (e) {}
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>

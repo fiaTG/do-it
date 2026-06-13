@@ -1,11 +1,136 @@
 @import "tailwindcss";
 
-/* Markenfarben aus dem bestehenden Family-Board-Design */
-@theme {
-  --color-brand: #406f8f;
-  --color-brand-dark: #335a74;
-  --color-sand: #968d86;
-  --color-cream: #fdfbf2;
+/* ============================================================================
+   Heimathafen – Design-Token-System (ADR-0017)
+   Zwei Ebenen:
+   1. Roh-Palette (maritim, statisch) – NICHT direkt in Komponenten nutzen.
+   2. Semantische Tokens (--bg, --surface, --primary …) – DAS nutzen Komponenten.
+   Dark Mode überschreibt ausschließlich die semantische Ebene.
+   ========================================================================== */
+
+:root {
+  /* --- Roh-Palette: Hafen & Meer --- */
+  --navy: #1f3347;
+  --deep-ocean: #274c63;
+  --sea-blue: #3e7c9b;
+  --light-sea: #d8eef5;
+
+  /* --- Roh-Palette: Warm & Familie --- */
+  --sand: #f3e7d3;
+  --warm-sand: #e6d1b3;
+  --driftwood: #a9825a;
+  --harbor-wood: #7a5a3a;
+
+  /* --- Roh-Palette: Akzente --- */
+  --coral: #e58a72;
+  --seafoam: #8fcbb8;
+  --lighthouse: #f4c95d;
+
+  /* --- Semantische Tokens (Light) --- */
+  --bg: #f5fafc;
+  --surface: #ffffff;
+  --surface-2: #edf5f8;
+  --border: #dce7ec;
+
+  --text: #1f3347;
+  --text-muted: #5b7689;
+
+  --primary: #274c63;
+  --primary-hover: #1f3347;
+  --primary-contrast: #ffffff;
+  --primary-soft: #d8eef5;
+
+  --accent: #e58a72;
+  --accent-contrast: #ffffff;
+
+  --success: #8fcbb8;
+  --warning: #f4c95d;
+  --ring: #3e7c9b;
+
+  /* Seitenleiste / Navigation (bewusst eigenständig, tiefer als primary) */
+  --sidebar-bg: #1f3347;
+  --sidebar-text: #d8eef5;
+  --sidebar-muted: #9db4c2;
+
+  /* Radien / Schatten */
+  --radius-card: 1rem;
+  --radius-control: 0.625rem;
+  --shadow-card: 0 1px 2px rgb(31 51 71 / 0.04), 0 4px 16px rgb(31 51 71 / 0.06);
+  --shadow-pop: 0 8px 30px rgb(31 51 71 / 0.12);
+
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --bg: #11202b;
+  --surface: #1a2d3a;
+  --surface-2: #213b4b;
+  --border: #2c4658;
+
+  --text: #e6f1f6;
+  --text-muted: #9db4c2;
+
+  --primary: #4d92b3;
+  --primary-hover: #6aa9c6;
+  --primary-contrast: #0c1820;
+  --primary-soft: #213b4b;
+
+  --accent: #ec9a85;
+  --accent-contrast: #1a1010;
+
+  --ring: #5fa0bf;
+
+  --sidebar-bg: #0e1b24;
+  --sidebar-text: #d8eef5;
+  --sidebar-muted: #7f96a5;
+
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 16px rgb(0 0 0 / 0.35);
+  --shadow-pop: 0 8px 30px rgb(0 0 0 / 0.5);
+
+  color-scheme: dark;
+}
+
+/* ============================================================================
+   Tailwind-Integration: semantische Tokens als Utilities (bg-surface,
+   text-muted, border-border, bg-primary …). `inline` sorgt dafür, dass die
+   Utilities direkt auf die CSS-Variablen zeigen → Dark Mode greift live.
+   ========================================================================== */
+@theme inline {
+  /* Roh-Palette (selten direkt genutzt, aber verfügbar) */
+  --color-navy: var(--navy);
+  --color-deep-ocean: var(--deep-ocean);
+  --color-sea-blue: var(--sea-blue);
+  --color-light-sea: var(--light-sea);
+  --color-driftwood: var(--driftwood);
+  --color-coral: var(--coral);
+  --color-seafoam: var(--seafoam);
+  --color-lighthouse: var(--lighthouse);
+
+  /* Semantische Farben */
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-text: var(--text);
+  --color-muted: var(--text-muted);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-contrast: var(--primary-contrast);
+  --color-primary-soft: var(--primary-soft);
+  --color-accent: var(--accent);
+  --color-accent-contrast: var(--accent-contrast);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-sidebar: var(--sidebar-bg);
+  --color-sidebar-text: var(--sidebar-text);
+  --color-sidebar-muted: var(--sidebar-muted);
+
+  /* Roh-Akzent „Sand" (selten direkt, z. B. warme Flächen) */
+  --color-sand: var(--sand);
+
+  /* Radien */
+  --radius-card: var(--radius-card);
+  --radius-control: var(--radius-control);
 }
 
 html,
@@ -17,4 +142,16 @@ body,
 body {
   margin: 0;
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+/* FullCalendar an die Tokens binden, damit der Kalender im Dark Mode mitzieht. */
+.fc {
+  --fc-border-color: var(--border);
+  --fc-page-bg-color: var(--surface);
+  --fc-neutral-bg-color: var(--surface-2);
+  --fc-today-bg-color: color-mix(in oklab, var(--primary) 12%, transparent);
+  --fc-list-event-hover-bg-color: var(--surface-2);
+  --fc-highlight-color: color-mix(in oklab, var(--primary) 16%, transparent);
 }

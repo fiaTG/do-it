@@ -42,7 +42,7 @@ export default function TodosPage() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      <h1 className="text-2xl font-bold text-brand">✅ ToDo-Liste</h1>
+      <h1 className="text-2xl font-bold text-primary">✅ ToDo-Liste</h1>
 
       <form onSubmit={add} className="flex gap-2 rounded-2xl bg-white p-4 shadow">
         <input
@@ -50,15 +50,15 @@ export default function TodosPage() {
           required
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="flex-1 rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-brand"
+          className="flex-1 rounded-lg border border-border px-3 py-2 outline-none focus:border-primary"
         />
-        <button className="rounded-lg bg-brand px-4 py-2 font-semibold text-white hover:bg-brand-dark">
+        <button className="rounded-lg bg-primary px-4 py-2 font-semibold text-white hover:bg-primary-hover">
           + Hinzufügen
         </button>
       </form>
 
       <ul className="divide-y rounded-2xl bg-white shadow">
-        {todos.length === 0 && <li className="p-4 text-slate-500">Keine Aufgaben.</li>}
+        {todos.length === 0 && <li className="p-4 text-muted">Keine Aufgaben.</li>}
         {todos.map((todo) => (
           <li key={todo.id} className="flex items-center gap-3 p-4">
             <input
@@ -67,13 +67,13 @@ export default function TodosPage() {
               onChange={() => void toggle(todo)}
               className="h-5 w-5 accent-brand"
             />
-            <span className={todo.is_done ? 'flex-1 text-slate-400 line-through' : 'flex-1'}>
+            <span className={todo.is_done ? 'flex-1 text-muted line-through' : 'flex-1'}>
               {todo.title}
             </span>
             {todo.created_by === userId && (
               <button
                 onClick={() => void remove(todo.id)}
-                className="text-slate-300 hover:text-red-500"
+                className="text-muted hover:text-red-500"
                 aria-label="Löschen"
               >
                 🗑️

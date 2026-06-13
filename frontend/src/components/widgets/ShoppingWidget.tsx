@@ -29,7 +29,7 @@ export default function ShoppingWidget({ onRemove }: { onRemove?: () => void }) 
       onRemove={onRemove}
     >
       {open.length === 0 ? (
-        <p className="text-sm text-slate-400">Nichts zu besorgen.</p>
+        <p className="text-sm text-muted">Nichts zu besorgen.</p>
       ) : (
         <ul className="space-y-2">
           {open.slice(0, 5).map((item) => (
@@ -39,14 +39,14 @@ export default function ShoppingWidget({ onRemove }: { onRemove?: () => void }) 
                 onChange={() => void markPurchased(item)}
                 className="h-4 w-4 accent-brand"
               />
-              <span className="text-slate-700">
-                {item.name} <span className="text-slate-400">×{item.quantity}</span>
-                {item.shop && <span className="ml-1 text-xs text-slate-400">@ {item.shop.name}</span>}
+              <span className="text-text">
+                {item.name} <span className="text-muted">×{item.quantity}</span>
+                {item.shop && <span className="ml-1 text-xs text-muted">@ {item.shop.name}</span>}
               </span>
             </li>
           ))}
           {open.length > 5 && (
-            <li className="text-xs text-slate-400">+{open.length - 5} weitere</li>
+            <li className="text-xs text-muted">+{open.length - 5} weitere</li>
           )}
         </ul>
       )}

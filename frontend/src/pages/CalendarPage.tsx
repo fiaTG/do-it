@@ -138,11 +138,11 @@ export default function CalendarPage() {
   }
 
   const inputClass =
-    'rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-brand'
+    'rounded-lg border border-border px-3 py-2 outline-none focus:border-primary'
 
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-bold text-brand">📅 Kalender</h1>
+      <h1 className="text-2xl font-bold text-primary">📅 Kalender</h1>
       {error && <p className="text-sm text-red-600">{error}</p>}
 
       <div className="rounded-2xl bg-white p-4 shadow">
@@ -166,7 +166,7 @@ export default function CalendarPage() {
         />
       </div>
 
-      <div className="flex flex-wrap gap-4 text-xs text-slate-500">
+      <div className="flex flex-wrap gap-4 text-xs text-muted">
         {CATEGORIES.map((c) => (
           <span key={c} className="flex items-center gap-1">
             <span className="inline-block h-3 w-3 rounded" style={{ background: COLORS[c] }} />
@@ -179,7 +179,7 @@ export default function CalendarPage() {
       {modal.open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
           <form onSubmit={submit} className="w-full max-w-sm space-y-3 rounded-2xl bg-white p-6 shadow-xl">
-            <h2 className="text-lg font-semibold text-brand">
+            <h2 className="text-lg font-semibold text-primary">
               {modal.mode === 'create' ? 'Neuer Termin' : 'Termin bearbeiten'}
             </h2>
             <input
@@ -191,7 +191,7 @@ export default function CalendarPage() {
               className={`${inputClass} w-full`}
             />
             <div className="flex gap-2">
-              <label className="flex-1 text-xs text-slate-500">
+              <label className="flex-1 text-xs text-muted">
                 Von
                 <input
                   type="datetime-local"
@@ -201,7 +201,7 @@ export default function CalendarPage() {
                   className={`${inputClass} mt-1 w-full`}
                 />
               </label>
-              <label className="flex-1 text-xs text-slate-500">
+              <label className="flex-1 text-xs text-muted">
                 Bis
                 <input
                   type="datetime-local"
@@ -221,7 +221,7 @@ export default function CalendarPage() {
                 <option key={c}>{c}</option>
               ))}
             </select>
-            <label className="flex items-center gap-2 text-sm text-slate-600">
+            <label className="flex items-center gap-2 text-sm text-muted">
               <input
                 type="checkbox"
                 checked={modal.carReserved}
@@ -246,11 +246,11 @@ export default function CalendarPage() {
                 <button
                   type="button"
                   onClick={() => setModal(CLOSED)}
-                  className="rounded-lg px-4 py-2 text-sm text-slate-500 hover:bg-slate-100"
+                  className="rounded-lg px-4 py-2 text-sm text-muted hover:bg-surface-2"
                 >
                   Abbrechen
                 </button>
-                <button className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-dark">
+                <button className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-hover">
                   {modal.mode === 'create' ? 'Anlegen' : 'Speichern'}
                 </button>
               </div>

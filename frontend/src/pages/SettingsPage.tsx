@@ -28,14 +28,14 @@ export default function SettingsPage() {
   }
 
   const inputClass =
-    'mb-4 w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-brand'
+    'mb-4 w-full rounded-lg border border-border px-3 py-2 outline-none focus:border-primary'
 
   return (
     <div className="mx-auto max-w-md space-y-6">
-      <h1 className="text-2xl font-bold text-brand">⚙️ Einstellungen</h1>
+      <h1 className="text-2xl font-bold text-primary">⚙️ Einstellungen</h1>
 
       <form onSubmit={submit} className="rounded-2xl bg-white p-6 shadow">
-        <h2 className="mb-4 font-semibold text-slate-700">Passwort ändern</h2>
+        <h2 className="mb-4 font-semibold text-text">Passwort ändern</h2>
 
         {message && <p className="mb-4 text-sm text-green-700">{message}</p>}
         {error && <p className="mb-4 text-sm text-red-600">{error}</p>}
@@ -64,10 +64,10 @@ export default function SettingsPage() {
           onChange={(e) => setConfirmation(e.target.value)}
           className={inputClass}
         />
-        <p className="mb-4 text-xs text-slate-400">
+        <p className="mb-4 text-xs text-muted">
           Mind. 8 Zeichen, mit Buchstabe, Zahl und Sonderzeichen.
         </p>
-        <button className="w-full rounded-lg bg-brand py-2 font-semibold text-white hover:bg-brand-dark">
+        <button className="w-full rounded-lg bg-primary py-2 font-semibold text-white hover:bg-primary-hover">
           Speichern
         </button>
       </form>

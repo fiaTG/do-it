@@ -55,13 +55,13 @@ export default function RegisterPage() {
   }
 
   const inputClass =
-    'mb-4 w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-brand'
+    'mb-4 w-full rounded-lg border border-border px-3 py-2 outline-none focus:border-primary'
 
   return (
     <AuthLayout
       title="Konto erstellen"
       subtitle={
-        inviteFamily ? `Beitritt zur Familie ${inviteFamily}` : 'Leg dein Family Board an.'
+        inviteFamily ? `Beitritt zur Familie ${inviteFamily}` : 'Leg deinen Heimathafen an.'
       }
     >
       <form onSubmit={handleSubmit}>
@@ -111,21 +111,21 @@ export default function RegisterPage() {
           className={inputClass}
         />
 
-        <p className="mb-4 text-xs text-slate-400">
+        <p className="mb-4 text-xs text-muted">
           Mind. 8 Zeichen, mit Buchstabe, Zahl und Sonderzeichen.
         </p>
 
         <button
           type="submit"
           disabled={busy}
-          className="w-full rounded-lg bg-brand py-2 font-semibold text-white transition hover:bg-brand-dark disabled:opacity-60"
+          className="w-full rounded-lg bg-primary py-2 font-semibold text-white transition hover:bg-primary-hover disabled:opacity-60"
         >
           {busy ? 'Registrieren …' : 'Registrieren'}
         </button>
 
-        <p className="mt-4 text-center text-sm text-slate-500">
+        <p className="mt-4 text-center text-sm text-muted">
           Schon ein Konto?{' '}
-          <Link to="/login" className="font-semibold text-brand">
+          <Link to="/login" className="font-semibold text-primary">
             Anmelden
           </Link>
         </p>

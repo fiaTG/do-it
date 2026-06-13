@@ -29,7 +29,7 @@ export default function App() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-cream text-brand">
+      <div className="flex min-h-screen items-center justify-center bg-bg text-primary">
         Lädt …
       </div>
     )
@@ -51,7 +51,7 @@ export default function App() {
             <Route
               path="/calendar"
               element={
-                <Suspense fallback={<div className="p-6 text-brand">Kalender lädt …</div>}>
+                <Suspense fallback={<div className="p-6 text-primary">Kalender lädt …</div>}>
                   <CalendarPage />
                 </Suspense>
               }

@@ -53,18 +53,18 @@ export default function ProfilePage() {
   }
 
   const inputClass =
-    'w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-brand'
+    'w-full rounded-lg border border-border px-3 py-2 outline-none focus:border-primary'
 
   return (
     <div className="mx-auto max-w-lg space-y-6">
-      <h1 className="text-2xl font-bold text-brand">👤 Profil</h1>
+      <h1 className="text-2xl font-bold text-primary">👤 Profil</h1>
 
       {message && <p className="text-sm text-green-700">{message}</p>}
       {error && <p className="text-sm text-red-600">{error}</p>}
 
       {/* Avatar */}
       <div className="flex items-center gap-5 rounded-2xl bg-white p-5 shadow">
-        <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-brand text-2xl font-bold text-white">
+        <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-primary text-2xl font-bold text-white">
           {user.avatar_url ? (
             <img src={user.avatar_url} alt="" className="h-full w-full object-cover" />
           ) : (
@@ -75,7 +75,7 @@ export default function ProfilePage() {
           <button
             type="button"
             onClick={() => fileInput.current?.click()}
-            className="rounded-lg border border-brand px-4 py-2 text-sm text-brand hover:bg-brand/10"
+            className="rounded-lg border border-primary px-4 py-2 text-sm text-primary hover:bg-primary/10"
           >
             Profilbild ändern
           </button>
@@ -90,11 +90,11 @@ export default function ProfilePage() {
           <input className={inputClass} placeholder="Nachname" required value={lastName} onChange={(e) => setLastName(e.target.value)} />
         </div>
         <div className="flex gap-3">
-          <label className="flex-1 text-sm text-slate-500">
+          <label className="flex-1 text-sm text-muted">
             Geburtsdatum
             <input type="date" className={`${inputClass} mt-1`} value={birthdate} onChange={(e) => setBirthdate(e.target.value)} />
           </label>
-          <label className="flex-1 text-sm text-slate-500">
+          <label className="flex-1 text-sm text-muted">
             Geschlecht
             <select className={`${inputClass} mt-1`} value={gender} onChange={(e) => setGender(e.target.value)}>
               <option value="">–</option>
@@ -105,12 +105,12 @@ export default function ProfilePage() {
           </label>
         </div>
 
-        <p className="pt-2 text-sm font-semibold text-slate-600">Social Media</p>
+        <p className="pt-2 text-sm font-semibold text-muted">Social Media</p>
         <input className={inputClass} placeholder="Facebook-URL" value={facebook} onChange={(e) => setFacebook(e.target.value)} />
         <input className={inputClass} placeholder="Instagram-URL" value={instagram} onChange={(e) => setInstagram(e.target.value)} />
         <input className={inputClass} placeholder="LinkedIn-URL" value={linkedin} onChange={(e) => setLinkedin(e.target.value)} />
 
-        <button className="w-full rounded-lg bg-brand py-2 font-semibold text-white hover:bg-brand-dark">
+        <button className="w-full rounded-lg bg-primary py-2 font-semibold text-white hover:bg-primary-hover">
           Speichern
         </button>
       </form>

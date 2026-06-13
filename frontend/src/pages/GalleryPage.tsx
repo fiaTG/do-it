@@ -48,7 +48,7 @@ export default function GalleryPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-brand">🖼️ Galerie</h1>
+      <h1 className="text-2xl font-bold text-primary">🖼️ Galerie</h1>
 
       {error && <p className="text-sm text-red-600">{error}</p>}
 
@@ -65,18 +65,18 @@ export default function GalleryPage() {
           placeholder="Titel (optional)"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-brand"
+          className="rounded-lg border border-border px-3 py-2 outline-none focus:border-primary"
         />
         <button
           disabled={busy}
-          className="rounded-lg bg-brand px-4 py-2 font-semibold text-white hover:bg-brand-dark disabled:opacity-60"
+          className="rounded-lg bg-primary px-4 py-2 font-semibold text-white hover:bg-primary-hover disabled:opacity-60"
         >
           {busy ? 'Lädt …' : 'Hochladen'}
         </button>
       </form>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-        {images.length === 0 && <p className="text-slate-500">Noch keine Bilder.</p>}
+        {images.length === 0 && <p className="text-muted">Noch keine Bilder.</p>}
         {images.map((img) => (
           <figure key={img.id} className="group relative overflow-hidden rounded-2xl bg-white shadow">
             <img
@@ -97,7 +97,7 @@ export default function GalleryPage() {
               ✕
             </button>
             {img.title && (
-              <figcaption className="truncate px-2 py-1 text-sm text-slate-600">
+              <figcaption className="truncate px-2 py-1 text-sm text-muted">
                 {img.title}
               </figcaption>
             )}

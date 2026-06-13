@@ -29,7 +29,7 @@ export default function TodoWidget({ onRemove }: { onRemove?: () => void }) {
       onRemove={onRemove}
     >
       {open.length === 0 ? (
-        <p className="text-sm text-slate-400">Alles erledigt 🎉</p>
+        <p className="text-sm text-muted">Alles erledigt 🎉</p>
       ) : (
         <ul className="space-y-2">
           {open.slice(0, 5).map((t) => (
@@ -39,11 +39,11 @@ export default function TodoWidget({ onRemove }: { onRemove?: () => void }) {
                 onChange={() => void markDone(t)}
                 className="h-4 w-4 accent-brand"
               />
-              <span className="text-slate-700">{t.title}</span>
+              <span className="text-text">{t.title}</span>
             </li>
           ))}
           {open.length > 5 && (
-            <li className="text-xs text-slate-400">+{open.length - 5} weitere</li>
+            <li className="text-xs text-muted">+{open.length - 5} weitere</li>
           )}
         </ul>
       )}

@@ -12,13 +12,13 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['icon.svg'],
       manifest: {
-        name: 'Family Board',
-        short_name: 'FamilyBoard',
+        name: 'Heimathafen',
+        short_name: 'Heimathafen',
         description:
           'Organisiert euer Familienleben: Einkaufsliste, Kalender, ToDos und Galerie an einem Ort.',
         lang: 'de',
-        theme_color: '#406f8f',
-        background_color: '#fdfbf2',
+        theme_color: '#1f3347',
+        background_color: '#f5fafc',
         display: 'standalone',
         start_url: '/',
         icons: [

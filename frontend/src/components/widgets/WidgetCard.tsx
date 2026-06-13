@@ -21,17 +21,17 @@ export default function WidgetCard({
   return (
     <div className="flex flex-col rounded-2xl bg-white p-5 shadow">
       <div className="mb-3 flex items-center justify-between">
-        <h3 className="font-semibold text-slate-700">
+        <h3 className="font-semibold text-text">
           <span aria-hidden>{icon}</span> {title}
         </h3>
         <div className="flex items-center gap-3">
-          <Link to={to} className="text-sm text-brand hover:underline">
+          <Link to={to} className="text-sm text-primary hover:underline">
             öffnen →
           </Link>
           {onRemove && (
             <button
               onClick={onRemove}
-              className="text-slate-300 hover:text-red-500"
+              className="text-muted hover:text-red-500"
               title="Widget entfernen"
               aria-label="Widget entfernen"
             >

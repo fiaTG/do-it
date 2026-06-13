@@ -31,16 +31,16 @@ export default function LoginPage() {
   }
 
   const inputClass =
-    'mb-4 w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-brand'
+    'mb-4 w-full rounded-lg border border-border px-3 py-2 outline-none focus:border-primary'
 
   return (
-    <AuthLayout title="Willkommen zurück" subtitle="Melde dich bei deinem Family Board an.">
+    <AuthLayout title="Willkommen zurück" subtitle="Melde dich in deinem Heimathafen an.">
       <form onSubmit={handleSubmit}>
         {error && (
           <p className="mb-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
         )}
 
-        <label htmlFor="email" className="mb-1 block text-sm font-medium text-slate-600">
+        <label htmlFor="email" className="mb-1 block text-sm font-medium text-muted">
           E-Mail
         </label>
         <input
@@ -52,7 +52,7 @@ export default function LoginPage() {
           className={inputClass}
         />
 
-        <label htmlFor="password" className="mb-1 block text-sm font-medium text-slate-600">
+        <label htmlFor="password" className="mb-1 block text-sm font-medium text-muted">
           Passwort
         </label>
         <input
@@ -67,14 +67,14 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={busy}
-          className="w-full rounded-lg bg-brand py-2 font-semibold text-white transition hover:bg-brand-dark disabled:opacity-60"
+          className="w-full rounded-lg bg-primary py-2 font-semibold text-white transition hover:bg-primary-hover disabled:opacity-60"
         >
           {busy ? 'Anmelden …' : 'Anmelden'}
         </button>
 
-        <p className="mt-4 text-center text-sm text-slate-500">
+        <p className="mt-4 text-center text-sm text-muted">
           Noch kein Konto?{' '}
-          <Link to="/register" className="font-semibold text-brand">
+          <Link to="/register" className="font-semibold text-primary">
             Registrieren
           </Link>
         </p>

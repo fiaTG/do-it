@@ -15,7 +15,7 @@ export default function GalleryWidget({ onRemove }: { onRemove?: () => void }) {
   return (
     <WidgetCard title="Galerie" icon="🖼️" to="/gallery" onRemove={onRemove}>
       {preview.length === 0 ? (
-        <p className="text-sm text-slate-400">Noch keine Bilder.</p>
+        <p className="text-sm text-muted">Noch keine Bilder.</p>
       ) : (
         <div className="grid grid-cols-3 gap-1.5">
           {preview.map((img) => (

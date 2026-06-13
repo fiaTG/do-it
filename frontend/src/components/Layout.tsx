@@ -1,5 +1,6 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useAuth } from '../store/auth'
+import ThemeToggle from './ThemeToggle'
 
 const NAV = [
   { to: '/dashboard', label: 'Dashboard', icon: '🏠', end: true },
@@ -24,11 +25,14 @@ export default function Layout() {
   }
 
   return (
-    <div className="flex min-h-screen bg-cream text-slate-800">
-      <aside className="flex w-60 flex-col bg-brand text-cream">
-        <div className="px-6 py-6 text-lg font-bold tracking-wide">Family Board</div>
+    <div className="flex min-h-screen bg-bg text-text">
+      <aside className="flex w-60 flex-col bg-sidebar text-sidebar-text">
+        <div className="flex items-center justify-between px-6 py-6">
+          <span className="text-lg font-bold tracking-wide">⚓ Heimathafen</span>
+          <ThemeToggle />
+        </div>
         <div className="flex items-center gap-3 px-6 pb-4">
-          <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-cream/20 text-sm font-bold">
+          <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-white/15 text-sm font-bold">
             {user?.avatar_url ? (
               <img src={user.avatar_url} alt="" className="h-full w-full object-cover" />
             ) : (
@@ -36,12 +40,12 @@ export default function Layout() {
             )}
           </div>
           <div className="text-sm">
-            <div className="text-cream/90">Hey, {user?.first_name}!</div>
-            <div className="text-cream/60">
+            <div className="text-sidebar-text">Hey, {user?.first_name}!</div>
+            <div className="text-sidebar-muted">
               {user?.family ? `Familie ${user.family.name}` : 'Noch keine Familie'}
             </div>
             {user?.family?.is_premium && (
-              <span className="mt-1 inline-block rounded-full bg-cream/20 px-2 py-0.5 text-[10px] font-semibold tracking-wide">
+              <span className="mt-1 inline-block rounded-full bg-white/15 px-2 py-0.5 text-[10px] font-semibold tracking-wide">
                 ⭐ PREMIUM
               </span>
             )}
@@ -55,7 +59,7 @@ export default function Layout() {
               end={item.end}
               className={({ isActive }) =>
                 `mb-1 flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition ${
-                  isActive ? 'bg-cream/20 font-semibold' : 'hover:bg-cream/10'
+                  isActive ? 'bg-white/15 font-semibold' : 'hover:bg-white/10'
                 }`
               }
             >
@@ -66,7 +70,7 @@ export default function Layout() {
         </nav>
         <button
           onClick={handleLogout}
-          className="m-3 rounded-lg px-3 py-2 text-left text-sm hover:bg-cream/10"
+          className="m-3 rounded-lg px-3 py-2 text-left text-sm hover:bg-white/10"
         >
           🚪 Logout
         </button>

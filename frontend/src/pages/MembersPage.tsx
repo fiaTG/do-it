@@ -41,19 +41,19 @@ export default function MembersPage() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      <h1 className="text-2xl font-bold text-brand">👪 Familienmitglieder</h1>
+      <h1 className="text-2xl font-bold text-primary">👪 Familienmitglieder</h1>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
         {members.map((m) => (
           <div key={m.id} className="flex flex-col items-center rounded-2xl bg-white p-5 shadow">
-            <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-brand text-xl font-bold text-white">
+            <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-primary text-xl font-bold text-white">
               {m.avatar_url ? (
                 <img src={m.avatar_url} alt="" className="h-full w-full object-cover" />
               ) : (
                 initials(m)
               )}
             </div>
-            <div className="mt-2 text-center font-medium text-slate-700">
+            <div className="mt-2 text-center font-medium text-text">
               {m.first_name} {m.last_name}
             </div>
           </div>
@@ -61,7 +61,7 @@ export default function MembersPage() {
       </div>
 
       <form onSubmit={invite} className="rounded-2xl bg-white p-4 shadow">
-        <h2 className="mb-3 font-semibold text-slate-700">Mitglied einladen</h2>
+        <h2 className="mb-3 font-semibold text-text">Mitglied einladen</h2>
         {message && <p className="mb-3 text-sm text-green-700">{message}</p>}
         <div className="flex gap-2">
           <input
@@ -70,9 +70,9 @@ export default function MembersPage() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="flex-1 rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-brand"
+            className="flex-1 rounded-lg border border-border px-3 py-2 outline-none focus:border-primary"
           />
-          <button className="rounded-lg bg-brand px-4 py-2 font-semibold text-white hover:bg-brand-dark">
+          <button className="rounded-lg bg-primary px-4 py-2 font-semibold text-white hover:bg-primary-hover">
             Einladen
           </button>
         </div>

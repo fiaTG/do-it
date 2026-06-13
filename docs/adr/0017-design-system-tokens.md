@@ -1,6 +1,6 @@
 # ADR-0017: Design-System mit Design-Tokens & „Heimathafen"-Theming
 
-- **Status:** Vorgeschlagen
+- **Status:** Akzeptiert (umgesetzt 2026-06-13)
 - **Datum:** 2026-06-13
 - **Betrifft:** Frontend, Design, Branding, Barrierefreiheit
 
@@ -60,6 +60,22 @@ Ein **semantisches Design-Token-System** als einzige Quelle der Wahrheit:
 3. Komponenten schrittweise umstellen; parallel den **„Heimathafen"-Rename**
    sichtbar machen (Titel, Logo, Landing).
 4. Dark-Mode-Override-Layer ergänzen + Umschalter.
+
+## Umsetzung (2026-06-13)
+
+- `frontend/src/index.css`: zwei Ebenen – Roh-Palette + semantische Tokens in
+  `:root`, Dark-Mode-Override unter `[data-theme="dark"]`. Tokens via
+  `@theme inline` als Tailwind-Utilities registriert (`bg-surface`, `text-muted`,
+  `bg-primary`, `border-border`, `bg-sidebar` …), sodass Dark Mode live greift.
+  `color-scheme` + FullCalendar-CSS-Variablen an die Tokens gebunden.
+- Theme-Umschalter: `frontend/src/store/theme.ts` (Zustand, Persistenz in
+  `localStorage` `heimathafen-theme`, System-Präferenz als Default) +
+  `components/ThemeToggle.tsx`; No-Flash-Inline-Script in `index.html`.
+- Komponenten/Seiten von Ad-hoc-Farben (`bg-brand`, `text-slate-*`, `bg-white`)
+  auf semantische Utilities umgestellt.
+- **„Heimathafen"-Rebrand** sichtbar: UI-Texte, `index.html`, PWA-Manifest
+  (`vite.config.ts`), Backend `APP_NAME`/Einladungs-Mail, README.
+- Verifiziert: `npm run lint`, 7 Vitest-Tests, `npm run build` grün.
 
 ## Alternativen
 

@@ -1,7 +1,9 @@
-# Family Board
+# Heimathafen
 
 Eine Web-App, mit der eine Familie ihren Alltag gemeinsam organisiert:
 Einkaufsliste, Kalender, ToDos und Bildergalerie – modular auswählbar pro Nutzer.
+(Früher „Family Board"; zum Hintergrund der Umbenennung siehe
+[`docs/adr/0017-design-system-tokens.md`](docs/adr/0017-design-system-tokens.md).)
 
 > Ursprünglich ein Vanilla-PHP/XAMPP-Schulprojekt, inzwischen modernisiert zu
 > einer **Laravel-API + React-SPA in Docker**. Hintergrund, Entscheidungen und

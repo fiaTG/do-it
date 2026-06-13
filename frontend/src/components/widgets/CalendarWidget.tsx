@@ -30,14 +30,14 @@ export default function CalendarWidget({ onRemove }: { onRemove?: () => void }) 
   return (
     <WidgetCard title="Kalender" icon="📅" to="/calendar" onRemove={onRemove}>
       {upcoming.length === 0 ? (
-        <p className="text-sm text-slate-400">Keine anstehenden Termine.</p>
+        <p className="text-sm text-muted">Keine anstehenden Termine.</p>
       ) : (
         <ul className="space-y-2">
           {upcoming.map((e) => (
             <li key={e.id} className="text-sm leading-tight">
-              <span className="text-slate-400">{formatWhen(e.starts_at)}</span>
+              <span className="text-muted">{formatWhen(e.starts_at)}</span>
               <br />
-              <span className="text-slate-700">
+              <span className="text-text">
                 {e.title}
                 {e.car_reserved && ' 🚗'}
               </span>

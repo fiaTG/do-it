@@ -53,12 +53,12 @@ export default function ShoppingListPage() {
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-brand">🛒 Einkaufsliste</h1>
+        <h1 className="text-2xl font-bold text-primary">🛒 Einkaufsliste</h1>
         <a
           href={shoppingPdfUrl}
           target="_blank"
           rel="noreferrer"
-          className="rounded-lg border border-brand px-3 py-1.5 text-sm text-brand hover:bg-brand/10"
+          className="rounded-lg border border-primary px-3 py-1.5 text-sm text-primary hover:bg-primary/10"
         >
           📄 PDF
         </a>
@@ -70,19 +70,19 @@ export default function ShoppingListPage() {
           required
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="flex-1 rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-brand"
+          className="flex-1 rounded-lg border border-border px-3 py-2 outline-none focus:border-primary"
         />
         <input
           type="number"
           min={1}
           value={quantity}
           onChange={(e) => setQuantity(Number(e.target.value))}
-          className="w-20 rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-brand"
+          className="w-20 rounded-lg border border-border px-3 py-2 outline-none focus:border-primary"
         />
         <select
           value={shopId}
           onChange={(e) => setShopId(e.target.value)}
-          className="rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-brand"
+          className="rounded-lg border border-border px-3 py-2 outline-none focus:border-primary"
         >
           <option value="">Shop …</option>
           {shops.map((s) => (
@@ -91,13 +91,13 @@ export default function ShoppingListPage() {
             </option>
           ))}
         </select>
-        <button className="rounded-lg bg-brand px-4 py-2 font-semibold text-white hover:bg-brand-dark">
+        <button className="rounded-lg bg-primary px-4 py-2 font-semibold text-white hover:bg-primary-hover">
           + Hinzufügen
         </button>
       </form>
 
       <ul className="divide-y rounded-2xl bg-white shadow">
-        {items.length === 0 && <li className="p-4 text-slate-500">Liste ist leer.</li>}
+        {items.length === 0 && <li className="p-4 text-muted">Liste ist leer.</li>}
         {items.map((item) => (
           <li key={item.id} className="flex items-center gap-3 p-4">
             <input
@@ -106,14 +106,14 @@ export default function ShoppingListPage() {
               onChange={() => void toggle(item)}
               className="h-5 w-5 accent-brand"
             />
-            <span className={item.is_purchased ? 'flex-1 text-slate-400 line-through' : 'flex-1'}>
-              {item.name} <span className="text-slate-400">×{item.quantity}</span>
-              {item.shop && <span className="ml-2 text-xs text-slate-400">@ {item.shop.name}</span>}
+            <span className={item.is_purchased ? 'flex-1 text-muted line-through' : 'flex-1'}>
+              {item.name} <span className="text-muted">×{item.quantity}</span>
+              {item.shop && <span className="ml-2 text-xs text-muted">@ {item.shop.name}</span>}
             </span>
             {item.created_by === userId && (
               <button
                 onClick={() => void remove(item.id)}
-                className="text-slate-300 hover:text-red-500"
+                className="text-muted hover:text-red-500"
                 aria-label="Löschen"
               >
                 🗑️
