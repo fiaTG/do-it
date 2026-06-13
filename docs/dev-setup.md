@@ -33,8 +33,15 @@ Health-Check: <http://localhost:8080/api/v1/health> → JSON `{"status":"ok",...
 Weitere Dienste:
 - **Mailpit** (abgefangene E-Mails): <http://localhost:8025>
 - **MySQL**: Host `127.0.0.1`, Port **3307**, DB `familyboard`, User `sail`, PW `password`
+- **MinIO** (S3-kompatibler Medienspeicher, ADR-0014): API `:9000`, Web-Konsole
+  <http://localhost:9001> (User `sail` / PW `password`), Bucket `media`
+- **Redis** + **worker** (`queue:work`): asynchrone Bildverarbeitung (Thumbnails)
 
-Stoppen: `docker compose down` (Daten bleiben im Volume `sail-mysql` erhalten).
+> Speicher-/Queue-Modus steht in `.env`: `MEDIA_DISK=s3` + `QUEUE_CONNECTION=redis`
+> nutzt MinIO + Worker (Produktions-nah). Einfacher: `MEDIA_DISK=public` +
+> `QUEUE_CONNECTION=sync` (kein MinIO/Redis nötig, Thumbnails inline).
+
+Stoppen: `docker compose down` (Daten bleiben in den Volumes erhalten).
 
 > Hinweis: Statt `docker compose ...` geht unter WSL/Git Bash auch das Sail-Wrapper-
 > Skript `./vendor/bin/sail up` bzw. unter Windows `vendor\bin\sail.bat up`.

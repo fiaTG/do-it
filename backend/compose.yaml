@@ -25,6 +25,24 @@ services:
         depends_on:
             - mysql
             - mailpit
+            - redis
+            - minio
+    worker:
+        image: 'sail-8.5/app'
+        command: 'php /var/www/html/artisan queue:work --sleep=1 --tries=3 --max-time=3600'
+        environment:
+            WWWUSER: '${WWWUSER}'
+            LARAVEL_SAIL: 1
+        volumes:
+            - '.:/var/www/html'
+            - './docker/php/opcache.ini:/etc/php/8.5/cli/conf.d/99-opcache.ini'
+        networks:
+            - sail
+        depends_on:
+            - mysql
+            - redis
+            - minio
+        restart: unless-stopped
     mysql:
         image: 'mysql:8.4'
         ports:
@@ -57,9 +75,51 @@ services:
             - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
         networks:
             - sail
+    redis:
+        image: 'redis:alpine'
+        ports:
+            - '${FORWARD_REDIS_PORT:-6379}:6379'
+        volumes:
+            - 'sail-redis:/data'
+        networks:
+            - sail
+        healthcheck:
+            test: ['CMD', 'redis-cli', 'ping']
+            retries: 3
+            timeout: 5s
+    minio:
+        image: 'minio/minio:latest'
+        ports:
+            - '${FORWARD_MINIO_PORT:-9000}:9000'
+            - '${FORWARD_MINIO_CONSOLE_PORT:-9001}:9001'
+        environment:
+            MINIO_ROOT_USER: '${MINIO_ROOT_USER:-sail}'
+            MINIO_ROOT_PASSWORD: '${MINIO_ROOT_PASSWORD:-password}'
+        volumes:
+            - 'sail-minio:/data'
+        command: 'server /data --console-address ":9001"'
+        networks:
+            - sail
+    createbuckets:
+        image: 'minio/mc:latest'
+        depends_on:
+            - minio
+        entrypoint: >
+            /bin/sh -c "
+            until /usr/bin/mc alias set local http://minio:9000 ${MINIO_ROOT_USER:-sail} ${MINIO_ROOT_PASSWORD:-password}; do echo 'warte auf minio'; sleep 1; done;
+            /usr/bin/mc mb --ignore-existing local/${AWS_BUCKET:-media};
+            /usr/bin/mc anonymous set download local/${AWS_BUCKET:-media};
+            exit 0;
+            "
+        networks:
+            - sail
 networks:
     sail:
         driver: bridge
 volumes:
     sail-mysql:
+        driver: local
+    sail-redis:
+        driver: local
+    sail-minio:
         driver: local

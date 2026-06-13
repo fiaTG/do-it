@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Models\Image;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\Encoders\JpegEncoder;
@@ -32,10 +33,17 @@ class GenerateThumbnail implements ShouldQueue
             return;
         }
 
-        $thumbnail = (new ImageManager(new Driver))
-            ->decode($original)
-            ->scaleDown(width: 600)
-            ->encode(new JpegEncoder(quality: 75));
+        try {
+            $thumbnail = (new ImageManager(new Driver))
+                ->decode($original)
+                ->scaleDown(width: 600)
+                ->encode(new JpegEncoder(quality: 75));
+        } catch (\Throwable $e) {
+            // Nicht verarbeitbares Bild -> Galerie nutzt das Original als Vorschau.
+            Log::warning("Thumbnail fehlgeschlagen (Bild {$this->image->id}): {$e->getMessage()}");
+
+            return;
+        }
 
         $directory = dirname($this->image->path);
         $filename = pathinfo($this->image->path, PATHINFO_FILENAME).'.jpg';
