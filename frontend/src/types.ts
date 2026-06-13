@@ -1,6 +1,13 @@
 export interface Family {
   id: number
   name: string
+  is_premium: boolean
+}
+
+export interface Subscription {
+  is_premium: boolean
+  plan: string
+  expires_at: string | null
 }
 
 export interface User {

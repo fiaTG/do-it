@@ -9,6 +9,7 @@ const NAV = [
   { to: '/gallery', label: 'Galerie', icon: '🖼️' },
   { to: '/members', label: 'Familie', icon: '👪' },
   { to: '/profile', label: 'Profil', icon: '👤' },
+  { to: '/premium', label: 'Premium', icon: '⭐' },
   { to: '/settings', label: 'Einstellungen', icon: '⚙️' },
 ]
 
@@ -39,6 +40,11 @@ export default function Layout() {
             <div className="text-cream/60">
               {user?.family ? `Familie ${user.family.name}` : 'Noch keine Familie'}
             </div>
+            {user?.family?.is_premium && (
+              <span className="mt-1 inline-block rounded-full bg-cream/20 px-2 py-0.5 text-[10px] font-semibold tracking-wide">
+                ⭐ PREMIUM
+              </span>
+            )}
           </div>
         </div>
         <nav className="flex-1 px-3">

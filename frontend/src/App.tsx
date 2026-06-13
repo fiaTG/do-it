@@ -7,6 +7,7 @@ import GalleryPage from './pages/GalleryPage'
 import LandingPage from './pages/LandingPage'
 import LoginPage from './pages/LoginPage'
 import MembersPage from './pages/MembersPage'
+import PremiumPage from './pages/PremiumPage'
 import ProfilePage from './pages/ProfilePage'
 import RegisterPage from './pages/RegisterPage'
 import SettingsPage from './pages/SettingsPage'
@@ -58,6 +59,7 @@ export default function App() {
             <Route path="/gallery" element={<GalleryPage />} />
             <Route path="/members" element={<MembersPage />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/premium" element={<PremiumPage />} />
             <Route path="/settings" element={<SettingsPage />} />
           </Route>
         </Route>

@@ -7,6 +7,7 @@ import type {
   Invite,
   Shop,
   ShoppingItem,
+  Subscription,
   Todo,
   User,
 } from './types'
@@ -72,6 +73,20 @@ export const profileApi = {
 
 /** Direkt-URL zum PDF-Export der Einkaufsliste (per Cookie authentifiziert). */
 export const shoppingPdfUrl = `${import.meta.env.VITE_API_URL}/shopping-items/pdf`
+
+export const subscriptionApi = {
+  async show(): Promise<Subscription> {
+    const { data } = await api.get<{ data: Subscription }>('/subscription')
+    return data.data
+  },
+  async activate(): Promise<Subscription> {
+    const { data } = await api.post<{ data: Subscription }>('/subscription')
+    return data.data
+  },
+  async cancel(): Promise<void> {
+    await api.delete('/subscription')
+  },
+}
 
 export const familyApi = {
   async create(name: string): Promise<Family> {
