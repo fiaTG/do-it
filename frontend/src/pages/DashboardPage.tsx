@@ -1,20 +1,23 @@
-import { useCallback, useEffect, useState, type FormEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useCallback, useEffect, useState, type ComponentType, type FormEvent } from 'react'
 import { apiError, appsApi, familyApi } from '../api'
+import CalendarWidget from '../components/widgets/CalendarWidget'
+import GalleryWidget from '../components/widgets/GalleryWidget'
+import ShoppingWidget from '../components/widgets/ShoppingWidget'
+import TodoWidget from '../components/widgets/TodoWidget'
 import { useAuth } from '../store/auth'
 import type { AppItem } from '../types'
 
-const ROUTE_BY_SLUG: Record<string, string> = {
-  gallery: '/gallery',
-  'shopping-list': '/shopping',
-  todo: '/todos',
-  calendar: '/calendar',
+// Welche Widget-Komponente gehört zu welcher App (Slug)?
+const WIDGETS: Record<string, ComponentType<{ onRemove?: () => void }>> = {
+  calendar: CalendarWidget,
+  todo: TodoWidget,
+  'shopping-list': ShoppingWidget,
+  gallery: GalleryWidget,
 }
 
 export default function DashboardPage() {
   const user = useAuth((s) => s.user)
   const setUser = useAuth((s) => s.setUser)
-  const navigate = useNavigate()
   const hasFamily = Boolean(user?.family_id)
 
   const [mine, setMine] = useState<AppItem[]>([])
@@ -83,37 +86,18 @@ export default function DashboardPage() {
     <div className="space-y-8">
       <h1 className="text-2xl font-bold text-brand">Dashboard</h1>
 
-      <section>
-        <h2 className="mb-3 text-lg font-semibold text-slate-700">Deine Apps</h2>
-        {mine.length === 0 && (
-          <p className="text-slate-500">Noch keine Apps – füge unten welche hinzu.</p>
-        )}
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-          {mine.map((app) => (
-            <div
-              key={app.id}
-              className="group relative cursor-pointer rounded-2xl bg-white p-6 text-center shadow transition hover:shadow-lg"
-              onClick={() => navigate(ROUTE_BY_SLUG[app.slug] ?? '/')}
-            >
-              <button
-                onClick={(e) => {
-                  e.stopPropagation()
-                  void removeApp(app.id)
-                }}
-                className="absolute right-2 top-2 text-slate-300 opacity-0 transition group-hover:opacity-100 hover:text-red-500"
-                aria-label="Entfernen"
-              >
-                ✕
-              </button>
-              <div className="text-3xl">
-                <i className={app.icon ?? ''} />
-                {!app.icon && '📦'}
-              </div>
-              <div className="mt-2 font-medium text-slate-700">{app.name}</div>
-            </div>
-          ))}
+      {mine.length === 0 ? (
+        <p className="text-slate-500">
+          Noch keine Apps aktiv – füge unten welche hinzu, dann erscheinen hier ihre Widgets.
+        </p>
+      ) : (
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {mine.map((app) => {
+            const Widget = WIDGETS[app.slug]
+            return Widget ? <Widget key={app.id} onRemove={() => void removeApp(app.id)} /> : null
+          })}
         </div>
-      </section>
+      )}
 
       {available.length > 0 && (
         <section>
