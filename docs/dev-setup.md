@@ -34,7 +34,8 @@ Weitere Dienste:
 - **Mailpit** (abgefangene E-Mails): <http://localhost:8025>
 - **MySQL**: Host `127.0.0.1`, Port **3307**, DB `familyboard`, User `sail`, PW `password`
 - **MinIO** (S3-kompatibler Medienspeicher, ADR-0014): API `:9000`, Web-Konsole
-  <http://localhost:9001> (User `sail` / PW `password`), Bucket `media`
+  <http://localhost:9001> (User `sail` / PW `password`), Bucket `media` (**privat** –
+  Zugriff nur über signierte Proxy-URLs der API, ADR-0015)
 - **Redis** + **worker** (`queue:work`): asynchrone Bildverarbeitung (Thumbnails)
 
 > Speicher-/Queue-Modus steht in `.env`: `MEDIA_DISK=s3` + `QUEUE_CONNECTION=redis`

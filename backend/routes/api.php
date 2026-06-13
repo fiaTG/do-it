@@ -5,6 +5,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\FamilyController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\InviteController;
+use App\Http\Controllers\MediaController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\ShoppingItemController;
@@ -36,6 +37,14 @@ Route::prefix('v1')->group(function () {
 
     // Öffentliche Einladungs-Vorschau (für die Registrierungsseite).
     Route::get('/invites/{token}', [InviteController::class, 'show']);
+
+    // Medien-Proxy (ADR-0015): nur über gültige Signatur erreichbar, kein Cookie
+    // nötig (funktioniert für <img>). Speicher bleibt privat.
+    Route::middleware('signed')->group(function () {
+        Route::get('/media/images/{image}', [MediaController::class, 'image'])->name('media.image');
+        Route::get('/media/images/{image}/thumbnail', [MediaController::class, 'thumbnail'])->name('media.thumbnail');
+        Route::get('/media/avatars/{user}', [MediaController::class, 'avatar'])->name('media.avatar');
+    });
 
     // --- Geschützt (Sanctum: Cookie fürs SPA oder Bearer-Token) ---------------
     Route::middleware('auth:sanctum')->group(function () {

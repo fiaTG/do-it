@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use App\Models\Image;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 
 /**
  * @mixin Image
@@ -17,11 +17,14 @@ class ImageResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        // Signierte, zeitlich befristete URLs (60 min) – Medien bleiben privat (ADR-0015).
+        $expiry = now()->addHour();
+
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'url' => Storage::disk(config('filesystems.media'))->url($this->path),
-            'thumbnail_url' => Storage::disk(config('filesystems.media'))->url($this->thumbnail_path ?? $this->path),
+            'url' => URL::temporarySignedRoute('media.image', $expiry, ['image' => $this->id]),
+            'thumbnail_url' => URL::temporarySignedRoute('media.thumbnail', $expiry, ['image' => $this->id]),
             'created_by' => $this->user_id,
             'created_at' => $this->created_at?->toIso8601String(),
         ];
