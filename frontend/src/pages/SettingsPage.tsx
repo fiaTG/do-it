@@ -34,7 +34,7 @@ export default function SettingsPage() {
     <div className="mx-auto max-w-md space-y-6">
       <h1 className="text-2xl font-bold text-primary">⚙️ Einstellungen</h1>
 
-      <form onSubmit={submit} className="rounded-2xl bg-white p-6 shadow">
+      <form onSubmit={submit} className="rounded-2xl bg-surface p-6 shadow">
         <h2 className="mb-4 font-semibold text-text">Passwort ändern</h2>
 
         {message && <p className="mb-4 text-sm text-green-700">{message}</p>}

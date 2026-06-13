@@ -63,7 +63,7 @@ export default function ProfilePage() {
       {error && <p className="text-sm text-red-600">{error}</p>}
 
       {/* Avatar */}
-      <div className="flex items-center gap-5 rounded-2xl bg-white p-5 shadow">
+      <div className="flex items-center gap-5 rounded-2xl bg-surface p-5 shadow">
         <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-primary text-2xl font-bold text-white">
           {user.avatar_url ? (
             <img src={user.avatar_url} alt="" className="h-full w-full object-cover" />
@@ -84,7 +84,7 @@ export default function ProfilePage() {
       </div>
 
       {/* Felder */}
-      <form onSubmit={save} className="space-y-4 rounded-2xl bg-white p-6 shadow">
+      <form onSubmit={save} className="space-y-4 rounded-2xl bg-surface p-6 shadow">
         <div className="flex gap-3">
           <input className={inputClass} placeholder="Vorname" required value={firstName} onChange={(e) => setFirstName(e.target.value)} />
           <input className={inputClass} placeholder="Nachname" required value={lastName} onChange={(e) => setLastName(e.target.value)} />

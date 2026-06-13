@@ -57,7 +57,7 @@ export default function DashboardPage() {
 
   if (!hasFamily) {
     return (
-      <div className="mx-auto max-w-md rounded-2xl bg-white p-8 shadow">
+      <div className="mx-auto max-w-md rounded-2xl bg-surface p-8 shadow">
         <h1 className="mb-2 text-2xl font-bold text-primary">Willkommen! 👋</h1>
         <p className="mb-6 text-muted">
           Du gehörst noch keiner Familie an. Gründe jetzt eine – oder nimm eine

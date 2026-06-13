@@ -45,7 +45,7 @@ export default function MembersPage() {
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
         {members.map((m) => (
-          <div key={m.id} className="flex flex-col items-center rounded-2xl bg-white p-5 shadow">
+          <div key={m.id} className="flex flex-col items-center rounded-2xl bg-surface p-5 shadow">
             <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-primary text-xl font-bold text-white">
               {m.avatar_url ? (
                 <img src={m.avatar_url} alt="" className="h-full w-full object-cover" />
@@ -60,7 +60,7 @@ export default function MembersPage() {
         ))}
       </div>
 
-      <form onSubmit={invite} className="rounded-2xl bg-white p-4 shadow">
+      <form onSubmit={invite} className="rounded-2xl bg-surface p-4 shadow">
         <h2 className="mb-3 font-semibold text-text">Mitglied einladen</h2>
         {message && <p className="mb-3 text-sm text-green-700">{message}</p>}
         <div className="flex gap-2">

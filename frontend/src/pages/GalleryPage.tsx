@@ -52,7 +52,7 @@ export default function GalleryPage() {
 
       {error && <p className="text-sm text-red-600">{error}</p>}
 
-      <form onSubmit={upload} className="flex flex-wrap items-center gap-3 rounded-2xl bg-white p-4 shadow">
+      <form onSubmit={upload} className="flex flex-wrap items-center gap-3 rounded-2xl bg-surface p-4 shadow">
         <input
           ref={fileInput}
           type="file"
@@ -78,7 +78,7 @@ export default function GalleryPage() {
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
         {images.length === 0 && <p className="text-muted">Noch keine Bilder.</p>}
         {images.map((img) => (
-          <figure key={img.id} className="group relative overflow-hidden rounded-2xl bg-white shadow">
+          <figure key={img.id} className="group relative overflow-hidden rounded-2xl bg-surface shadow">
             <img
               src={img.thumbnail_url}
               alt={img.title ?? ''}

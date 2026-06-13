@@ -37,7 +37,7 @@ export default function TodoWidget({ onRemove }: { onRemove?: () => void }) {
               <input
                 type="checkbox"
                 onChange={() => void markDone(t)}
-                className="h-4 w-4 accent-brand"
+                className="h-4 w-4 accent-primary"
               />
               <span className="text-text">{t.title}</span>
             </li>

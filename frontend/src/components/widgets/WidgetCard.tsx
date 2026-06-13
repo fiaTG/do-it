@@ -19,7 +19,7 @@ export default function WidgetCard({
   children: ReactNode
 }) {
   return (
-    <div className="flex flex-col rounded-2xl bg-white p-5 shadow">
+    <div className="flex flex-col rounded-2xl bg-surface p-5 shadow">
       <div className="mb-3 flex items-center justify-between">
         <h3 className="font-semibold text-text">
           <span aria-hidden>{icon}</span> {title}

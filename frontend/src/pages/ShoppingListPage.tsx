@@ -64,7 +64,7 @@ export default function ShoppingListPage() {
         </a>
       </div>
 
-      <form onSubmit={add} className="flex flex-wrap items-end gap-2 rounded-2xl bg-white p-4 shadow">
+      <form onSubmit={add} className="flex flex-wrap items-end gap-2 rounded-2xl bg-surface p-4 shadow">
         <input
           placeholder="Artikel"
           required
@@ -96,7 +96,7 @@ export default function ShoppingListPage() {
         </button>
       </form>
 
-      <ul className="divide-y rounded-2xl bg-white shadow">
+      <ul className="divide-y divide-border rounded-2xl bg-surface shadow">
         {items.length === 0 && <li className="p-4 text-muted">Liste ist leer.</li>}
         {items.map((item) => (
           <li key={item.id} className="flex items-center gap-3 p-4">
@@ -104,7 +104,7 @@ export default function ShoppingListPage() {
               type="checkbox"
               checked={item.is_purchased}
               onChange={() => void toggle(item)}
-              className="h-5 w-5 accent-brand"
+              className="h-5 w-5 accent-primary"
             />
             <span className={item.is_purchased ? 'flex-1 text-muted line-through' : 'flex-1'}>
               {item.name} <span className="text-muted">×{item.quantity}</span>

@@ -37,7 +37,7 @@ export default function ShoppingWidget({ onRemove }: { onRemove?: () => void }) 
               <input
                 type="checkbox"
                 onChange={() => void markPurchased(item)}
-                className="h-4 w-4 accent-brand"
+                className="h-4 w-4 accent-primary"
               />
               <span className="text-text">
                 {item.name} <span className="text-muted">×{item.quantity}</span>

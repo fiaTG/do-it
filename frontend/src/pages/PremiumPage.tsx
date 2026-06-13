@@ -67,7 +67,7 @@ export default function PremiumPage() {
       <h1 className="text-2xl font-bold text-primary">⭐ Premium</h1>
       {error && <p className="text-sm text-red-600">{error}</p>}
 
-      <div className="rounded-2xl bg-white p-6 shadow">
+      <div className="rounded-2xl bg-surface p-6 shadow">
         <div className="mb-4 flex items-center justify-between">
           <span className="font-semibold text-text">Aktueller Plan</span>
           <span

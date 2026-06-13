@@ -145,7 +145,7 @@ export default function CalendarPage() {
       <h1 className="text-2xl font-bold text-primary">📅 Kalender</h1>
       {error && <p className="text-sm text-red-600">{error}</p>}
 
-      <div className="rounded-2xl bg-white p-4 shadow">
+      <div className="rounded-2xl bg-surface p-4 shadow">
         <FullCalendar
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
           initialView="dayGridMonth"
@@ -178,7 +178,7 @@ export default function CalendarPage() {
 
       {modal.open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <form onSubmit={submit} className="w-full max-w-sm space-y-3 rounded-2xl bg-white p-6 shadow-xl">
+          <form onSubmit={submit} className="w-full max-w-sm space-y-3 rounded-2xl bg-surface p-6 shadow-xl">
             <h2 className="text-lg font-semibold text-primary">
               {modal.mode === 'create' ? 'Neuer Termin' : 'Termin bearbeiten'}
             </h2>
@@ -226,7 +226,7 @@ export default function CalendarPage() {
                 type="checkbox"
                 checked={modal.carReserved}
                 onChange={(e) => setModal({ ...modal, carReserved: e.target.checked })}
-                className="h-5 w-5 accent-brand"
+                className="h-5 w-5 accent-primary"
               />
               🚗 Auto reservieren
             </label>

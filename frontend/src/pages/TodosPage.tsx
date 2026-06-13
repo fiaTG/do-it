@@ -44,7 +44,7 @@ export default function TodosPage() {
     <div className="mx-auto max-w-2xl space-y-6">
       <h1 className="text-2xl font-bold text-primary">✅ ToDo-Liste</h1>
 
-      <form onSubmit={add} className="flex gap-2 rounded-2xl bg-white p-4 shadow">
+      <form onSubmit={add} className="flex gap-2 rounded-2xl bg-surface p-4 shadow">
         <input
           placeholder="Neue Aufgabe"
           required
@@ -57,7 +57,7 @@ export default function TodosPage() {
         </button>
       </form>
 
-      <ul className="divide-y rounded-2xl bg-white shadow">
+      <ul className="divide-y divide-border rounded-2xl bg-surface shadow">
         {todos.length === 0 && <li className="p-4 text-muted">Keine Aufgaben.</li>}
         {todos.map((todo) => (
           <li key={todo.id} className="flex items-center gap-3 p-4">
@@ -65,7 +65,7 @@ export default function TodosPage() {
               type="checkbox"
               checked={todo.is_done}
               onChange={() => void toggle(todo)}
-              className="h-5 w-5 accent-brand"
+              className="h-5 w-5 accent-primary"
             />
             <span className={todo.is_done ? 'flex-1 text-muted line-through' : 'flex-1'}>
               {todo.title}
