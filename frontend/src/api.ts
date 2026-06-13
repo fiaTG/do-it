@@ -170,6 +170,19 @@ export const eventsApi = {
     const { data } = await api.post<{ data: EventItem }>('/events', payload)
     return data.data
   },
+  async update(
+    id: number,
+    payload: Partial<{
+      title: string
+      starts_at: string
+      ends_at: string
+      category: string
+      car_reserved: boolean
+    }>,
+  ): Promise<EventItem> {
+    const { data } = await api.patch<{ data: EventItem }>(`/events/${id}`, payload)
+    return data.data
+  },
   async remove(id: number): Promise<void> {
     await api.delete(`/events/${id}`)
   },

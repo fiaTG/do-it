@@ -17,27 +17,37 @@ const COLORS: Record<string, string> = {
   Sonstiges: '#968d86',
 }
 
-interface NewEvent {
+interface ModalState {
   open: boolean
+  mode: 'create' | 'edit'
+  id: number | null
+  title: string
   start: string
   end: string
-  title: string
   category: string
   carReserved: boolean
 }
 
-const EMPTY: NewEvent = {
+const CLOSED: ModalState = {
   open: false,
+  mode: 'create',
+  id: null,
+  title: '',
   start: '',
   end: '',
-  title: '',
   category: 'Familie',
   carReserved: false,
 }
 
+/** Date -> Wert für <input type="datetime-local"> (lokale Zeit, ohne Sekunden). */
+function toLocalInput(date: Date): string {
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`
+}
+
 export default function CalendarPage() {
   const [events, setEvents] = useState<EventItem[]>([])
-  const [form, setForm] = useState<NewEvent>(EMPTY)
+  const [modal, setModal] = useState<ModalState>(CLOSED)
   const [error, setError] = useState('')
 
   async function load() {
@@ -61,34 +71,74 @@ export default function CalendarPage() {
     borderColor: COLORS[e.category] ?? COLORS.Sonstiges,
   }))
 
-  function handleSelect(arg: DateSelectArg) {
-    setForm({ ...EMPTY, open: true, start: arg.startStr, end: arg.endStr })
+  function openCreate(arg: DateSelectArg) {
+    setModal({
+      ...CLOSED,
+      open: true,
+      mode: 'create',
+      start: toLocalInput(arg.start),
+      end: toLocalInput(arg.end),
+    })
   }
 
-  async function handleEventClick(arg: EventClickArg) {
-    if (window.confirm(`Termin „${arg.event.title}" löschen?`)) {
-      await eventsApi.remove(Number(arg.event.id))
-      await load()
-    }
+  function openEdit(arg: EventClickArg) {
+    const event = events.find((e) => e.id === Number(arg.event.id))
+    if (!event) return
+    setModal({
+      open: true,
+      mode: 'edit',
+      id: event.id,
+      title: event.title,
+      start: toLocalInput(new Date(event.starts_at)),
+      end: toLocalInput(new Date(event.ends_at)),
+      category: event.category,
+      carReserved: event.car_reserved,
+    })
+  }
+
+  // Drag&Drop bzw. Resize -> nur die Zeiten persistieren.
+  async function persistMove(arg: { event: { id: string; start: Date | null; end: Date | null } }) {
+    const { id, start, end } = arg.event
+    if (!start) return
+    await eventsApi.update(Number(id), {
+      starts_at: start.toISOString(),
+      ends_at: (end ?? start).toISOString(),
+    })
+    await load()
   }
 
   async function submit(e: FormEvent) {
     e.preventDefault()
     setError('')
+    const payload = {
+      title: modal.title,
+      starts_at: modal.start,
+      ends_at: modal.end,
+      category: modal.category,
+      car_reserved: modal.carReserved,
+    }
     try {
-      await eventsApi.create({
-        title: form.title,
-        starts_at: form.start,
-        ends_at: form.end,
-        category: form.category,
-        car_reserved: form.carReserved,
-      })
-      setForm(EMPTY)
+      if (modal.mode === 'create') {
+        await eventsApi.create(payload)
+      } else if (modal.id !== null) {
+        await eventsApi.update(modal.id, payload)
+      }
+      setModal(CLOSED)
       await load()
     } catch (err) {
       setError(apiError(err))
     }
   }
+
+  async function remove() {
+    if (modal.id === null) return
+    await eventsApi.remove(modal.id)
+    setModal(CLOSED)
+    await load()
+  }
+
+  const inputClass =
+    'rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-brand'
 
   return (
     <div className="space-y-4">
@@ -107,9 +157,12 @@ export default function CalendarPage() {
           locale={deLocale}
           height="auto"
           selectable
-          select={handleSelect}
+          editable
+          select={openCreate}
           events={fcEvents}
-          eventClick={handleEventClick}
+          eventClick={openEdit}
+          eventDrop={persistMove}
+          eventResize={persistMove}
         />
       </div>
 
@@ -120,25 +173,49 @@ export default function CalendarPage() {
             {c}
           </span>
         ))}
-        <span>· Bereich im Kalender ziehen, um einen Termin anzulegen.</span>
+        <span>· Bereich ziehen = anlegen · Klick = bearbeiten · Ziehen = verschieben</span>
       </div>
 
-      {form.open && (
+      {modal.open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
           <form onSubmit={submit} className="w-full max-w-sm space-y-3 rounded-2xl bg-white p-6 shadow-xl">
-            <h2 className="text-lg font-semibold text-brand">Neuer Termin</h2>
+            <h2 className="text-lg font-semibold text-brand">
+              {modal.mode === 'create' ? 'Neuer Termin' : 'Termin bearbeiten'}
+            </h2>
             <input
               autoFocus
               placeholder="Titel"
               required
-              value={form.title}
-              onChange={(e) => setForm({ ...form, title: e.target.value })}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-brand"
+              value={modal.title}
+              onChange={(e) => setModal({ ...modal, title: e.target.value })}
+              className={`${inputClass} w-full`}
             />
+            <div className="flex gap-2">
+              <label className="flex-1 text-xs text-slate-500">
+                Von
+                <input
+                  type="datetime-local"
+                  required
+                  value={modal.start}
+                  onChange={(e) => setModal({ ...modal, start: e.target.value })}
+                  className={`${inputClass} mt-1 w-full`}
+                />
+              </label>
+              <label className="flex-1 text-xs text-slate-500">
+                Bis
+                <input
+                  type="datetime-local"
+                  required
+                  value={modal.end}
+                  onChange={(e) => setModal({ ...modal, end: e.target.value })}
+                  className={`${inputClass} mt-1 w-full`}
+                />
+              </label>
+            </div>
             <select
-              value={form.category}
-              onChange={(e) => setForm({ ...form, category: e.target.value })}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-brand"
+              value={modal.category}
+              onChange={(e) => setModal({ ...modal, category: e.target.value })}
+              className={`${inputClass} w-full`}
             >
               {CATEGORIES.map((c) => (
                 <option key={c}>{c}</option>
@@ -147,23 +224,36 @@ export default function CalendarPage() {
             <label className="flex items-center gap-2 text-sm text-slate-600">
               <input
                 type="checkbox"
-                checked={form.carReserved}
-                onChange={(e) => setForm({ ...form, carReserved: e.target.checked })}
+                checked={modal.carReserved}
+                onChange={(e) => setModal({ ...modal, carReserved: e.target.checked })}
                 className="h-5 w-5 accent-brand"
               />
               🚗 Auto reservieren
             </label>
-            <div className="flex justify-end gap-2 pt-2">
-              <button
-                type="button"
-                onClick={() => setForm(EMPTY)}
-                className="rounded-lg px-4 py-2 text-sm text-slate-500 hover:bg-slate-100"
-              >
-                Abbrechen
-              </button>
-              <button className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-dark">
-                Anlegen
-              </button>
+            <div className="flex items-center justify-between pt-2">
+              {modal.mode === 'edit' ? (
+                <button
+                  type="button"
+                  onClick={() => void remove()}
+                  className="text-sm text-red-500 hover:underline"
+                >
+                  Löschen
+                </button>
+              ) : (
+                <span />
+              )}
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setModal(CLOSED)}
+                  className="rounded-lg px-4 py-2 text-sm text-slate-500 hover:bg-slate-100"
+                >
+                  Abbrechen
+                </button>
+                <button className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-dark">
+                  {modal.mode === 'create' ? 'Anlegen' : 'Speichern'}
+                </button>
+              </div>
             </div>
           </form>
         </div>
