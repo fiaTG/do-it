@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useState, type ComponentType, type FormEvent } from 'react'
-import { apiError, appsApi, familyApi } from '../api'
+import { useEffect, useState, type ComponentType, type FormEvent } from 'react'
+import { apiError, familyApi } from '../api'
 import CalendarWidget from '../components/widgets/CalendarWidget'
 import GalleryWidget from '../components/widgets/GalleryWidget'
 import ShoppingWidget from '../components/widgets/ShoppingWidget'
 import TodoWidget from '../components/widgets/TodoWidget'
+import { useApps } from '../store/apps'
 import { useAuth } from '../store/auth'
-import type { AppItem } from '../types'
 
 // Welche Widget-Komponente gehört zu welcher App (Slug)?
 const WIDGETS: Record<string, ComponentType<{ onRemove?: () => void }>> = {
@@ -20,18 +20,18 @@ export default function DashboardPage() {
   const setUser = useAuth((s) => s.setUser)
   const hasFamily = Boolean(user?.family_id)
 
-  const [mine, setMine] = useState<AppItem[]>([])
-  const [catalog, setCatalog] = useState<AppItem[]>([])
+  // Geteilter Apps-Store (synchron mit der Seitennavigation).
+  const mine = useApps((s) => s.mine)
+  const catalog = useApps((s) => s.catalog)
+  const load = useApps((s) => s.load)
+  const addApp = useApps((s) => s.add)
+  const removeApp = useApps((s) => s.remove)
+
   const [familyName, setFamilyName] = useState('')
   const [error, setError] = useState('')
 
-  const load = useCallback(async () => {
-    setMine(await appsApi.mine())
-    setCatalog(await appsApi.catalog())
-  }, [])
-
   useEffect(() => {
-    if (hasFamily) void load()
+    if (hasFamily) void load().catch(() => {})
   }, [hasFamily, load])
 
   async function createFamily(e: FormEvent) {
@@ -43,16 +43,6 @@ export default function DashboardPage() {
     } catch (err) {
       setError(apiError(err))
     }
-  }
-
-  async function addApp(id: number) {
-    await appsApi.add(id)
-    await load()
-  }
-
-  async function removeApp(id: number) {
-    await appsApi.remove(id)
-    await load()
   }
 
   if (!hasFamily) {

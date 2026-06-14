@@ -1,25 +1,50 @@
+import { useEffect } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { useApps } from '../store/apps'
 import { useAuth } from '../store/auth'
 import ThemeToggle from './ThemeToggle'
 
-const NAV = [
-  { to: '/dashboard', label: 'Dashboard', icon: '🏠', end: true },
-  { to: '/shopping', label: 'Einkaufsliste', icon: '🛒' },
-  { to: '/todos', label: 'ToDo', icon: '✅' },
-  { to: '/calendar', label: 'Kalender', icon: '📅' },
-  { to: '/gallery', label: 'Galerie', icon: '🖼️' },
-  { to: '/members', label: 'Familie', icon: '👪' },
-  { to: '/profile', label: 'Profil', icon: '👤' },
-  { to: '/premium', label: 'Premium', icon: '⭐' },
-]
+type NavItem = { to: string; label: string; icon: string; end?: boolean }
+
+// Feature-Apps erscheinen nur in der Navigation, wenn der Nutzer sie auf dem
+// Dashboard aktiviert hat (Slug -> Navigationseintrag).
+const FEATURE_NAV: Record<string, NavItem> = {
+  'shopping-list': { to: '/shopping', label: 'Einkaufsliste', icon: '🛒' },
+  todo: { to: '/todos', label: 'ToDo', icon: '✅' },
+  calendar: { to: '/calendar', label: 'Kalender', icon: '📅' },
+  gallery: { to: '/gallery', label: 'Galerie', icon: '🖼️' },
+}
 
 export default function Layout() {
   const user = useAuth((s) => s.user)
   const logout = useAuth((s) => s.logout)
+  const mine = useApps((s) => s.mine)
+  const loadApps = useApps((s) => s.load)
+  const resetApps = useApps((s) => s.reset)
   const navigate = useNavigate()
+
+  const hasFamily = Boolean(user?.family_id)
+
+  useEffect(() => {
+    if (hasFamily) void loadApps().catch(() => {})
+  }, [hasFamily, loadApps])
+
+  // Reihenfolge fix vorgeben; nur aktivierte Apps einblenden.
+  const featureItems = Object.entries(FEATURE_NAV)
+    .filter(([slug]) => mine.some((app) => app.slug === slug))
+    .map(([, item]) => item)
+
+  const nav: NavItem[] = [
+    { to: '/dashboard', label: 'Dashboard', icon: '🏠', end: true },
+    ...featureItems,
+    { to: '/members', label: 'Familie', icon: '👪' },
+    { to: '/profile', label: 'Profil', icon: '👤' },
+    { to: '/premium', label: 'Premium', icon: '⭐' },
+  ]
 
   async function handleLogout() {
     await logout()
+    resetApps()
     navigate('/login')
   }
 
@@ -51,7 +76,7 @@ export default function Layout() {
           </div>
         </div>
         <nav className="flex-1 px-3">
-          {NAV.map((item) => (
+          {nav.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
