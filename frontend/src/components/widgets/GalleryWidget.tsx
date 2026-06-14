@@ -23,7 +23,6 @@ export default function GalleryWidget({ onRemove }: { onRemove?: () => void }) {
               key={img.id}
               src={img.thumbnail_url}
               alt={img.title ?? ''}
-              loading="lazy"
               className="aspect-square w-full rounded-lg object-cover"
             />
           ))}

@@ -82,7 +82,6 @@ export default function GalleryPage() {
             <img
               src={img.thumbnail_url}
               alt={img.title ?? ''}
-              loading="lazy"
               onClick={() => setLightbox(img)}
               className="aspect-square w-full cursor-pointer object-cover"
             />
