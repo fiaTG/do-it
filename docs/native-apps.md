@@ -37,9 +37,19 @@ Die Build-Skripte (`npm run cap:sync` / `android:open`) bauen mit
 `vite build --mode capacitor`. Gerät-/maschinenspezifische Werte gehören in
 `.env.capacitor.local` (gitignored).
 
-**CORS:** In `capacitor.config.ts` ist `CapacitorHttp` aktiviert – API-Anfragen
-laufen dadurch nativ und umgehen die CORS-Prüfung der WebView. Token-Auth braucht
-ohnehin kein Cookie. Für echte Geräte ggf. Klartext-HTTP erlauben oder HTTPS.
+**CORS & Schema (Mixed Content):** Die WebView blockiert `http`-Inhalte auf einer
+`https`-Seite (Mixed Content). Da die lokale API plain `http` ist, servieren wir
+die App im Dev über **`http://localhost`** (`server.androidScheme: 'http'` in
+`capacitor.config.ts`) – dann sind App, API und Bilder same-scheme. Die API
+erlaubt die WebView-Origin per CORS (`config/cors.php`: `http://localhost`,
+`https://localhost`, `capacitor://localhost`). API-Anfragen/Uploads laufen über
+die normale WebView-Fetch (CapacitorHttp ist bewusst aus – es bricht
+multipart-Uploads).
+
+> **Wichtig fürs Produktions-Release:** Dann läuft die API über **HTTPS** →
+> `androidScheme` zurück auf `https` (Default) stellen (am besten per Env-Variable
+> umschaltbar) und `VITE_API_URL=https://…`. `http` ist ausschließlich eine
+> Dev-Erleichterung für die lokale Plain-HTTP-API.
 
 ## Voraussetzungen (lokal)
 
