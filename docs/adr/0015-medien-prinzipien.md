@@ -1,8 +1,14 @@
 # ADR-0015: Medien-Prinzipien – Unveränderlichkeit, Privatsphäre & responsive Verarbeitung
 
-- **Status:** Vorgeschlagen
+- **Status:** Akzeptiert (umgesetzt 2026-06-14)
 - **Datum:** 2026-06-13
 - **Betrifft:** Medien (Galerie/Avatare), Datenschutz, Sicherheit, Performance
+
+> **Umsetzung:** EXIF/GPS-Strip (`App\Support\ImageUpload`), private Medien +
+> signierter Proxy (`MediaController`, signierte Routen) und **responsive
+> WebP-Varianten** (`App\Support\ImageVariants`, async in `GenerateThumbnail`,
+> `media.variant`-Proxy, `srcset` in `ImageResource` + Galerie-Lightbox) sind
+> vollständig umgesetzt und getestet.
 
 ## Kontext
 
