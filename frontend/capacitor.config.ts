@@ -14,6 +14,12 @@ const config: CapacitorConfig = {
     // API-Anfragen nativ ausführen → umgeht CORS der WebView komplett.
     CapacitorHttp: { enabled: true },
   },
+  android: {
+    // Dev: die App läuft über https://localhost, die lokale API/Bilder aber
+    // über http (10.0.2.2). Ohne dies blockiert die WebView die <img>-Bilder
+    // als Mixed Content. In Produktion (HTTPS-API) nicht nötig.
+    allowMixedContent: true,
+  },
 }
 
 export default config
