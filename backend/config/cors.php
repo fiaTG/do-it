@@ -21,6 +21,8 @@ return [
         env('FRONTEND_URL', 'http://localhost:5173'),
         // Native Hüllen (Capacitor WebView-Origins, ADR-0012). Token-Auth,
         // keine Cookies – aber die Origin muss für XHR/Upload erlaubt sein.
+        // Android nutzt im Dev das http-Schema, iOS capacitor://.
+        'http://localhost',
         'https://localhost',
         'capacitor://localhost',
     ],

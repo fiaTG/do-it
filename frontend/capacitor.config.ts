@@ -10,11 +10,12 @@ const config: CapacitorConfig = {
   appId: 'app.heimathafen',
   appName: 'Heimathafen',
   webDir: 'dist',
-  android: {
-    // Dev: die App läuft über https://localhost, die lokale API/Bilder aber
-    // über http (10.0.2.2). Ohne dies blockiert die WebView die Inhalte als
-    // Mixed Content. In Produktion (HTTPS-API) nicht nötig.
-    allowMixedContent: true,
+  server: {
+    // Dev: App über http://localhost servieren, damit Aufrufe an die lokale
+    // http-API/Bilder (10.0.2.2) NICHT als Mixed Content blockiert werden.
+    // (Mit https-Schema blockt die WebView die http-Bilder; allowMixedContent
+    // reicht dafür nicht zuverlässig.) Produktion: HTTPS-API -> https-Schema.
+    androidScheme: 'http',
   },
 }
 // Hinweis: CapacitorHttp wurde bewusst NICHT aktiviert – es bricht
