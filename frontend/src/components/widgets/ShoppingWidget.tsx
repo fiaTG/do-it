@@ -42,6 +42,7 @@ export default function ShoppingWidget({ onRemove }: { onRemove?: () => void }) 
             <li key={item.id} className="flex items-center gap-2 text-sm">
               <input
                 type="checkbox"
+                onClick={(e) => e.stopPropagation()}
                 onChange={() => void markPurchased(item)}
                 className="h-4 w-4 accent-primary"
               />

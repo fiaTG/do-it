@@ -1,5 +1,6 @@
 import { useEffect, useState, type ComponentType, type FormEvent } from 'react'
 import { apiError, familyApi } from '../api'
+import DashboardStats from '../components/DashboardStats'
 import CalendarWidget from '../components/widgets/CalendarWidget'
 import GalleryWidget from '../components/widgets/GalleryWidget'
 import ShoppingWidget from '../components/widgets/ShoppingWidget'
@@ -87,6 +88,8 @@ export default function DashboardPage() {
           {user?.family ? `Willkommen im Heimathafen der Familie ${user.family.name}.` : 'Willkommen im Heimathafen.'}
         </p>
       </header>
+
+      {mine.length > 0 && <DashboardStats slugs={mine.map((a) => a.slug)} />}
 
       {mine.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-border bg-surface p-8 text-center">

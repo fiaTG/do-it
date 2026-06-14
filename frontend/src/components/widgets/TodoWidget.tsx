@@ -42,6 +42,7 @@ export default function TodoWidget({ onRemove }: { onRemove?: () => void }) {
             <li key={t.id} className="flex items-center gap-2 text-sm">
               <input
                 type="checkbox"
+                onClick={(e) => e.stopPropagation()}
                 onChange={() => void markDone(t)}
                 className="h-4 w-4 accent-primary"
               />
