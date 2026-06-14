@@ -68,11 +68,17 @@ export interface EventItem {
   created_by: number | null
 }
 
+export interface ImageVariant {
+  width: number
+  url: string
+}
+
 export interface ImageItem {
   id: number
   title: string | null
   url: string
   thumbnail_url: string
+  srcset: ImageVariant[]
   created_by: number | null
   created_at: string
 }

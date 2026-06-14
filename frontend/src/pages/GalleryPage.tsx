@@ -8,7 +8,7 @@ export default function GalleryPage() {
   const [file, setFile] = useState<File | null>(null)
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
-  const [lightbox, setLightbox] = useState<string | null>(null)
+  const [lightbox, setLightbox] = useState<ImageItem | null>(null)
   const fileInput = useRef<HTMLInputElement>(null)
 
   async function load() {
@@ -83,7 +83,7 @@ export default function GalleryPage() {
               src={img.thumbnail_url}
               alt={img.title ?? ''}
               loading="lazy"
-              onClick={() => setLightbox(img.url)}
+              onClick={() => setLightbox(img)}
               className="aspect-square w-full cursor-pointer object-cover"
             />
             <button
@@ -110,7 +110,13 @@ export default function GalleryPage() {
           onClick={() => setLightbox(null)}
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
         >
-          <img src={lightbox} alt="" className="max-h-full max-w-full rounded-lg object-contain" />
+          <img
+            src={lightbox.url}
+            srcSet={lightbox.srcset.map((v) => `${v.url} ${v.width}w`).join(', ')}
+            sizes="100vw"
+            alt={lightbox.title ?? ''}
+            className="max-h-full max-w-full rounded-lg object-contain"
+          />
         </div>
       )}
     </div>

@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\Image;
+use App\Support\ImageVariants;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\URL;
@@ -25,6 +26,14 @@ class ImageResource extends JsonResource
             'title' => $this->title,
             'url' => URL::temporarySignedRoute('media.image', $expiry, ['image' => $this->id]),
             'thumbnail_url' => URL::temporarySignedRoute('media.thumbnail', $expiry, ['image' => $this->id]),
+            // Responsive Varianten für srcset (ADR-0015): je Breite eine signierte URL.
+            'srcset' => collect(ImageVariants::WIDTHS)->map(fn (int $width) => [
+                'width' => $width,
+                'url' => URL::temporarySignedRoute('media.variant', $expiry, [
+                    'image' => $this->id,
+                    'width' => $width,
+                ]),
+            ])->all(),
             'created_by' => $this->user_id,
             'created_at' => $this->created_at?->toIso8601String(),
         ];

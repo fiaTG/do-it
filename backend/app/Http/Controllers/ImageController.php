@@ -7,6 +7,7 @@ use App\Http\Resources\ImageResource;
 use App\Jobs\GenerateThumbnail;
 use App\Models\Image;
 use App\Support\ImageUpload;
+use App\Support\ImageVariants;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -70,8 +71,13 @@ class ImageController extends Controller
     {
         $this->authorize('delete', $image);
 
+        // Original, Thumbnail und alle responsiven Varianten aufräumen.
+        $variants = array_map(
+            fn (int $width) => ImageVariants::path($image->path, $width),
+            ImageVariants::WIDTHS,
+        );
         Storage::disk(config('filesystems.media'))
-            ->delete(array_filter([$image->path, $image->thumbnail_path]));
+            ->delete(array_filter([$image->path, $image->thumbnail_path, ...$variants]));
         $image->delete();
 
         return response()->noContent();

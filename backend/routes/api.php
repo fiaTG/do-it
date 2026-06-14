@@ -43,6 +43,8 @@ Route::prefix('v1')->group(function () {
     Route::middleware('signed')->group(function () {
         Route::get('/media/images/{image}', [MediaController::class, 'image'])->name('media.image');
         Route::get('/media/images/{image}/thumbnail', [MediaController::class, 'thumbnail'])->name('media.thumbnail');
+        Route::get('/media/images/{image}/variant/{width}', [MediaController::class, 'variant'])
+            ->whereNumber('width')->name('media.variant');
         Route::get('/media/avatars/{user}', [MediaController::class, 'avatar'])->name('media.avatar');
     });
 
