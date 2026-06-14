@@ -102,12 +102,83 @@ Die generierten nativen Dateien landen unter `android/.../res/` (gitignored).
 Logo anpassen → Werte/SVG in `scripts/generate-icons.mjs` ändern und neu laufen
 lassen. Das Web-/PWA-Icon ist `frontend/public/icon.svg` (gleiche Marke).
 
-## iOS (später)
+## iOS – aufs eigene iPhone (Runbook für den Mac)
 
-iOS braucht zwingend **macOS + Xcode**. Vorgehen analog:
+iOS-Builds gehen **nur auf macOS + Xcode**. Da Backend/Code hier auf dem Windows-
+Rechner liegen, läuft der iOS-Teil auf dem MacBook. Am einfachsten ist es, den
+**ganzen Stack auf dem Mac** zu fahren (Docker + Node + Xcode), dann ist nichts
+über zwei Rechner verteilt.
 
+### 0. Voraussetzungen (Mac)
+- **Xcode** (App Store) + einmal öffnen, Command Line Tools installieren lassen.
+- **CocoaPods** (`sudo gem install cocoapods` oder via Homebrew).
+- **Node** + **Docker Desktop für Mac**.
+- Eine **Apple-ID** (kostenlos reicht für eigenes Gerät; App läuft dann 7 Tage,
+  danach neu signieren).
+
+### 1. Code auf den Mac holen
+Auf **Windows** den Branch pushen, dann auf dem **Mac** klonen:
 ```bash
-npm install @capacitor/ios
-npx cap add ios
-npx cap open ios
+# Mac
+git clone https://github.com/fiaTG/do-it.git
+cd do-it
+git checkout modernize/phase-0-foundation
 ```
+
+### 2. Backend auf dem Mac starten
+```bash
+cd backend
+cp .env.example .env && php artisan key:generate   # falls nötig
+docker compose up -d
+docker compose exec laravel.test php artisan migrate --seed
+```
+
+### 3. API-URL setzen (iOS)
+Anders als beim Android-Emulator (`10.0.2.2`) gilt für iOS:
+- **iOS-Simulator** erreicht den Mac unter `localhost`.
+- **Echtes iPhone** braucht die **LAN-IP des Macs** (gleiches WLAN).
+
+In `frontend/.env.capacitor.local` (gitignored) überschreiben:
+```
+# Simulator:
+VITE_API_URL=http://localhost:8080/api/v1
+# ODER echtes iPhone (IP per `ipconfig getifaddr en0`):
+# VITE_API_URL=http://192.168.x.y:8080/api/v1
+```
+
+### 4. iOS-Plattform anlegen
+```bash
+cd frontend
+npm install
+npm run build:native
+npx cap add ios               # erzeugt frontend/ios/ (+ pod install)
+npx capacitor-assets generate --ios   # App-Icon & Splash
+```
+
+### 5. Klartext-HTTP erlauben (nur Dev)
+iOS' App Transport Security blockt `http`. Für die lokale http-API in
+`frontend/ios/App/App/Info.plist` ergänzen (Produktion mit HTTPS: weglassen):
+```xml
+<key>NSAppTransportSecurity</key>
+<dict>
+  <key>NSAllowsArbitraryLoads</key>
+  <true/>
+</dict>
+```
+(Die WebView-Origin `capacitor://localhost` ist in `config/cors.php` bereits
+erlaubt.)
+
+### 6. In Xcode öffnen, signieren, starten
+```bash
+npm run ios:open          # = build:native + cap sync ios + cap open ios
+```
+In Xcode:
+1. Target **App** → **Signing & Capabilities** → dein **Apple-ID-Team** wählen
+   (Xcode signiert automatisch; Bundle-ID `app.heimathafen` ggf. eindeutig machen).
+2. Oben das **iPhone** als Ziel wählen (per USB verbunden, „Diesem Computer
+   vertrauen" bestätigen) – oder einen **Simulator**.
+3. **▶ Run**.
+4. Echtes Gerät: am iPhone **Einstellungen → Allgemein → VPN & Geräteverwaltung**
+   → Entwickler-Zertifikat **vertrauen**.
+
+Nach Frontend-Änderungen wie bei Android: `npm run cap:sync` (bzw. `ios:open`).

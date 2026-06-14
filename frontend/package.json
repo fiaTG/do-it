@@ -13,12 +13,14 @@
     "build:native": "tsc -b && vite build --mode capacitor",
     "assets:icons": "node scripts/generate-icons.mjs && capacitor-assets generate --android",
     "cap:sync": "npm run build:native && cap sync",
-    "android:open": "npm run build:native && cap sync android && cap open android"
+    "android:open": "npm run build:native && cap sync android && cap open android",
+    "ios:open": "npm run build:native && cap sync ios && cap open ios"
   },
   "dependencies": {
     "@capacitor/android": "^8.4.0",
     "@capacitor/cli": "^8.4.0",
     "@capacitor/core": "^8.4.0",
+    "@capacitor/ios": "^8.4.0",
     "@capacitor/preferences": "^8.0.1",
     "@fullcalendar/core": "^6.1.20",
     "@fullcalendar/daygrid": "^6.1.20",
