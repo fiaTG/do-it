@@ -10,16 +10,15 @@ const config: CapacitorConfig = {
   appId: 'app.heimathafen',
   appName: 'Heimathafen',
   webDir: 'dist',
-  plugins: {
-    // API-Anfragen nativ ausführen → umgeht CORS der WebView komplett.
-    CapacitorHttp: { enabled: true },
-  },
   android: {
     // Dev: die App läuft über https://localhost, die lokale API/Bilder aber
-    // über http (10.0.2.2). Ohne dies blockiert die WebView die <img>-Bilder
-    // als Mixed Content. In Produktion (HTTPS-API) nicht nötig.
+    // über http (10.0.2.2). Ohne dies blockiert die WebView die Inhalte als
+    // Mixed Content. In Produktion (HTTPS-API) nicht nötig.
     allowMixedContent: true,
   },
 }
+// Hinweis: CapacitorHttp wurde bewusst NICHT aktiviert – es bricht
+// multipart/FormData-Uploads. Stattdessen erlaubt die API die WebView-Origin
+// per CORS (config/cors.php), Anfragen laufen über die normale WebView-Fetch.
 
 export default config
