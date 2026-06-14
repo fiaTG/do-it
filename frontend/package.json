@@ -11,6 +11,7 @@
     "test:watch": "vitest",
     "preview": "vite preview",
     "build:native": "tsc -b && vite build --mode capacitor",
+    "assets:icons": "node scripts/generate-icons.mjs && capacitor-assets generate --android",
     "cap:sync": "npm run build:native && cap sync",
     "android:open": "npm run build:native && cap sync android && cap open android"
   },
@@ -31,6 +32,7 @@
     "zustand": "^5.0.14"
   },
   "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
     "@eslint/js": "^10.0.1",
     "@tailwindcss/vite": "^4.3.1",
     "@testing-library/jest-dom": "^6.9.1",
@@ -45,6 +47,7 @@
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.6.0",
     "jsdom": "^29.1.1",
+    "sharp": "^0.35.1",
     "tailwindcss": "^4.3.1",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.59.2",

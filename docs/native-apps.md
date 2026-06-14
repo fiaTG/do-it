@@ -77,6 +77,21 @@ Nach jeder Code-Änderung am Frontend:
 npm run cap:sync          # = npm run build && cap sync
 ```
 
+## App-Icon & Splash-Screen
+
+Quelle ist ein selbst generiertes Anker-Logo (maritime Marke). Die Roh-Assets
+liegen in `frontend/assets/` (aus `scripts/generate-icons.mjs` per SVG erzeugt),
+daraus baut `@capacitor/assets` die nativen Dichten:
+
+```bash
+cd frontend
+npm run assets:icons      # = generate-icons.mjs + capacitor-assets generate --android
+```
+
+Die generierten nativen Dateien landen unter `android/.../res/` (gitignored).
+Logo anpassen → Werte/SVG in `scripts/generate-icons.mjs` ändern und neu laufen
+lassen. Das Web-/PWA-Icon ist `frontend/public/icon.svg` (gleiche Marke).
+
 ## iOS (später)
 
 iOS braucht zwingend **macOS + Xcode**. Vorgehen analog:
