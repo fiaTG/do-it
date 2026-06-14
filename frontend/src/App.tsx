@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import Layout from './components/Layout'
 import ProtectedRoute from './components/ProtectedRoute'
+import RequireApp from './components/RequireApp'
 import DashboardPage from './pages/DashboardPage'
 import GalleryPage from './pages/GalleryPage'
 import LandingPage from './pages/LandingPage'
@@ -45,17 +46,40 @@ export default function App() {
         <Route element={<ProtectedRoute />}>
           <Route element={<Layout />}>
             <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/shopping" element={<ShoppingListPage />} />
-            <Route path="/todos" element={<TodosPage />} />
+            <Route
+              path="/shopping"
+              element={
+                <RequireApp slug="shopping-list">
+                  <ShoppingListPage />
+                </RequireApp>
+              }
+            />
+            <Route
+              path="/todos"
+              element={
+                <RequireApp slug="todo">
+                  <TodosPage />
+                </RequireApp>
+              }
+            />
             <Route
               path="/calendar"
               element={
-                <Suspense fallback={<div className="p-6 text-primary">Kalender lädt …</div>}>
-                  <CalendarPage />
-                </Suspense>
+                <RequireApp slug="calendar">
+                  <Suspense fallback={<div className="p-6 text-primary">Kalender lädt …</div>}>
+                    <CalendarPage />
+                  </Suspense>
+                </RequireApp>
               }
             />
-            <Route path="/gallery" element={<GalleryPage />} />
+            <Route
+              path="/gallery"
+              element={
+                <RequireApp slug="gallery">
+                  <GalleryPage />
+                </RequireApp>
+              }
+            />
             <Route path="/members" element={<MembersPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/premium" element={<PremiumPage />} />
