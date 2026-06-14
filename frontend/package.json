@@ -10,8 +10,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "preview": "vite preview",
-    "cap:sync": "npm run build && cap sync",
-    "android:open": "npm run build && cap sync android && cap open android"
+    "build:native": "tsc -b && vite build --mode capacitor",
+    "cap:sync": "npm run build:native && cap sync",
+    "android:open": "npm run build:native && cap sync android && cap open android"
   },
   "dependencies": {
     "@capacitor/android": "^8.4.0",

@@ -10,6 +10,10 @@ const config: CapacitorConfig = {
   appId: 'app.heimathafen',
   appName: 'Heimathafen',
   webDir: 'dist',
+  plugins: {
+    // API-Anfragen nativ ausführen → umgeht CORS der WebView komplett.
+    CapacitorHttp: { enabled: true },
+  },
 }
 
 export default config

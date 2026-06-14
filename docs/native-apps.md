@@ -23,18 +23,23 @@ keine gemeinsame Origin/Cookies mit der API, daher schalten sie automatisch auf
 ## API-URL (wichtig)
 
 Die native App lädt gebündeltes HTML/JS und spricht die API über `VITE_API_URL`
-(`frontend/.env`) an. `localhost` zeigt auf dem Gerät auf sich selbst – darum:
+an. `localhost` zeigt auf dem Gerät auf sich selbst – darum nutzen native Builds
+einen **eigenen Vite-Mode** `capacitor` mit `frontend/.env.capacitor`, ohne den
+Web-Build (`.env`, `localhost`) zu verändern:
 
-| Ziel | `VITE_API_URL` |
+| Ziel | `VITE_API_URL` (in `.env.capacitor` bzw. `.env.capacitor.local`) |
 |------|----------------|
-| Android-Emulator → Host | `http://10.0.2.2:8080/api/v1` |
+| Android-Emulator → Host | `http://10.0.2.2:8080/api/v1` (Standard) |
 | Echtes Gerät im LAN | `http://<LAN-IP-des-PCs>:8080/api/v1` |
 | Produktion | `https://api.<domain>/api/v1` |
 
-Außerdem muss die API CORS/Sanctum für die native Origin erlauben bzw. den
-Token-Pfad nutzen (Token-Auth braucht kein CORS-Cookie, aber die Domain muss
-erreichbar sein). Für echte Geräte ggf. Klartext-HTTP in Android erlauben oder
-HTTPS verwenden.
+Die Build-Skripte (`npm run cap:sync` / `android:open`) bauen mit
+`vite build --mode capacitor`. Gerät-/maschinenspezifische Werte gehören in
+`.env.capacitor.local` (gitignored).
+
+**CORS:** In `capacitor.config.ts` ist `CapacitorHttp` aktiviert – API-Anfragen
+laufen dadurch nativ und umgehen die CORS-Prüfung der WebView. Token-Auth braucht
+ohnehin kein Cookie. Für echte Geräte ggf. Klartext-HTTP erlauben oder HTTPS.
 
 ## Voraussetzungen (lokal)
 
