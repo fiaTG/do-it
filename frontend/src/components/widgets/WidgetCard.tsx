@@ -1,9 +1,10 @@
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 
 /**
  * Einheitlicher Rahmen für ein Dashboard-Widget: Titel mit Icon, Link zur
- * vollen App und der eigentliche Inhalt.
+ * vollen App und der eigentliche Inhalt. Das Entfernen vom Dashboard liegt
+ * dezent hinter einem ⋯-Menü.
  */
 export default function WidgetCard({
   title,
@@ -18,8 +19,10 @@ export default function WidgetCard({
   onRemove?: () => void
   children: ReactNode
 }) {
+  const [menuOpen, setMenuOpen] = useState(false)
+
   return (
-    <div className="flex flex-col rounded-2xl bg-surface p-5 shadow">
+    <div className="flex flex-col rounded-2xl bg-surface p-5 shadow-card">
       <div className="mb-3 flex items-center justify-between">
         <h3 className="font-semibold text-text">
           <span aria-hidden>{icon}</span> {title}
@@ -29,14 +32,34 @@ export default function WidgetCard({
             öffnen →
           </Link>
           {onRemove && (
-            <button
-              onClick={onRemove}
-              className="text-muted hover:text-red-500"
-              title="Widget entfernen"
-              aria-label="Widget entfernen"
-            >
-              ✕
-            </button>
+            <div className="relative">
+              <button
+                onClick={() => setMenuOpen((o) => !o)}
+                className="flex h-7 w-7 items-center justify-center rounded-full text-muted transition hover:bg-surface-2"
+                title="Optionen"
+                aria-label="Optionen"
+                aria-haspopup="menu"
+                aria-expanded={menuOpen}
+              >
+                ⋯
+              </button>
+              {menuOpen && (
+                <>
+                  <div className="fixed inset-0 z-10" onClick={() => setMenuOpen(false)} />
+                  <div className="absolute right-0 top-9 z-20 w-52 overflow-hidden rounded-xl border border-border bg-surface py-1 shadow-pop">
+                    <button
+                      onClick={() => {
+                        setMenuOpen(false)
+                        onRemove()
+                      }}
+                      className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-text hover:bg-surface-2"
+                    >
+                      🗑️ Vom Dashboard entfernen
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
           )}
         </div>
       </div>

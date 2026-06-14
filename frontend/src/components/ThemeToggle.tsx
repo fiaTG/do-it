@@ -12,7 +12,7 @@ export default function ThemeToggle({ className = '' }: { className?: string }) 
       onClick={toggle}
       aria-label={dark ? 'Zu hellem Design wechseln' : 'Zu dunklem Design wechseln'}
       title={dark ? 'Helles Design' : 'Dunkles Design'}
-      className={`flex h-8 w-8 items-center justify-center rounded-full text-base transition hover:bg-white/10 ${className}`}
+      className={`flex h-9 w-9 items-center justify-center rounded-full text-base transition ${className}`}
     >
       <span aria-hidden>{dark ? '☀️' : '🌙'}</span>
     </button>

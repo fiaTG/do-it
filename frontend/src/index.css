@@ -27,10 +27,12 @@
   --lighthouse: #f4c95d;
 
   /* --- Semantische Tokens (Light) --- */
-  --bg: #f5fafc;
+  /* bg bewusst ruhiger/weniger strahlend als Reinweiß; Karten (surface=weiß)
+     heben sich dadurch klar ab. */
+  --bg: #e7edf0;
   --surface: #ffffff;
-  --surface-2: #edf5f8;
-  --border: #dce7ec;
+  --surface-2: #eef3f5;
+  --border: #d5e0e5;
 
   --text: #1f3347;
   --text-muted: #5b7689;

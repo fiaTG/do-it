@@ -53,7 +53,6 @@ export default function Layout() {
       <aside className="flex w-60 flex-col bg-sidebar text-sidebar-text">
         <div className="flex items-center justify-between px-6 py-6">
           <span className="text-lg font-bold tracking-wide">⚓ Heimathafen</span>
-          <ThemeToggle />
         </div>
         <div className="flex items-center gap-3 px-6 pb-4">
           <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-white/15 text-sm font-bold">
@@ -100,8 +99,13 @@ export default function Layout() {
         </button>
       </aside>
 
-      <main className="flex-1 overflow-y-auto p-6 md:p-10">
-        <Outlet />
+      <main className="flex flex-1 flex-col overflow-y-auto">
+        <header className="flex justify-end px-6 pt-4 md:px-10">
+          <ThemeToggle className="text-muted hover:bg-surface-2" />
+        </header>
+        <div className="flex-1 px-6 pb-6 md:px-10 md:pb-10">
+          <Outlet />
+        </div>
       </main>
     </div>
   )

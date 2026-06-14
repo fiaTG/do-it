@@ -71,15 +71,31 @@ export default function DashboardPage() {
   }
 
   const available = catalog.filter((c) => !mine.some((m) => m.id === c.id))
+  const today = new Date().toLocaleDateString('de-DE', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+  })
 
   return (
     <div className="space-y-8">
-      <h1 className="text-2xl font-bold text-primary">Dashboard</h1>
+      {/* Begrüßungs-Header */}
+      <header className="overflow-hidden rounded-2xl bg-gradient-to-br from-primary to-deep-ocean p-6 text-white shadow-card">
+        <p className="text-sm text-white/70 capitalize">{today}</p>
+        <h1 className="mt-1 text-2xl font-bold">Moin, {user?.first_name}! 👋</h1>
+        <p className="mt-1 text-white/80">
+          {user?.family ? `Willkommen im Heimathafen der Familie ${user.family.name}.` : 'Willkommen im Heimathafen.'}
+        </p>
+      </header>
 
       {mine.length === 0 ? (
-        <p className="text-muted">
-          Noch keine Apps aktiv – füge unten welche hinzu, dann erscheinen hier ihre Widgets.
-        </p>
+        <div className="rounded-2xl border border-dashed border-border bg-surface p-8 text-center">
+          <div className="text-4xl">🧭</div>
+          <p className="mt-3 font-medium text-text">Dein Dashboard ist noch leer.</p>
+          <p className="mt-1 text-sm text-muted">
+            Füge unten Apps hinzu – ihre Widgets erscheinen dann hier.
+          </p>
+        </div>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {mine.map((app) => {
@@ -97,9 +113,17 @@ export default function DashboardPage() {
               <button
                 key={app.id}
                 onClick={() => void addApp(app.id)}
-                className="rounded-full border border-primary px-4 py-2 text-sm text-primary transition hover:bg-primary hover:text-white"
+                className="group flex items-center gap-3 rounded-xl border border-border bg-surface px-4 py-3 text-left shadow-card transition hover:border-primary hover:shadow-pop"
               >
-                + {app.name}
+                <span className="text-2xl" aria-hidden>
+                  {app.icon ?? '➕'}
+                </span>
+                <span>
+                  <span className="block text-sm font-medium text-text">{app.name}</span>
+                  <span className="block text-xs text-muted group-hover:text-primary">
+                    Hinzufügen
+                  </span>
+                </span>
               </button>
             ))}
           </div>
