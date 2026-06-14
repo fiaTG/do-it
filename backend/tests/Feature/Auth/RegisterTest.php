@@ -17,6 +17,19 @@ it('registers a new user', function () {
     expect(User::where('email', 'erika@example.com')->exists())->toBeTrue();
 });
 
+it('issues an API token for native clients on register', function () {
+    $this->postJson('/api/v1/auth/register', [
+        'first_name' => 'Nat',
+        'last_name' => 'Ive',
+        'email' => 'native@example.com',
+        'password' => 'Sup3r!pass',
+        'password_confirmation' => 'Sup3r!pass',
+        'device_name' => 'pixel',
+    ])->assertCreated()->assertJsonStructure(['token']);
+
+    expect(User::where('email', 'native@example.com')->first()->tokens()->count())->toBe(1);
+});
+
 it('rejects weak passwords', function () {
     $this->postJson('/api/v1/auth/register', [
         'first_name' => 'A',

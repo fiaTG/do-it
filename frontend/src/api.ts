@@ -1,4 +1,4 @@
-import { api, ensureCsrf } from './lib/api'
+import { api, ensureCsrf, isNative, setAuthToken } from './lib/api'
 import type {
   AppItem,
   EventItem,
@@ -21,19 +21,45 @@ export interface RegisterPayload {
   token?: string
 }
 
+// Kennung des nativen Clients beim Ausstellen eines API-Tokens.
+const DEVICE_NAME = 'Heimathafen Mobile'
+
 export const authApi = {
   async login(email: string, password: string): Promise<User> {
+    // Nativ: Token holen, speichern, dann Nutzer laden. Web: Cookie-Login.
+    if (isNative) {
+      const { data } = await api.post<{ token: string }>('/auth/login', {
+        email,
+        password,
+        device_name: DEVICE_NAME,
+      })
+      await setAuthToken(data.token)
+      return authApi.me()
+    }
     await ensureCsrf()
     const { data } = await api.post<{ data: User }>('/auth/login', { email, password })
     return data.data
   },
   async register(payload: RegisterPayload): Promise<User> {
+    if (isNative) {
+      const { data } = await api.post<{ token: string }>('/auth/register', {
+        ...payload,
+        device_name: DEVICE_NAME,
+      })
+      await setAuthToken(data.token)
+      return authApi.me()
+    }
     await ensureCsrf()
     const { data } = await api.post<{ data: User }>('/auth/register', payload)
     return data.data
   },
   async logout(): Promise<void> {
-    await api.post('/auth/logout')
+    try {
+      await api.post('/auth/logout')
+    } finally {
+      // Token nativ in jedem Fall lokal entfernen.
+      if (isNative) await setAuthToken(null)
+    }
   },
   async me(): Promise<User> {
     const { data } = await api.get<{ data: User }>('/auth/me')

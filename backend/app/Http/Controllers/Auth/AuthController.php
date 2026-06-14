@@ -38,6 +38,14 @@ class AuthController extends Controller
 
         $invite?->forceFill(['accepted_at' => now()])->save();
 
+        // Native Clients: API-Token ausstellen (symmetrisch zu login()).
+        if (! empty($data['device_name'])) {
+            return response()->json([
+                'token' => $user->createToken($data['device_name'])->plainTextToken,
+            ], 201);
+        }
+
+        // Web-SPA: Session-Login mit Regeneration.
         Auth::login($user);
         if ($request->hasSession()) {
             $request->session()->regenerate();

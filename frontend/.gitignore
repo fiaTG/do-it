@@ -12,6 +12,12 @@ dist
 dist-ssr
 *.local
 
+# Native Hüllen (Capacitor): vollständig aus capacitor.config.ts + `npx cap add`
+# + `npx cap sync` regenerierbar; enthalten u. a. eine Kopie des dist-Builds.
+# Sobald native Anpassungen (Icons, Permissions) dazukommen, hier entfernen.
+android/
+ios/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

@@ -24,6 +24,8 @@ class RegisterRequest extends FormRequest
             'password' => ['required', 'confirmed', Password::defaults()],
             // Optionaler Einladungs-Token: tritt der Familie der Einladung bei.
             'token' => ['nullable', 'string'],
+            // Gesetzt von nativen Clients -> Antwort enthält dann einen API-Token.
+            'device_name' => ['nullable', 'string', 'max:255'],
         ];
     }
 }

@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { authApi, type RegisterPayload } from '../api'
-import { ensureCsrf } from '../lib/api'
+import { ensureCsrf, hasAuthToken, isNative, loadStoredToken } from '../lib/api'
 import type { User } from '../types'
 
 interface AuthState {
@@ -19,7 +19,13 @@ export const useAuth = create<AuthState>((set) => ({
 
   init: async () => {
     try {
-      await ensureCsrf()
+      // Nativ: gespeicherten Token laden; ohne Token gibt es keine Session.
+      await loadStoredToken()
+      if (isNative && !hasAuthToken()) {
+        set({ user: null })
+        return
+      }
+      if (!isNative) await ensureCsrf()
       const user = await authApi.me()
       set({ user })
     } catch {
