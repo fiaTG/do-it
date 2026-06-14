@@ -27,7 +27,7 @@ class InvitationMail extends Mailable
         $base = rtrim((string) config('app.frontend_url'), '/');
 
         return new Content(
-            view: 'mail.invitation',
+            markdown: 'mail.invitation',
             with: [
                 'familyName' => $this->invite->family->name,
                 'url' => $base.'/register?token='.$this->invite->token,

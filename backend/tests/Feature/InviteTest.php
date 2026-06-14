@@ -20,6 +20,23 @@ it('lets a family member invite someone', function () {
     Mail::assertSent(InvitationMail::class);
 });
 
+it('renders the invitation mail (markdown components resolve)', function () {
+    $family = Family::factory()->create(['name' => 'Mustermann']);
+    $invite = Invite::create([
+        'family_id' => $family->id,
+        'email' => 'a@example.com',
+        'token' => 'render-token',
+        'expires_at' => now()->addDay(),
+    ]);
+
+    // render() wirft "No hint path defined for [mail]", falls die Mailable das
+    // Markdown-Template fälschlich per view: statt markdown: einbindet.
+    $html = (new InvitationMail($invite))->render();
+
+    expect($html)->toContain('Mustermann');
+    expect($html)->toContain('/register?token=render-token');
+});
+
 it('forbids users without a family from inviting', function () {
     Sanctum::actingAs(User::factory()->create(['family_id' => null]));
 
