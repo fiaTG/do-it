@@ -16,6 +16,15 @@ const WIDGETS: Record<string, ComponentType<{ onRemove?: () => void }>> = {
   gallery: GalleryWidget,
 }
 
+// Anzeige-Icon je App (das DB-Feld `icon` enthält FontAwesome-Klassen, die das
+// Frontend nicht nutzt – darum hier auf Emojis mappen).
+const APP_ICON: Record<string, string> = {
+  'shopping-list': '🛒',
+  todo: '✅',
+  calendar: '📅',
+  gallery: '🖼️',
+}
+
 export default function DashboardPage() {
   const user = useAuth((s) => s.user)
   const setUser = useAuth((s) => s.setUser)
@@ -119,7 +128,7 @@ export default function DashboardPage() {
                 className="group flex items-center gap-3 rounded-xl border border-border bg-surface px-4 py-3 text-left shadow-card transition hover:border-primary hover:shadow-pop"
               >
                 <span className="text-2xl" aria-hidden>
-                  {app.icon ?? '➕'}
+                  {APP_ICON[app.slug] ?? '➕'}
                 </span>
                 <span>
                   <span className="block text-sm font-medium text-text">{app.name}</span>
