@@ -62,7 +62,7 @@ export default function Layout() {
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-40 flex w-64 flex-col overflow-y-auto bg-sidebar text-sidebar-text transition-transform duration-200 md:static md:z-auto md:w-60 md:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-40 flex w-64 flex-col overflow-y-auto bg-sidebar text-sidebar-text pt-[env(safe-area-inset-top)] transition-transform duration-200 md:static md:z-auto md:w-60 md:translate-x-0 ${
           drawerOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -123,7 +123,7 @@ export default function Layout() {
       </aside>
 
       <main className="flex min-w-0 flex-1 flex-col overflow-y-auto">
-        <header className="flex items-center gap-2 px-4 pt-4 md:px-10">
+        <header className="flex items-center gap-2 px-4 pt-[calc(env(safe-area-inset-top)_+_0.75rem)] md:px-10 md:pt-4">
           {/* Hamburger nur mobil */}
           <button
             onClick={() => setDrawerOpen(true)}
@@ -135,7 +135,7 @@ export default function Layout() {
           <span className="font-bold text-primary md:hidden">⚓ Heimathafen</span>
           <ThemeToggle className="ml-auto text-muted hover:bg-surface-2" />
         </header>
-        <div className="min-w-0 flex-1 px-4 pb-6 md:px-10 md:pb-10">
+        <div className="min-w-0 flex-1 px-4 pb-[calc(env(safe-area-inset-bottom)_+_1.5rem)] md:px-10 md:pb-10">
           <Outlet />
         </div>
       </main>
