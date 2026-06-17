@@ -1,7 +1,8 @@
 # Native Apps (Capacitor) – Phase 6
 
-> Status: Android-Gerüst steht. Die React-SPA aus `frontend/` wird unverändert
-> in eine native Hülle (Capacitor) gepackt. Hintergrund: [ADR-0012](adr/0012-multi-client-packaging.md).
+> Status: **Android (Emulator) und iOS (Simulator + echtes iPhone) laufen.**
+> Die React-SPA aus `frontend/` wird unverändert in eine native Hülle (Capacitor)
+> gepackt. Hintergrund: [ADR-0012](adr/0012-multi-client-packaging.md).
 
 Die SPA ist die **einzige Quelle** – dieselbe Codebasis läuft als Web/PWA und
 als native App. Capacitor bündelt den `dist/`-Build und stellt native APIs bereit.
@@ -102,83 +103,145 @@ Die generierten nativen Dateien landen unter `android/.../res/` (gitignored).
 Logo anpassen → Werte/SVG in `scripts/generate-icons.mjs` ändern und neu laufen
 lassen. Das Web-/PWA-Icon ist `frontend/public/icon.svg` (gleiche Marke).
 
-## iOS – aufs eigene iPhone (Runbook für den Mac)
+## iOS – aufs eigene iPhone (erprobtes Mac-Runbook)
 
-iOS-Builds gehen **nur auf macOS + Xcode**. Da Backend/Code hier auf dem Windows-
-Rechner liegen, läuft der iOS-Teil auf dem MacBook. Am einfachsten ist es, den
-**ganzen Stack auf dem Mac** zu fahren (Docker + Node + Xcode), dann ist nichts
-über zwei Rechner verteilt.
+iOS-Builds gehen **nur auf macOS + Xcode**. Am einfachsten den **ganzen Stack auf
+dem Mac** fahren (Docker + Node + Xcode), dann ist nichts über zwei Rechner
+verteilt. Dieses Runbook wurde am 2026-06-17 einmal komplett durchgespielt – die
+markierten ⚠️-Stellen sind die Punkte, die wirklich Zeit gekostet haben.
 
-### 0. Voraussetzungen (Mac)
-- **Xcode** (App Store) + einmal öffnen, Command Line Tools installieren lassen.
-- **CocoaPods** (`sudo gem install cocoapods` oder via Homebrew).
-- **Node** + **Docker Desktop für Mac**.
-- Eine **Apple-ID** (kostenlos reicht für eigenes Gerät; App läuft dann 7 Tage,
-  danach neu signieren).
+### 0. Dev-Umgebung auf dem Mac (von Null)
+1. **Xcode**: ⚠️ Der App Store bietet nur das **neueste** Xcode an, das ein
+   neueres macOS verlangt (z. B. macOS 26 für Xcode 26). Auf **Sequoia 15.x** ein
+   passendes **Xcode 16.x** über <https://developer.apple.com/download/all/>
+   laden (`.xip`, Apple-ID-Login genügt, kein bezahlter Account). Entpacken →
+   nach **/Programme** ziehen → einmal öffnen → iOS-Plattform-Komponente
+   installieren lassen.
+2. ⚠️ **Xcode mit den CLI-Tools verknüpfen** (sonst `xcrun simctl` =
+   „unable to find utility / invalid developer directory"):
+   ```bash
+   sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+   sudo xcodebuild -license accept
+   ```
+3. **Homebrew** installieren (<https://brew.sh>), die „Next steps"-Zeilen des
+   Installers ausführen (Apple Silicon: `eval "$(/opt/homebrew/bin/brew shellenv)"`).
+4. `brew install node cocoapods git`
+5. `brew install --cask docker` → **Docker Desktop** starten und warten, bis der
+   Wal **„Engine running"** zeigt.
+6. Eine **Apple-ID** (kostenlos reicht; App läuft dann 7 Tage, danach neu signieren).
 
-### 1. Code auf den Mac holen
-Auf **Windows** den Branch pushen, dann auf dem **Mac** klonen:
+### 1. Code holen
 ```bash
-# Mac
+cd ~
 git clone https://github.com/fiaTG/do-it.git
 cd do-it
 git checkout modernize/phase-0-foundation
 ```
 
-### 2. Backend auf dem Mac starten
+### 2. Backend starten
+⚠️ **`vendor/` fehlt im frischen Klon** (gitignored). Sail baut sein Image aus
+`vendor/laravel/sail/runtimes/8.5/Dockerfile` – ohne `vendor/` schlägt
+`docker compose up` fehl („unable to prepare context … vendor/…"). Darum zuerst
+per Composer-Container `vendor/` erzeugen (kein lokales PHP nötig):
 ```bash
-cd backend
-cp .env.example .env && php artisan key:generate   # falls nötig
-docker compose up -d
+cd ~/do-it/backend
+cp .env.example .env
+docker run --rm -u "$(id -u):$(id -g)" -v "$(pwd):/app" -w /app composer:latest install --ignore-platform-reqs --no-scripts
+docker compose up -d --build
+docker compose exec laravel.test php artisan key:generate
 docker compose exec laravel.test php artisan migrate --seed
 ```
+Check: `curl http://localhost:8080/api/v1/health` → `{"status":"ok",...}`.
+⚠️ Docker Desktop muss **laufen** – „unable to get image / docker.sock no such
+file" heißt: Docker ist aus/nicht bereit.
 
-### 3. API-URL setzen (iOS)
-Anders als beim Android-Emulator (`10.0.2.2`) gilt für iOS:
-- **iOS-Simulator** erreicht den Mac unter `localhost`.
-- **Echtes iPhone** braucht die **LAN-IP des Macs** (gleiches WLAN).
-
-In `frontend/.env.capacitor.local` (gitignored) überschreiben:
-```
-# Simulator:
-VITE_API_URL=http://localhost:8080/api/v1
-# ODER echtes iPhone (IP per `ipconfig getifaddr en0`):
-# VITE_API_URL=http://192.168.x.y:8080/api/v1
-```
-
-### 4. iOS-Plattform anlegen
+### 3. (Optional) Web im Browser testen
+⚠️ Auch `frontend/.env` ist gitignored. Ohne sie ist `VITE_API_URL` leer → die
+Web-Seite bleibt **weiß**. Darum:
 ```bash
-cd frontend
+cd ~/do-it/frontend
 npm install
+cp .env.example .env        # VITE_API_URL=http://localhost:8080/api/v1
+npm run dev                 # http://localhost:5173
+```
+
+### 4. API-URL für die native App setzen
+Native Builds nutzen Vite-Mode `capacitor` (`.env.capacitor` + `.env.capacitor.local`).
+- **Simulator** erreicht den Mac unter `localhost`.
+- **Echtes iPhone** braucht die **LAN-IP des Macs** (gleiches WLAN). IP:
+  `ipconfig getifaddr en0`.
+- `10.0.2.2` ist **nur** der Android-Emulator – auf iOS sinnlos.
+
+```bash
+cd ~/do-it/frontend
+# Simulator:
+printf 'VITE_API_URL=http://localhost:8080/api/v1\n' > .env.capacitor.local
+# ODER echtes iPhone (IP einsetzen):
+printf 'VITE_API_URL=http://192.168.0.246:8080/api/v1\n' > .env.capacitor.local
+```
+⚠️⚠️ **Die Variable MUSS exakt `VITE_API_URL` heißen (alles GROSS).** Vite liest
+nur `VITE_`-Präfixe; ein Tippfehler wie `Vite_API_URL` wird **ignoriert** → es
+greift die `.env.capacitor`-Standard-IP (`10.0.2.2`) → Login hängt ewig.
+Verifizieren, welche IP wirklich im Build steckt:
+```bash
+npm run build:native
+grep -ro "10.0.2.2\|192.168.0.246\|localhost" dist/assets | sort -u
+```
+
+### 5. iOS-Plattform anlegen + ATS
+```bash
+cd ~/do-it/frontend
 npm run build:native
 npx cap add ios               # erzeugt frontend/ios/ (+ pod install)
-npx capacitor-assets generate --ios   # App-Icon & Splash
+npx capacitor-assets generate --ios
 ```
-
-### 5. Klartext-HTTP erlauben (nur Dev)
-iOS' App Transport Security blockt `http`. Für die lokale http-API in
-`frontend/ios/App/App/Info.plist` ergänzen (Produktion mit HTTPS: weglassen):
-```xml
-<key>NSAppTransportSecurity</key>
-<dict>
-  <key>NSAllowsArbitraryLoads</key>
-  <true/>
-</dict>
+⚠️ **Klartext-HTTP erlauben** (nur Dev) – iOS' App Transport Security blockt
+sonst http. Per Terminal (sicher, ohne XML-Handarbeit):
+```bash
+/usr/libexec/PlistBuddy -c "Add :NSAppTransportSecurity dict" ios/App/App/Info.plist
+/usr/libexec/PlistBuddy -c "Add :NSAppTransportSecurity:NSAllowsArbitraryLoads bool true" ios/App/App/Info.plist
 ```
-(Die WebView-Origin `capacitor://localhost` ist in `config/cors.php` bereits
-erlaubt.)
+(Die Origin `capacitor://localhost` ist in `config/cors.php` bereits erlaubt.
+Der PWA-Service-Worker ist im capacitor-Build deaktiviert – sonst minutenlang
+schwarzer Start, siehe `vite.config.ts`.)
 
-### 6. In Xcode öffnen, signieren, starten
+### 6. Signieren & starten
 ```bash
 npm run ios:open          # = build:native + cap sync ios + cap open ios
 ```
 In Xcode:
-1. Target **App** → **Signing & Capabilities** → dein **Apple-ID-Team** wählen
-   (Xcode signiert automatisch; Bundle-ID `app.heimathafen` ggf. eindeutig machen).
-2. Oben das **iPhone** als Ziel wählen (per USB verbunden, „Diesem Computer
-   vertrauen" bestätigen) – oder einen **Simulator**.
-3. **▶ Run**.
-4. Echtes Gerät: am iPhone **Einstellungen → Allgemein → VPN & Geräteverwaltung**
-   → Entwickler-Zertifikat **vertrauen**.
+1. Target **App** → **Signing & Capabilities** → „Automatically manage signing" →
+   **Apple-ID-Team** wählen (Bundle-ID `app.heimathafen` ggf. eindeutig machen,
+   z. B. `app.heimathafen.fia`).
+2. **Echtes iPhone:** per USB anschließen, am iPhone „Diesem Computer vertrauen".
+   ⚠️ **Entwicklermodus**: erscheint erst **nachdem** Xcode das Gerät einmal
+   kontaktiert hat → dann am iPhone **Einstellungen → Datenschutz & Sicherheit →
+   ganz unten → Entwicklermodus** an → Neustart. Erst danach taucht das iPhone in
+   Xcodes Ziel-Liste auf (erstes Mal „Preparing device…", dauert ein paar Min).
+3. **▶ Run**. Beim ersten Start am iPhone **Einstellungen → Allgemein → VPN &
+   Geräteverwaltung** → Entwickler-Zertifikat **vertrauen**, dann App neu öffnen.
 
-Nach Frontend-Änderungen wie bei Android: `npm run cap:sync` (bzw. `ios:open`).
+⚠️ **Nach jeder Frontend-/Env-Änderung:** `npm run cap:sync` **UND** in Xcode
+nochmal **▶ Run** – `cap:sync` allein aktualisiert das Gerät **nicht**.
+
+### Troubleshooting (alles real aufgetreten)
+
+| Symptom | Ursache → Fix |
+|---|---|
+| Web-Seite **weiß**, Titel da | `frontend/.env` fehlt → `cp .env.example .env`, dev neu starten |
+| App startet, **lange schwarz** | PWA-Service-Worker (in capacitor-Build via `vite.config.ts disable` aus); alte App vorm Re-Run löschen: `xcrun simctl uninstall booted app.heimathafen` |
+| Login **hängt** ewig (Rädchen) | App ruft falschen Host (`10.0.2.2`/`localhost`) → `.env.capacitor.local` mit korrektem `VITE_API_URL` (GROSS!) + `cap:sync` + Xcode Run; im Web-Inspector die Request-URL prüfen |
+| Login **sofort** fehlgeschlagen | Backend aus (Docker) oder falsche Daten; Health-Check + Container prüfen |
+| `docker compose` „unable to get image / docker.sock" | Docker Desktop läuft nicht → starten, `docker info` muss ohne Fehler laufen |
+| Build „unable to prepare context … vendor/…" | `vendor/` fehlt → Composer-Container (Schritt 2) |
+| `xcrun simctl` „not found / invalid developer directory" | Xcode nach /Programme, `sudo xcode-select -s /Applications/Xcode.app/Contents/Developer` |
+| iPhone **nicht** in Xcode-Liste | Kabel + „vertrauen" + **Entwicklermodus** (Schritt 6.2) |
+| Simulator „failed to launch / No such process" | transienter Xcode-Glitch → Product → Clean Build Folder, `xcrun simctl shutdown all`, Run; ggf. anderes Gerät |
+
+**Debugging-Werkzeuge:**
+- **iOS WebView:** Safari → Einstellungen → Erweitert → „Funktionen für
+  Webentwickler" an; am iPhone Einstellungen → Safari → Erweitert → Web-Inspector
+  an. Dann Safari-Menü **Entwickler → [iPhone] → WebView** → Konsole/Netzwerk.
+- **Android WebView:** `adb logcat` (adb unter
+  `~/Library/Android/sdk/platform-tools` bzw. auf Windows
+  `…/AppData/Local/Android/Sdk/platform-tools/adb.exe`), filtern auf `Capacitor/Console`.
