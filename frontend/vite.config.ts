@@ -4,11 +4,15 @@ import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
     tailwindcss(),
     VitePWA({
+      // In nativen Builds (Capacitor) keinen Service-Worker: in der WKWebView
+      // verzögert dessen Precache den Start massiv (langer schwarzer Screen).
+      // PWA bleibt fürs Web aktiv.
+      disable: mode === 'capacitor',
       registerType: 'autoUpdate',
       includeAssets: ['icon.svg'],
       manifest: {
@@ -38,4 +42,4 @@ export default defineConfig({
     setupFiles: './src/test/setup.ts',
     css: false,
   },
-})
+}))
