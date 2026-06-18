@@ -22,7 +22,7 @@ export interface RegisterPayload {
 }
 
 // Kennung des nativen Clients beim Ausstellen eines API-Tokens.
-const DEVICE_NAME = 'Heimathafen Mobile'
+const DEVICE_NAME = 'Nidula Mobile'
 
 export const authApi = {
   async login(email: string, password: string): Promise<User> {

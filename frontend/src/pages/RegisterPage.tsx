@@ -61,7 +61,7 @@ export default function RegisterPage() {
     <AuthLayout
       title="Konto erstellen"
       subtitle={
-        inviteFamily ? `Beitritt zur Familie ${inviteFamily}` : 'Leg deinen Heimathafen an.'
+        inviteFamily ? `Beitritt zur Familie ${inviteFamily}` : 'Gründe euer Familien-Nest.'
       }
     >
       <form onSubmit={handleSubmit}>

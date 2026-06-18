@@ -16,13 +16,13 @@ export default defineConfig(({ mode }) => ({
       registerType: 'autoUpdate',
       includeAssets: ['icon.svg'],
       manifest: {
-        name: 'Heimathafen',
-        short_name: 'Heimathafen',
+        name: 'Nidula',
+        short_name: 'Nidula',
         description:
           'Organisiert euer Familienleben: Einkaufsliste, Kalender, ToDos und Galerie an einem Ort.',
         lang: 'de',
-        theme_color: '#1f3347',
-        background_color: '#f5fafc',
+        theme_color: '#3a5a40',
+        background_color: '#f1e8da',
         display: 'standalone',
         start_url: '/',
         icons: [

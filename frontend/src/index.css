@@ -1,90 +1,88 @@
 @import "tailwindcss";
 
 /* ============================================================================
-   Heimathafen – Design-Token-System (ADR-0017)
+   Nidula – Design-Token-System (ADR-0017 / ADR-0018)
+   Marke: warmes, erdiges „Nest"-Thema (Wald-Grün, Terrakotta, Sand, Creme).
    Zwei Ebenen:
-   1. Roh-Palette (maritim, statisch) – NICHT direkt in Komponenten nutzen.
+   1. Roh-Palette (statisch) – NICHT direkt in Komponenten nutzen.
    2. Semantische Tokens (--bg, --surface, --primary …) – DAS nutzen Komponenten.
    Dark Mode überschreibt ausschließlich die semantische Ebene.
    ========================================================================== */
 
 :root {
-  /* --- Roh-Palette: Hafen & Meer --- */
-  --navy: #1f3347;
-  --deep-ocean: #274c63;
-  --sea-blue: #3e7c9b;
-  --light-sea: #d8eef5;
+  /* --- Roh-Palette: Grün & Erde --- */
+  --forest: #3a5a40;
+  --forest-dark: #2f4a35;
+  --sage: #8fa68e;
+  --terracotta: #d9794f;
+  --clay: #c2643f;
 
   /* --- Roh-Palette: Warm & Familie --- */
-  --sand: #f3e7d3;
-  --warm-sand: #e6d1b3;
-  --driftwood: #a9825a;
-  --harbor-wood: #7a5a3a;
-
-  /* --- Roh-Palette: Akzente --- */
-  --coral: #e58a72;
-  --seafoam: #8fcbb8;
-  --lighthouse: #f4c95d;
+  --sand: #e6d2be;
+  --warm-sand: #dcc4a8;
+  --cream: #f3ece1;
+  --bark: #2c2420;
 
   /* --- Semantische Tokens (Light) --- */
-  /* bg bewusst ruhiger/weniger strahlend als Reinweiß; Karten (surface=weiß)
-     heben sich dadurch klar ab. */
-  --bg: #e7edf0;
-  --surface: #ffffff;
-  --surface-2: #eef3f5;
-  --border: #d5e0e5;
+  /* bg bewusst ruhig/warm (Creme), nicht strahlend; Karten (surface) heben sich ab. */
+  --bg: #f1e8da;
+  --surface: #fffdf8;
+  --surface-2: #ebe0d0;
+  --border: #e0d4c2;
 
-  --text: #1f3347;
-  --text-muted: #5b7689;
+  --text: #2c2420;
+  --text-muted: #6f6357;
 
-  --primary: #274c63;
-  --primary-hover: #1f3347;
-  --primary-contrast: #ffffff;
-  --primary-soft: #d8eef5;
+  --primary: #3a5a40;
+  --primary-hover: #2f4a35;
+  --primary-contrast: #fbf7ef;
+  --primary-soft: #e3e9dd;
 
-  --accent: #e58a72;
+  --accent: #d9794f;
   --accent-contrast: #ffffff;
 
-  --success: #8fcbb8;
-  --warning: #f4c95d;
-  --ring: #3e7c9b;
+  --success: #6e8c6f;
+  --warning: #e0a458;
+  --ring: #8fa68e;
 
-  /* Seitenleiste / Navigation (bewusst eigenständig, tiefer als primary) */
-  --sidebar-bg: #1f3347;
-  --sidebar-text: #d8eef5;
-  --sidebar-muted: #9db4c2;
+  /* Seitenleiste / Navigation (tiefes Grün) */
+  --sidebar-bg: #2f4a38;
+  --sidebar-text: #ece3d5;
+  --sidebar-muted: #9db099;
 
   /* Radien / Schatten */
   --radius-card: 1rem;
   --radius-control: 0.625rem;
-  --shadow-card: 0 1px 2px rgb(31 51 71 / 0.04), 0 4px 16px rgb(31 51 71 / 0.06);
-  --shadow-pop: 0 8px 30px rgb(31 51 71 / 0.12);
+  --shadow-card: 0 1px 2px rgb(44 36 32 / 0.05), 0 4px 16px rgb(44 36 32 / 0.07);
+  --shadow-pop: 0 8px 30px rgb(44 36 32 / 0.14);
 
   color-scheme: light;
 }
 
 [data-theme="dark"] {
-  --bg: #11202b;
-  --surface: #1a2d3a;
-  --surface-2: #213b4b;
-  --border: #2c4658;
+  --bg: #1e1b16;
+  --surface: #29251f;
+  --surface-2: #332e26;
+  --border: #423b31;
 
-  --text: #e6f1f6;
-  --text-muted: #9db4c2;
+  --text: #f1e9dc;
+  --text-muted: #b2a492;
 
-  --primary: #4d92b3;
-  --primary-hover: #6aa9c6;
-  --primary-contrast: #0c1820;
-  --primary-soft: #213b4b;
+  --primary: #86a487;
+  --primary-hover: #9bb89b;
+  --primary-contrast: #18140f;
+  --primary-soft: #2e3a30;
 
-  --accent: #ec9a85;
-  --accent-contrast: #1a1010;
+  --accent: #e08a5f;
+  --accent-contrast: #1c140f;
 
-  --ring: #5fa0bf;
+  --success: #86a487;
+  --warning: #e0a458;
+  --ring: #86a487;
 
-  --sidebar-bg: #0e1b24;
-  --sidebar-text: #d8eef5;
-  --sidebar-muted: #7f96a5;
+  --sidebar-bg: #18211a;
+  --sidebar-text: #ece3d5;
+  --sidebar-muted: #8a9a88;
 
   --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 16px rgb(0 0 0 / 0.35);
   --shadow-pop: 0 8px 30px rgb(0 0 0 / 0.5);
@@ -99,14 +97,14 @@
    ========================================================================== */
 @theme inline {
   /* Roh-Palette (selten direkt genutzt, aber verfügbar) */
-  --color-navy: var(--navy);
-  --color-deep-ocean: var(--deep-ocean);
-  --color-sea-blue: var(--sea-blue);
-  --color-light-sea: var(--light-sea);
-  --color-driftwood: var(--driftwood);
-  --color-coral: var(--coral);
-  --color-seafoam: var(--seafoam);
-  --color-lighthouse: var(--lighthouse);
+  --color-forest: var(--forest);
+  --color-forest-dark: var(--forest-dark);
+  --color-sage: var(--sage);
+  --color-terracotta: var(--terracotta);
+  --color-clay: var(--clay);
+  --color-sand: var(--sand);
+  --color-warm-sand: var(--warm-sand);
+  --color-cream: var(--cream);
 
   /* Semantische Farben */
   --color-bg: var(--bg);
@@ -126,9 +124,6 @@
   --color-sidebar: var(--sidebar-bg);
   --color-sidebar-text: var(--sidebar-text);
   --color-sidebar-muted: var(--sidebar-muted);
-
-  /* Roh-Akzent „Sand" (selten direkt, z. B. warme Flächen) */
-  --color-sand: var(--sand);
 
   /* Radien */
   --radius-card: var(--radius-card);

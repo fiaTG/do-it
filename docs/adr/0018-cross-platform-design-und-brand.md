@@ -10,10 +10,12 @@ Dieselbe React-Codebasis läuft als Web/PWA, iOS und Android (ADR-0012). Damit
 stellt sich die Frage: **ein** Design für alle Plattformen oder ein **eigenes
 Design je Betriebssystem** (Material auf Android, Apples HIG auf iOS)?
 
-Zweitens ist der Arbeitsname **„Heimathafen" provisorisch**: Es existiert bereits
-`heimathafen.com` (Kreuzfahrten), die Marke ist also rechtlich **nicht gesichert**
-und kann sich noch ändern. Das Design darf deshalb nicht hart an den konkreten
-Namen/das Logo gekoppelt sein.
+Zweitens war der **Markenname zunächst offen**: Der frühere Arbeitstitel
+„Heimathafen" wurde wegen eines Markenkonflikts (`heimathafen.com`, Kreuzfahrten)
+verworfen. **Entschieden ist „Nidula"** (lateinisch *kleines Nest*) – passt zum
+Familien-/„Nest"-Thema und zum Logo (Nest, das ein Herz hält). Das Design bleibt
+dennoch bewusst **vom Namen entkoppelt**, damit ein künftiger Re-Brand billig
+bleibt.
 
 Basis ist das semantische Design-Token-System aus [ADR-0017](0017-design-system-tokens.md),
 das Re-Theming (z. B. Dark Mode über `[data-theme="dark"]`) bereits trivial macht.
@@ -41,8 +43,8 @@ das Re-Theming (z. B. Dark Mode über `[data-theme="dark"]`) bereits trivial mac
 4. **Marke austauschbar halten.** Name, Logo und Palette sind zentralisiert:
    Logo-SVG (`frontend/public/icon.svg` + `scripts/generate-icons.mjs`), semantische
    Farb-Tokens (`index.css`), `APP_NAME`, PWA-Manifest, UI-Texte. Ein **Rebrand =
-   Tokens/Logo/Texte tauschen**, kein Code-Umbau. „Heimathafen" bleibt
-   **Arbeitstitel**, bis Name/Marke geklärt sind.
+   Tokens/Logo/Texte tauschen**, kein Code-Umbau – wie der Wechsel von „Heimathafen"
+   zu **Nidula** gezeigt hat.
 
 ## Konsequenzen
 
@@ -76,10 +78,12 @@ Die brand-unabhängigen Teile sind umgesetzt (`frontend/src/lib/native.ts`):
 - **Android-Hardware-Zurück** (`@capacitor/app`): eine Ebene zurück, auf der
   Wurzel App schließen.
 
-Name, Logo und Palette bleiben unangetastet (Marke weiter offen).
+**Rebrand auf „Nidula" umgesetzt (2026-06-18):** warm-erdige Palette (Wald-Grün,
+Terrakotta, Sand, Creme) in `index.css` (Light+Dark), neues Logo (Nest mit Herz,
+`public/icon.svg` + `scripts/generate-icons.mjs` → native Icons/Splash),
+Umbenennung in UI, `index.html`, PWA-Manifest, `APP_NAME`, README. Der frühere
+maritime „Heimathafen"-Look ist damit abgelöst.
 
 ## Offene Punkte
 
-- **Markenname + Logo final klären** (rechtlich; Konflikt mit `heimathafen.com`).
-  Bis dahin „Heimathafen" als Platzhalter.
 - ggf. iOS-Swipe-Back-Feinschliff; weitere plattform-bewusste Feinheiten bei Bedarf.

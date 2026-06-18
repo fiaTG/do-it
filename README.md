@@ -1,9 +1,9 @@
-# Heimathafen
+# Nidula
 
 Eine Web-App, mit der eine Familie ihren Alltag gemeinsam organisiert:
 Einkaufsliste, Kalender, ToDos und Bildergalerie – modular auswählbar pro Nutzer.
-(Früher „Family Board"; zum Hintergrund der Umbenennung siehe
-[`docs/adr/0017-design-system-tokens.md`](docs/adr/0017-design-system-tokens.md).)
+(„Nidula" = lat. *kleines Nest*; zuvor Arbeitstitel „Heimathafen", davor „Family
+Board". Hintergrund: [`docs/adr/0018-cross-platform-design-und-brand.md`](docs/adr/0018-cross-platform-design-und-brand.md).)
 
 > Ursprünglich ein Vanilla-PHP/XAMPP-Schulprojekt, inzwischen modernisiert zu
 > einer **Laravel-API + React-SPA in Docker**. Hintergrund, Entscheidungen und

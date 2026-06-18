@@ -90,11 +90,11 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8">
       {/* Begrüßungs-Header */}
-      <header className="overflow-hidden rounded-2xl bg-gradient-to-br from-primary to-deep-ocean p-6 text-white shadow-card">
+      <header className="overflow-hidden rounded-2xl bg-gradient-to-br from-primary to-forest-dark p-6 text-white shadow-card">
         <p className="text-sm text-white/70 capitalize">{today}</p>
         <h1 className="mt-1 text-2xl font-bold">Moin, {user?.first_name}! 👋</h1>
         <p className="mt-1 text-white/80">
-          {user?.family ? `Willkommen im Heimathafen der Familie ${user.family.name}.` : 'Willkommen im Heimathafen.'}
+          {user?.family ? `Willkommen in eurem Nest, Familie ${user.family.name}.` : 'Willkommen in eurem Nest.'}
         </p>
       </header>
 

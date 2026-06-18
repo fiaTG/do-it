@@ -2,7 +2,7 @@ import { create } from 'zustand'
 
 export type Theme = 'light' | 'dark'
 
-const STORAGE_KEY = 'heimathafen-theme'
+const STORAGE_KEY = 'nidula-theme'
 
 /** Ermittelt das Start-Theme: gespeicherte Wahl > System-Präferenz > hell. */
 function initialTheme(): Theme {

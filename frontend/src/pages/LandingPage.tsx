@@ -13,7 +13,7 @@ export default function LandingPage() {
     <div className="min-h-screen bg-bg text-text">
       {/* Navigation */}
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
-        <span className="text-lg font-bold text-primary">⚓ Heimathafen</span>
+        <span className="text-lg font-bold text-primary">🪺 Nidula</span>
         <nav className="flex items-center gap-2">
           <ThemeToggle className="text-text hover:bg-surface-2" />
           <Link to="/login" className="rounded-lg px-4 py-2 text-sm font-medium text-primary hover:bg-primary-soft">
@@ -32,7 +32,7 @@ export default function LandingPage() {
       <section className="mx-auto grid max-w-6xl items-center gap-10 px-6 py-12 lg:grid-cols-2 lg:py-20">
         <div>
           <h1 className="text-4xl font-bold leading-tight text-primary sm:text-5xl">
-            Euer Familienleben, <span className="text-accent">sicher vor Anker.</span>
+            Euer Familienleben, <span className="text-accent">gut behütet.</span>
           </h1>
           <p className="mt-5 max-w-md text-lg text-muted">
             Einkaufsliste, Kalender, ToDos und Galerie – an einem Ort, für die ganze
@@ -80,7 +80,7 @@ export default function LandingPage() {
       </section>
 
       <footer className="border-t border-border py-8 text-center text-sm text-muted">
-        © {new Date().getFullYear()} Heimathafen
+        © {new Date().getFullYear()} Nidula
       </footer>
     </div>
   )

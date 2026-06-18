@@ -18,16 +18,16 @@ export default function AuthLayout({
     <div className="flex min-h-screen">
       <div className="relative hidden w-1/2 lg:block">
         <img src="/img/family.jpg" alt="" className="h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/55 to-navy/10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-forest via-forest/55 to-forest/10" />
         <div className="absolute inset-0 flex flex-col justify-between p-12 text-white">
           <Link to="/" className="text-xl font-bold tracking-wide">
-            ⚓ Heimathafen
+            🪺 Nidula
           </Link>
           <div>
             <h2 className="text-3xl font-bold leading-tight">
               Euer Familienleben,
               <br />
-              sicher vor Anker.
+              gut behütet.
             </h2>
             <p className="mt-3 max-w-sm text-white/80">
               Einkaufsliste, Kalender, ToDos und Galerie – gemeinsam organisiert.

@@ -4,17 +4,17 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/icon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#1f3347" />
+    <meta name="theme-color" content="#3a5a40" />
     <meta
       name="description"
-      content="Heimathafen – organisiert euer Familienleben: Einkaufsliste, Kalender, ToDos und Galerie an einem Ort."
+      content="Nidula – organisiert euer Familienleben: Einkaufsliste, Kalender, ToDos und Galerie an einem Ort."
     />
-    <title>Heimathafen</title>
+    <title>Nidula</title>
     <script>
       // No-Flash: Theme vor dem ersten Paint setzen (vgl. ADR-0017).
       (function () {
         try {
-          var t = localStorage.getItem('heimathafen-theme')
+          var t = localStorage.getItem('nidula-theme')
           if (t !== 'light' && t !== 'dark') {
             t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
           }

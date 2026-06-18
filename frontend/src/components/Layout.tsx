@@ -67,7 +67,7 @@ export default function Layout() {
         }`}
       >
         <div className="flex items-center justify-between px-6 py-6">
-          <span className="text-lg font-bold tracking-wide">⚓ Heimathafen</span>
+          <span className="text-lg font-bold tracking-wide">🪺 Nidula</span>
           <button
             onClick={() => setDrawerOpen(false)}
             className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-white/10 md:hidden"
@@ -132,7 +132,7 @@ export default function Layout() {
           >
             ☰
           </button>
-          <span className="font-bold text-primary md:hidden">⚓ Heimathafen</span>
+          <span className="font-bold text-primary md:hidden">🪺 Nidula</span>
           <ThemeToggle className="ml-auto text-muted hover:bg-surface-2" />
         </header>
         <div className="min-w-0 flex-1 px-4 pb-[calc(env(safe-area-inset-bottom)_+_1.5rem)] md:px-10 md:pb-10">

@@ -34,7 +34,7 @@ export default function LoginPage() {
     'mb-4 w-full rounded-lg border border-border px-3 py-2 outline-none focus:border-primary'
 
   return (
-    <AuthLayout title="Willkommen zurück" subtitle="Melde dich in deinem Heimathafen an.">
+    <AuthLayout title="Willkommen zurück" subtitle="Melde dich bei Nidula an.">
       <form onSubmit={handleSubmit}>
         {error && (
           <p className="mb-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
