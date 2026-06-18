@@ -1,6 +1,6 @@
 # ADR-0012: Multi-Client-Strategie & Packaging (Web/PWA, Mobile, Desktop)
 
-- **Status:** Vorgeschlagen
+- **Status:** Akzeptiert (umgesetzt 2026-06-17, iOS + Android)
 - **Datum:** 2026-06-12
 - **Betrifft:** Auslieferung, Plattformen
 

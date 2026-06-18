@@ -1,6 +1,6 @@
 # ADR-0004: Authentifizierung & Session-Sicherheit (Sanctum)
 
-- **Status:** Vorgeschlagen
+- **Status:** Akzeptiert
 - **Datum:** 2026-06-12
 - **Betrifft:** Auth, Sicherheit
 

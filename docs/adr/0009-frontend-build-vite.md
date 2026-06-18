@@ -1,6 +1,6 @@
 # ADR-0009: Frontend – SPA-Build mit Vite & PWA
 
-- **Status:** Vorgeschlagen
+- **Status:** Akzeptiert
 - **Datum:** 2026-06-12
 - **Betrifft:** Frontend, Build-Prozess, Design
 

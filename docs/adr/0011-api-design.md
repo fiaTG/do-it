@@ -1,6 +1,6 @@
 # ADR-0011: API-Design & Vertrag zwischen Backend und Frontend
 
-- **Status:** Vorgeschlagen
+- **Status:** Akzeptiert
 - **Datum:** 2026-06-12
 - **Betrifft:** Backend-API, Frontend-Integration
 

@@ -1,6 +1,6 @@
 # ADR-0006: Bild- & Dateispeicherung (Storage statt BLOB)
 
-- **Status:** Vorgeschlagen
+- **Status:** Akzeptiert
 - **Datum:** 2026-06-12
 - **Betrifft:** Datei-Uploads, Performance
 

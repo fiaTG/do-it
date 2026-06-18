@@ -126,17 +126,18 @@ Jede Phase ist eigenständig abschließbar. Reihenfolge = empfohlene Bearbeitung
 | [0001](adr/0001-ziel-stack-laravel.md) | Ziel-Stack: Laravel-API + React-SPA | Akzeptiert |
 | [0002](adr/0002-containerisierung-docker-sail.md) | Containerisierung mit Docker (Laravel Sail) | Akzeptiert |
 | [0003](adr/0003-vorgehen-greenfield-rewrite.md) | Vorgehen: Greenfield-Neuaufbau mit DB-Übernahme | Akzeptiert |
-| [0004](adr/0004-auth-und-session-sicherheit.md) | Authentifizierung & Session-Sicherheit (Sanctum) | Vorgeschlagen |
-| [0005](adr/0005-datenmodell-und-migrations.md) | Datenmodell, Eloquent & Migrations | Vorgeschlagen |
-| [0006](adr/0006-bild-und-dateispeicherung.md) | Bild- & Dateispeicherung (Storage statt BLOB) | Vorgeschlagen |
-| [0007](adr/0007-konfiguration-und-secrets.md) | Konfiguration & Secrets (.env) | Vorgeschlagen |
-| [0008](adr/0008-projektstruktur-und-konventionen.md) | Projektstruktur & Konventionen | Vorgeschlagen |
-| [0009](adr/0009-frontend-build-vite.md) | Frontend – SPA-Build mit Vite & PWA | Vorgeschlagen |
-| [0010](adr/0010-tests-und-ci-cd.md) | Tests & CI/CD | Vorgeschlagen |
-| [0011](adr/0011-api-design.md) | API-Design & Vertrag Backend/Frontend | Vorgeschlagen |
-| [0012](adr/0012-multi-client-packaging.md) | Multi-Client-Strategie & Packaging | Vorgeschlagen |
+| [0004](adr/0004-auth-und-session-sicherheit.md) | Authentifizierung & Session-Sicherheit (Sanctum) | Akzeptiert |
+| [0005](adr/0005-datenmodell-und-migrations.md) | Datenmodell, Eloquent & Migrations | Akzeptiert |
+| [0006](adr/0006-bild-und-dateispeicherung.md) | Bild- & Dateispeicherung (Storage statt BLOB) | Akzeptiert |
+| [0007](adr/0007-konfiguration-und-secrets.md) | Konfiguration & Secrets (.env) | Akzeptiert |
+| [0008](adr/0008-projektstruktur-und-konventionen.md) | Projektstruktur & Konventionen | Akzeptiert |
+| [0009](adr/0009-frontend-build-vite.md) | Frontend – SPA-Build mit Vite & PWA | Akzeptiert |
+| [0010](adr/0010-tests-und-ci-cd.md) | Tests & CI/CD | Akzeptiert |
+| [0011](adr/0011-api-design.md) | API-Design & Vertrag Backend/Frontend | Akzeptiert |
+| [0012](adr/0012-multi-client-packaging.md) | Multi-Client-Strategie & Packaging | Akzeptiert (iOS + Android live) |
 | [0013](adr/0013-monetarisierung-freemium.md) | Monetarisierung – werbefreies Freemium | Akzeptiert |
 | [0014](adr/0014-hosting-infrastruktur.md) | Hosting – entkoppelte Compute-/Objektspeicher-Architektur | Akzeptiert |
-| [0015](adr/0015-medien-prinzipien.md) | Medien-Prinzipien (Immutability, Privacy/EXIF, responsive) | Vorgeschlagen |
+| [0015](adr/0015-medien-prinzipien.md) | Medien-Prinzipien (Immutability, Privacy/EXIF, responsive) | Akzeptiert |
 | [0016](adr/0016-skalierung-modularer-monolith.md) | Skalierung – modularer Monolith (kein verfrühtes Microservices/CQRS) | Akzeptiert |
-| [0017](adr/0017-design-system-tokens.md) | Design-System mit Tokens & „Heimathafen"-Theming | Vorgeschlagen |
+| [0017](adr/0017-design-system-tokens.md) | Design-System mit Tokens & „Heimathafen"-Theming | Akzeptiert |
+| [0018](adr/0018-cross-platform-design-und-brand.md) | Cross-Platform-Design-Strategie & Austauschbarkeit der Marke | Akzeptiert |

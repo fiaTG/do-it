@@ -1,6 +1,6 @@
 # ADR-0008: Projektstruktur & Konventionen
 
-- **Status:** Vorgeschlagen
+- **Status:** Akzeptiert
 - **Datum:** 2026-06-12
 - **Betrifft:** Code-Organisation, Lesbarkeit
 

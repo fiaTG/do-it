@@ -1,6 +1,6 @@
 # ADR-0005: Datenmodell, Eloquent & Migrations
 
-- **Status:** Vorgeschlagen
+- **Status:** Akzeptiert
 - **Datum:** 2026-06-12
 - **Betrifft:** Datenbank, Domänenmodell
 

@@ -1,6 +1,6 @@
 # ADR-0010: Tests & CI/CD
 
-- **Status:** Vorgeschlagen
+- **Status:** Akzeptiert
 - **Datum:** 2026-06-12
 - **Betrifft:** Qualitätssicherung, Auslieferung
 

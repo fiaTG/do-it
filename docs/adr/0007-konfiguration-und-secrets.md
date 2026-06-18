@@ -1,6 +1,6 @@
 # ADR-0007: Konfiguration & Secrets (.env)
 
-- **Status:** Vorgeschlagen
+- **Status:** Akzeptiert
 - **Datum:** 2026-06-12
 - **Betrifft:** Konfiguration, Sicherheit
 
