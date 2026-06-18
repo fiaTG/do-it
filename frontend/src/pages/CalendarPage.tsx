@@ -200,6 +200,30 @@ export default function CalendarPage() {
         </button>
       </div>
 
+      {/* Legende = Personen; antippen blendet ein Mitglied ein/aus */}
+      <div className="flex flex-wrap items-center gap-2 text-xs">
+        {members.map((m) => {
+          const off = hidden.includes(m.id)
+          return (
+            <button
+              key={m.id}
+              type="button"
+              onClick={() => toggleHidden(m.id)}
+              className={`flex items-center gap-1.5 rounded-full px-2 py-1 transition ${
+                off ? 'opacity-40' : 'hover:bg-surface-2'
+              }`}
+            >
+              <span className="inline-block h-3 w-3 rounded-full" style={{ background: colorFor(m.id) }} />
+              <span className={off ? 'text-muted line-through' : 'text-text'}>
+                {m.first_name}
+                {m.id === userId && ' (ich)'}
+              </span>
+            </button>
+          )
+        })}
+        <span className="text-muted">· antippen zum Ein-/Ausblenden</span>
+      </div>
+
       <div className="rounded-2xl bg-surface p-4 shadow">
         {view === 'overview' ? (
           <FullCalendar
@@ -268,30 +292,6 @@ export default function CalendarPage() {
             />
           </>
         )}
-      </div>
-
-      {/* Legende = Personen; antippen blendet ein Mitglied ein/aus */}
-      <div className="flex flex-wrap items-center gap-2 text-xs">
-        {members.map((m) => {
-          const off = hidden.includes(m.id)
-          return (
-            <button
-              key={m.id}
-              type="button"
-              onClick={() => toggleHidden(m.id)}
-              className={`flex items-center gap-1.5 rounded-full px-2 py-1 transition ${
-                off ? 'opacity-40' : 'hover:bg-surface-2'
-              }`}
-            >
-              <span className="inline-block h-3 w-3 rounded-full" style={{ background: colorFor(m.id) }} />
-              <span className={off ? 'text-muted line-through' : 'text-text'}>
-                {m.first_name}
-                {m.id === userId && ' (ich)'}
-              </span>
-            </button>
-          )
-        })}
-        <span className="text-muted">· antippen zum Ein-/Ausblenden</span>
       </div>
 
       {modal.open && (
