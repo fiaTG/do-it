@@ -4,9 +4,10 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import listPlugin from '@fullcalendar/list'
 import interactionPlugin from '@fullcalendar/interaction'
-import type { DateSelectArg, EventClickArg, EventInput } from '@fullcalendar/core'
+import type { EventClickArg, EventInput } from '@fullcalendar/core'
 import deLocale from '@fullcalendar/core/locales/de'
 import { apiError, eventsApi, familyApi } from '../api'
+import PersonDayView from '../components/PersonDayView'
 import { useAuth } from '../store/auth'
 import type { EventItem, User } from '../types'
 
@@ -55,6 +56,8 @@ export default function CalendarPage() {
   const [hidden, setHidden] = useState<number[]>([]) // ausgeblendete Personen
   const [modal, setModal] = useState<ModalState>(CLOSED)
   const [error, setError] = useState('')
+  const [view, setView] = useState<'overview' | 'person'>('overview')
+  const [personDate, setPersonDate] = useState(() => new Date())
 
   async function load() {
     try {
@@ -95,20 +98,19 @@ export default function CalendarPage() {
     setHidden((h) => (h.includes(id) ? h.filter((x) => x !== id) : [...h, id]))
   }
 
-  function openCreate(arg: DateSelectArg) {
+  function openCreateAt(start: Date, end: Date, ownerId: number) {
     setModal({
       ...CLOSED,
       open: true,
       mode: 'create',
-      start: toLocalInput(arg.start),
-      end: toLocalInput(arg.end),
-      ownerId: userId, // Standard: für mich selbst
+      start: toLocalInput(start),
+      end: toLocalInput(end),
+      // Kinder dürfen nur für sich selbst eintragen.
+      ownerId: isGuardian ? ownerId : userId,
     })
   }
 
-  function openEdit(arg: EventClickArg) {
-    const event = events.find((e) => e.id === Number(arg.event.id))
-    if (!event) return
+  function openEditEvent(event: EventItem) {
     setModal({
       open: true,
       mode: 'edit',
@@ -120,6 +122,11 @@ export default function CalendarPage() {
       ownerId: event.owner_id ?? userId,
       carReserved: event.car_reserved,
     })
+  }
+
+  function openEditFromCalendar(arg: EventClickArg) {
+    const event = events.find((e) => e.id === Number(arg.event.id))
+    if (event) openEditEvent(event)
   }
 
   // Drag&Drop bzw. Resize -> nur die Zeiten persistieren.
@@ -168,37 +175,99 @@ export default function CalendarPage() {
 
   // Kinder können Termine nur sich selbst zuordnen.
   const ownerOptions = isGuardian ? members : members.filter((m) => m.id === userId)
+  const visibleMembers = members.filter((m) => !hidden.includes(m.id))
 
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-bold text-primary">📅 Kalender</h1>
       {error && <p className="text-sm text-red-600">{error}</p>}
 
+      {/* Umschalter: Übersicht (Woche/Monat/Liste) vs. Tag nach Person */}
+      <div className="inline-flex rounded-lg border border-border bg-surface p-0.5 text-sm">
+        <button
+          type="button"
+          onClick={() => setView('overview')}
+          className={`rounded-md px-3 py-1.5 ${view === 'overview' ? 'bg-primary text-white' : 'text-muted'}`}
+        >
+          Übersicht
+        </button>
+        <button
+          type="button"
+          onClick={() => setView('person')}
+          className={`rounded-md px-3 py-1.5 ${view === 'person' ? 'bg-primary text-white' : 'text-muted'}`}
+        >
+          Tag nach Person
+        </button>
+      </div>
+
       <div className="rounded-2xl bg-surface p-4 shadow">
-        <FullCalendar
-          plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
-          initialView="timeGridWeek"
-          headerToolbar={{
-            left: 'prev,next today',
-            center: 'title',
-            right: 'listWeek,timeGridDay,timeGridWeek,dayGridMonth',
-          }}
-          buttonText={{ today: 'Heute', month: 'Monat', week: 'Woche', day: 'Tag', list: 'Liste' }}
-          locale={deLocale}
-          firstDay={1}
-          height="auto"
-          nowIndicator
-          slotMinTime="06:00:00"
-          slotMaxTime="23:00:00"
-          slotEventOverlap={false}
-          selectable
-          editable
-          select={openCreate}
-          events={fcEvents}
-          eventClick={openEdit}
-          eventDrop={persistMove}
-          eventResize={persistMove}
-        />
+        {view === 'overview' ? (
+          <FullCalendar
+            plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
+            initialView="timeGridWeek"
+            headerToolbar={{
+              left: 'prev,next today',
+              center: 'title',
+              right: 'listWeek,timeGridDay,timeGridWeek,dayGridMonth',
+            }}
+            buttonText={{ today: 'Heute', month: 'Monat', week: 'Woche', day: 'Tag', list: 'Liste' }}
+            locale={deLocale}
+            firstDay={1}
+            height="auto"
+            nowIndicator
+            slotMinTime="06:00:00"
+            slotMaxTime="23:00:00"
+            slotEventOverlap={false}
+            selectable
+            editable
+            select={(arg) => openCreateAt(arg.start, arg.end, userId)}
+            events={fcEvents}
+            eventClick={openEditFromCalendar}
+            eventDrop={persistMove}
+            eventResize={persistMove}
+          />
+        ) : (
+          <>
+            <div className="mb-3 flex items-center justify-between">
+              <div className="flex gap-1">
+                <button
+                  type="button"
+                  onClick={() => setPersonDate((d) => new Date(+d - 86_400_000))}
+                  className="rounded-lg px-3 py-1.5 text-sm hover:bg-surface-2"
+                  aria-label="Vorheriger Tag"
+                >
+                  ‹
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPersonDate(new Date())}
+                  className="rounded-lg px-3 py-1.5 text-sm hover:bg-surface-2"
+                >
+                  Heute
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPersonDate((d) => new Date(+d + 86_400_000))}
+                  className="rounded-lg px-3 py-1.5 text-sm hover:bg-surface-2"
+                  aria-label="Nächster Tag"
+                >
+                  ›
+                </button>
+              </div>
+              <span className="text-sm font-semibold capitalize text-text">
+                {personDate.toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' })}
+              </span>
+            </div>
+            <PersonDayView
+              date={personDate}
+              members={visibleMembers}
+              events={events}
+              colorFor={colorFor}
+              onEventClick={openEditEvent}
+              onSlotClick={(m, start) => openCreateAt(start, new Date(+start + 3_600_000), m.id)}
+            />
+          </>
+        )}
       </div>
 
       {/* Legende = Personen; antippen blendet ein Mitglied ein/aus */}
