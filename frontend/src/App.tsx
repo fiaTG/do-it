@@ -13,7 +13,9 @@ import ProfilePage from './pages/ProfilePage'
 import RegisterPage from './pages/RegisterPage'
 import ShoppingListPage from './pages/ShoppingListPage'
 import TodosPage from './pages/TodosPage'
+import { registerBackButton, syncStatusBar } from './lib/native'
 import { useAuth } from './store/auth'
+import { useTheme } from './store/theme'
 
 // FullCalendar ist groß -> nur beim Öffnen des Kalenders laden (Code-Splitting).
 const CalendarPage = lazy(() => import('./pages/CalendarPage'))
@@ -22,10 +24,18 @@ export default function App() {
   const init = useAuth((s) => s.init)
   const loading = useAuth((s) => s.loading)
   const user = useAuth((s) => s.user)
+  const theme = useTheme((s) => s.theme)
 
   useEffect(() => {
     void init()
   }, [init])
+
+  // Native UI (ADR-0018): Statusleiste ans Theme angleichen, Android-Zurück.
+  useEffect(() => {
+    void syncStatusBar(theme)
+  }, [theme])
+
+  useEffect(() => registerBackButton(), [])
 
   if (loading) {
     return (

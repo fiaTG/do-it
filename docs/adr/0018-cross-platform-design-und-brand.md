@@ -64,9 +64,22 @@ das Re-Theming (z. B. Dark Mode über `[data-theme="dark"]`) bereits trivial mac
   iOS/Android-Mode) – verliert die eigene Marke, koppelt an Framework-Optik.
   Verworfen zugunsten eigener Tokens (ADR-0017).
 
+## Umsetzung (2026-06-18, markenneutral)
+
+Die brand-unabhängigen Teile sind umgesetzt (`frontend/src/lib/native.ts`):
+- **`data-platform="ios|android|web"`** am `<html>` (in `main.tsx` vor dem ersten
+  Paint gesetzt) – Mechanismus für plattform-bewusste Token-Overrides steht bereit,
+  wird aber bewusst noch nicht für abweichende Optik genutzt.
+- **Statusleiste** (`@capacitor/status-bar`) folgt dem Theme (helle Symbole im
+  Dark Mode, dunkle im Light Mode; Android zusätzlich Hintergrundfarbe) – behebt
+  die Lesbarkeit der Uhr/Statusleiste.
+- **Android-Hardware-Zurück** (`@capacitor/app`): eine Ebene zurück, auf der
+  Wurzel App schließen.
+
+Name, Logo und Palette bleiben unangetastet (Marke weiter offen).
+
 ## Offene Punkte
 
 - **Markenname + Logo final klären** (rechtlich; Konflikt mit `heimathafen.com`).
   Bis dahin „Heimathafen" als Platzhalter.
-- Plattform-Feinheiten konkret umsetzen: Statusleisten-Plugin
-  (`@capacitor/status-bar`), Android-Back-Handling, ggf. iOS-Swipe-Back.
+- ggf. iOS-Swipe-Back-Feinschliff; weitere plattform-bewusste Feinheiten bei Bedarf.
