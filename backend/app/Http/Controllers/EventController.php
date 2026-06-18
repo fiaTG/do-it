@@ -39,10 +39,14 @@ class EventController extends Controller
             'owner_id' => ['nullable', 'integer', $this->memberRule($familyId)],
         ]);
 
+        $user = $request->user();
+        // Kinder dürfen nur für sich selbst eintragen; Verwalter für jeden.
+        $ownerId = $user->isGuardian() ? ($data['owner_id'] ?? $user->id) : $user->id;
+
         $event = Event::create([
             'family_id' => $familyId,
-            'user_id' => $request->user()->id,
-            'owner_id' => $data['owner_id'] ?? $request->user()->id,
+            'user_id' => $user->id,
+            'owner_id' => $ownerId,
             'title' => $data['title'],
             'starts_at' => $data['starts_at'],
             'ends_at' => $data['ends_at'],
@@ -65,6 +69,11 @@ class EventController extends Controller
             'car_reserved' => ['sometimes', 'boolean'],
             'owner_id' => ['sometimes', 'integer', $this->memberRule($event->family_id)],
         ]);
+
+        // Kinder dürfen den Owner nicht umhängen.
+        if (! $request->user()->isGuardian()) {
+            unset($data['owner_id']);
+        }
 
         $event->update($data);
 

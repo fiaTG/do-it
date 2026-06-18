@@ -1,12 +1,15 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { apiError, familyApi, inviteApi } from '../api'
-import type { User } from '../types'
+import { useAuth } from '../store/auth'
+import type { FamilyRole, User } from '../types'
 
 function initials(user: User): string {
   return (user.first_name[0] ?? '').concat(user.last_name[0] ?? '').toUpperCase()
 }
 
 export default function MembersPage() {
+  const me = useAuth((s) => s.user)
+  const isGuardian = me?.role !== 'child'
   const [members, setMembers] = useState<User[]>([])
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
@@ -23,6 +26,17 @@ export default function MembersPage() {
   useEffect(() => {
     void load()
   }, [])
+
+  // Verwalter können die Rolle anderer Mitglieder umstellen (Kind <-> Verwalter).
+  async function changeRole(member: User, role: FamilyRole) {
+    setError('')
+    try {
+      await familyApi.updateRole(member.id, role)
+      await load()
+    } catch (err) {
+      setError(apiError(err))
+    }
+  }
 
   async function invite(e: FormEvent) {
     e.preventDefault()
@@ -56,6 +70,17 @@ export default function MembersPage() {
             <div className="mt-2 text-center font-medium text-text">
               {m.first_name} {m.last_name}
             </div>
+            <span className="mt-1 rounded-full bg-surface-2 px-2 py-0.5 text-[10px] font-semibold text-muted">
+              {m.role === 'child' ? '🧒 Kind' : '🛡️ Verwalter'}
+            </span>
+            {isGuardian && m.id !== me?.id && (
+              <button
+                onClick={() => void changeRole(m, m.role === 'child' ? 'guardian' : 'child')}
+                className="mt-2 text-xs text-primary hover:underline"
+              >
+                {m.role === 'child' ? 'zu Verwalter machen' : 'zu Kind machen'}
+              </button>
+            )}
           </div>
         ))}
       </div>

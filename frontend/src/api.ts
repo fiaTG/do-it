@@ -123,6 +123,10 @@ export const familyApi = {
     const { data } = await api.get<{ data: User[] }>('/family/members')
     return data.data
   },
+  async updateRole(userId: number, role: 'guardian' | 'child'): Promise<User> {
+    const { data } = await api.patch<{ data: User }>(`/family/members/${userId}/role`, { role })
+    return data.data
+  },
 }
 
 export const inviteApi = {

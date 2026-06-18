@@ -10,12 +10,15 @@ export interface Subscription {
   expires_at: string | null
 }
 
+export type FamilyRole = 'guardian' | 'child'
+
 export interface User {
   id: number
   first_name: string
   last_name: string
   email: string
   family_id: number | null
+  role: FamilyRole
   family?: Family | null
   avatar_url: string | null
   birthdate: string | null

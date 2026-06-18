@@ -67,6 +67,7 @@ Route::prefix('v1')->group(function () {
         // Familie & Einladungen
         Route::post('/family', [FamilyController::class, 'store']);
         Route::get('/family/members', [FamilyController::class, 'members']);
+        Route::patch('/family/members/{member}/role', [FamilyController::class, 'updateRole']);
         Route::post('/invites', [InviteController::class, 'store']);
 
         // Dashboard-Apps (Katalog + eigene Auswahl)

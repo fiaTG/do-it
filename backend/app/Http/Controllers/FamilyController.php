@@ -43,4 +43,24 @@ class FamilyController extends Controller
             User::where('family_id', $familyId)->orderBy('first_name')->get()
         );
     }
+
+    /**
+     * Rolle eines Familienmitglieds setzen (nur Verwalter, nicht die eigene).
+     */
+    public function updateRole(Request $request, User $member): UserResource
+    {
+        $actor = $request->user();
+
+        abort_unless($actor->isGuardian(), 403, 'Nur Verwalter dürfen Rollen ändern.');
+        abort_unless(
+            $member->family_id !== null && (int) $member->family_id === (int) $actor->family_id,
+            403,
+        );
+        abort_if((int) $member->id === (int) $actor->id, 422, 'Die eigene Rolle lässt sich nicht ändern.');
+
+        $data = $request->validate(['role' => ['required', 'in:guardian,child']]);
+        $member->update(['role' => $data['role']]);
+
+        return new UserResource($member);
+    }
 }

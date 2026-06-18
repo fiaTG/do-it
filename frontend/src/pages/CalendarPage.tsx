@@ -18,6 +18,7 @@ const FALLBACK_COLOR = '#5b7689'
 interface ModalState {
   open: boolean
   mode: 'create' | 'edit'
+  readOnly: boolean
   id: number | null
   title: string
   start: string
@@ -29,6 +30,7 @@ interface ModalState {
 const CLOSED: ModalState = {
   open: false,
   mode: 'create',
+  readOnly: false,
   id: null,
   title: '',
   start: '',
@@ -44,9 +46,13 @@ function toLocalInput(date: Date): string {
 }
 
 export default function CalendarPage() {
-  const userId = useAuth((s) => s.user?.id) ?? 0
+  const me = useAuth((s) => s.user)
+  const userId = me?.id ?? 0
+  const isGuardian = me?.role !== 'child' // Verwalter dürfen alle Termine verwalten
+
   const [events, setEvents] = useState<EventItem[]>([])
   const [members, setMembers] = useState<User[]>([])
+  const [hidden, setHidden] = useState<number[]>([]) // ausgeblendete Personen
   const [modal, setModal] = useState<ModalState>(CLOSED)
   const [error, setError] = useState('')
 
@@ -70,14 +76,24 @@ export default function CalendarPage() {
     return idx >= 0 ? MEMBER_COLORS[idx % MEMBER_COLORS.length] : FALLBACK_COLOR
   }
 
-  const fcEvents: EventInput[] = events.map((e) => ({
-    id: String(e.id),
-    title: e.car_reserved ? `${e.title} 🚗` : e.title,
-    start: e.starts_at,
-    end: e.ends_at,
-    backgroundColor: colorFor(e.owner_id),
-    borderColor: colorFor(e.owner_id),
-  }))
+  // Kinder dürfen nur eigene Termine bearbeiten.
+  const canEdit = (e: EventItem): boolean => isGuardian || e.owner_id === userId
+
+  const fcEvents: EventInput[] = events
+    .filter((e) => !hidden.includes(e.owner_id ?? -1))
+    .map((e) => ({
+      id: String(e.id),
+      title: e.car_reserved ? `${e.title} 🚗` : e.title,
+      start: e.starts_at,
+      end: e.ends_at,
+      backgroundColor: colorFor(e.owner_id),
+      borderColor: colorFor(e.owner_id),
+      editable: canEdit(e), // nur eigene/als Verwalter ziehbar
+    }))
+
+  function toggleHidden(id: number) {
+    setHidden((h) => (h.includes(id) ? h.filter((x) => x !== id) : [...h, id]))
+  }
 
   function openCreate(arg: DateSelectArg) {
     setModal({
@@ -96,6 +112,7 @@ export default function CalendarPage() {
     setModal({
       open: true,
       mode: 'edit',
+      readOnly: !canEdit(event), // fremder Termin (Kind) -> nur ansehen
       id: event.id,
       title: event.title,
       start: toLocalInput(new Date(event.starts_at)),
@@ -147,7 +164,10 @@ export default function CalendarPage() {
   }
 
   const inputClass =
-    'rounded-lg border border-border px-3 py-2 outline-none focus:border-primary'
+    'rounded-lg border border-border px-3 py-2 outline-none focus:border-primary disabled:opacity-60'
+
+  // Kinder können Termine nur sich selbst zuordnen.
+  const ownerOptions = isGuardian ? members : members.filter((m) => m.id === userId)
 
   return (
     <div className="space-y-4">
@@ -170,6 +190,7 @@ export default function CalendarPage() {
           nowIndicator
           slotMinTime="06:00:00"
           slotMaxTime="23:00:00"
+          slotEventOverlap={false}
           selectable
           editable
           select={openCreate}
@@ -180,28 +201,44 @@ export default function CalendarPage() {
         />
       </div>
 
-      {/* Legende: WER (Familienmitglieder) */}
-      <div className="flex flex-wrap items-center gap-4 text-xs text-muted">
-        {members.map((m) => (
-          <span key={m.id} className="flex items-center gap-1.5">
-            <span className="inline-block h-3 w-3 rounded-full" style={{ background: colorFor(m.id) }} />
-            {m.first_name}
-            {m.id === userId && ' (ich)'}
-          </span>
-        ))}
-        <span>· Bereich ziehen = anlegen · Klick = bearbeiten</span>
+      {/* Legende = Personen; antippen blendet ein Mitglied ein/aus */}
+      <div className="flex flex-wrap items-center gap-2 text-xs">
+        {members.map((m) => {
+          const off = hidden.includes(m.id)
+          return (
+            <button
+              key={m.id}
+              type="button"
+              onClick={() => toggleHidden(m.id)}
+              className={`flex items-center gap-1.5 rounded-full px-2 py-1 transition ${
+                off ? 'opacity-40' : 'hover:bg-surface-2'
+              }`}
+            >
+              <span className="inline-block h-3 w-3 rounded-full" style={{ background: colorFor(m.id) }} />
+              <span className={off ? 'text-muted line-through' : 'text-text'}>
+                {m.first_name}
+                {m.id === userId && ' (ich)'}
+              </span>
+            </button>
+          )
+        })}
+        <span className="text-muted">· antippen zum Ein-/Ausblenden</span>
       </div>
 
       {modal.open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
           <form onSubmit={submit} className="w-full max-w-sm space-y-3 rounded-2xl bg-surface p-6 shadow-xl">
             <h2 className="text-lg font-semibold text-primary">
-              {modal.mode === 'create' ? 'Neuer Termin' : 'Termin bearbeiten'}
+              {modal.mode === 'create' ? 'Neuer Termin' : modal.readOnly ? 'Termin' : 'Termin bearbeiten'}
             </h2>
+            {modal.readOnly && (
+              <p className="text-xs text-muted">Nur ansehen – dieser Termin gehört einem anderen Mitglied.</p>
+            )}
             <input
               autoFocus
               placeholder="Titel"
               required
+              disabled={modal.readOnly}
               value={modal.title}
               onChange={(e) => setModal({ ...modal, title: e.target.value })}
               className={`${inputClass} w-full`}
@@ -212,6 +249,7 @@ export default function CalendarPage() {
                 <input
                   type="datetime-local"
                   required
+                  disabled={modal.readOnly}
                   value={modal.start}
                   onChange={(e) => setModal({ ...modal, start: e.target.value })}
                   className={`${inputClass} mt-1 w-full`}
@@ -222,30 +260,38 @@ export default function CalendarPage() {
                 <input
                   type="datetime-local"
                   required
+                  disabled={modal.readOnly}
                   value={modal.end}
                   onChange={(e) => setModal({ ...modal, end: e.target.value })}
                   className={`${inputClass} mt-1 w-full`}
                 />
               </label>
             </div>
-            <label className="block text-xs text-muted">
-              Für
-              <select
-                value={modal.ownerId}
-                onChange={(e) => setModal({ ...modal, ownerId: Number(e.target.value) })}
-                className={`${inputClass} mt-1 w-full`}
-              >
-                {members.map((m) => (
-                  <option key={m.id} value={m.id}>
-                    {m.first_name}
-                    {m.id === userId ? ' (ich)' : ''}
-                  </option>
-                ))}
-              </select>
-            </label>
+            {modal.readOnly ? (
+              <p className="text-xs text-muted">
+                Für: {members.find((m) => m.id === modal.ownerId)?.first_name ?? '—'}
+              </p>
+            ) : (
+              <label className="block text-xs text-muted">
+                Für
+                <select
+                  value={modal.ownerId}
+                  onChange={(e) => setModal({ ...modal, ownerId: Number(e.target.value) })}
+                  className={`${inputClass} mt-1 w-full`}
+                >
+                  {ownerOptions.map((m) => (
+                    <option key={m.id} value={m.id}>
+                      {m.first_name}
+                      {m.id === userId ? ' (ich)' : ''}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            )}
             <label className="flex items-center gap-2 text-sm text-muted">
               <input
                 type="checkbox"
+                disabled={modal.readOnly}
                 checked={modal.carReserved}
                 onChange={(e) => setModal({ ...modal, carReserved: e.target.checked })}
                 className="h-5 w-5 accent-primary"
@@ -253,7 +299,7 @@ export default function CalendarPage() {
               🚗 Auto reservieren
             </label>
             <div className="flex items-center justify-between pt-2">
-              {modal.mode === 'edit' ? (
+              {modal.mode === 'edit' && !modal.readOnly ? (
                 <button
                   type="button"
                   onClick={() => void remove()}
@@ -270,11 +316,13 @@ export default function CalendarPage() {
                   onClick={() => setModal(CLOSED)}
                   className="rounded-lg px-4 py-2 text-sm text-muted hover:bg-surface-2"
                 >
-                  Abbrechen
+                  {modal.readOnly ? 'Schließen' : 'Abbrechen'}
                 </button>
-                <button className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-hover">
-                  {modal.mode === 'create' ? 'Anlegen' : 'Speichern'}
-                </button>
+                {!modal.readOnly && (
+                  <button className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-hover">
+                    {modal.mode === 'create' ? 'Anlegen' : 'Speichern'}
+                  </button>
+                )}
               </div>
             </div>
           </form>

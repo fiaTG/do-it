@@ -28,6 +28,7 @@ class User extends Authenticatable
         'email',
         'password',
         'family_id',
+        'role',
         'avatar_path',
         'birthdate',
         'gender',
@@ -58,6 +59,17 @@ class User extends Authenticatable
             'birthdate' => 'date',
             'password' => 'hashed',
         ];
+    }
+
+    /** Verwalter (Eltern) dürfen alle Familientermine verwalten, Kinder nur eigene. */
+    public function isGuardian(): bool
+    {
+        return $this->role !== 'child';
+    }
+
+    public function isChild(): bool
+    {
+        return $this->role === 'child';
     }
 
     // --- Beziehungen --------------------------------------------------------
