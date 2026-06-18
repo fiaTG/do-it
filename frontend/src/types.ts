@@ -66,6 +66,8 @@ export interface EventItem {
   category: string
   car_reserved: boolean
   created_by: number | null
+  owner_id: number | null
+  owner_name: string | null
 }
 
 export interface ImageVariant {

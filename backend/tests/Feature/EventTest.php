@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Event;
+use App\Models\User;
 use Laravel\Sanctum\Sanctum;
 
 it('creates a calendar event with car reservation', function () {
@@ -15,6 +16,45 @@ it('creates a calendar event with car reservation', function () {
     ])->assertCreated()
         ->assertJsonPath('data.title', 'Arzttermin')
         ->assertJsonPath('data.car_reserved', true);
+});
+
+it('defaults the owner to the creator', function () {
+    $user = familyMember();
+    Sanctum::actingAs($user);
+
+    $this->postJson('/api/v1/events', [
+        'title' => 'Mein Termin',
+        'starts_at' => now()->addDay()->toIso8601String(),
+        'ends_at' => now()->addDay()->addHour()->toIso8601String(),
+    ])->assertCreated()->assertJsonPath('data.owner_id', $user->id);
+});
+
+it('lets a member assign an event to another family member', function () {
+    $parent = familyMember();
+    $child = User::factory()->create(['family_id' => $parent->family_id]);
+    Sanctum::actingAs($parent);
+
+    $this->postJson('/api/v1/events', [
+        'title' => 'Zahnarzt Kind',
+        'starts_at' => now()->addDay()->toIso8601String(),
+        'ends_at' => now()->addDay()->addHour()->toIso8601String(),
+        'owner_id' => $child->id,
+    ])->assertCreated()
+        ->assertJsonPath('data.owner_id', $child->id)
+        ->assertJsonPath('data.owner_name', $child->first_name);
+});
+
+it('rejects an owner from another family', function () {
+    $user = familyMember();
+    $stranger = familyMember(); // eigene Familie
+    Sanctum::actingAs($user);
+
+    $this->postJson('/api/v1/events', [
+        'title' => 'Fremd-Owner',
+        'starts_at' => now()->addDay()->toIso8601String(),
+        'ends_at' => now()->addDay()->addHour()->toIso8601String(),
+        'owner_id' => $stranger->id,
+    ])->assertStatus(422)->assertJsonValidationErrorFor('owner_id');
 });
 
 it('rejects an event ending before it starts', function () {

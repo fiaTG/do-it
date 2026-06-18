@@ -205,8 +205,8 @@ export const eventsApi = {
     title: string
     starts_at: string
     ends_at: string
-    category: string
     car_reserved: boolean
+    owner_id: number
   }): Promise<EventItem> {
     const { data } = await api.post<{ data: EventItem }>('/events', payload)
     return data.data
@@ -217,8 +217,8 @@ export const eventsApi = {
       title: string
       starts_at: string
       ends_at: string
-      category: string
       car_reserved: boolean
+      owner_id: number
     }>,
   ): Promise<EventItem> {
     const { data } = await api.patch<{ data: EventItem }>(`/events/${id}`, payload)

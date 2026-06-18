@@ -10,6 +10,7 @@ class Event extends Model
     protected $fillable = [
         'family_id',
         'user_id',
+        'owner_id',
         'title',
         'starts_at',
         'ends_at',
@@ -34,5 +35,11 @@ class Event extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /** Familienmitglied, für das der Termin ist (Standard = Ersteller). */
+    public function owner(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'owner_id');
     }
 }

@@ -2,20 +2,18 @@ import { useEffect, useState, type FormEvent } from 'react'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
+import listPlugin from '@fullcalendar/list'
 import interactionPlugin from '@fullcalendar/interaction'
 import type { DateSelectArg, EventClickArg, EventInput } from '@fullcalendar/core'
 import deLocale from '@fullcalendar/core/locales/de'
-import { apiError, eventsApi } from '../api'
-import type { EventItem } from '../types'
+import { apiError, eventsApi, familyApi } from '../api'
+import { useAuth } from '../store/auth'
+import type { EventItem, User } from '../types'
 
-const CATEGORIES = ['Familie', 'Freizeit', 'Arbeit', 'Sonstiges'] as const
-
-const COLORS: Record<string, string> = {
-  Familie: '#e07a5f',
-  Freizeit: '#3b82f6',
-  Arbeit: '#406f8f',
-  Sonstiges: '#968d86',
-}
+// Feste Farbpalette – je Familienmitglied eine Farbe (stabil über die Reihenfolge
+// der Mitgliederliste). Familienkalender: Farbe = WER, nicht welcher Lebensbereich.
+const MEMBER_COLORS = ['#3E7C9B', '#E58A72', '#8FCBB8', '#F4C95D', '#A9825A', '#9B6FB0', '#5BA88A', '#D08770']
+const FALLBACK_COLOR = '#5b7689'
 
 interface ModalState {
   open: boolean
@@ -24,7 +22,7 @@ interface ModalState {
   title: string
   start: string
   end: string
-  category: string
+  ownerId: number
   carReserved: boolean
 }
 
@@ -35,7 +33,7 @@ const CLOSED: ModalState = {
   title: '',
   start: '',
   end: '',
-  category: 'Familie',
+  ownerId: 0,
   carReserved: false,
 }
 
@@ -46,13 +44,17 @@ function toLocalInput(date: Date): string {
 }
 
 export default function CalendarPage() {
+  const userId = useAuth((s) => s.user?.id) ?? 0
   const [events, setEvents] = useState<EventItem[]>([])
+  const [members, setMembers] = useState<User[]>([])
   const [modal, setModal] = useState<ModalState>(CLOSED)
   const [error, setError] = useState('')
 
   async function load() {
     try {
-      setEvents(await eventsApi.list())
+      const [ev, mem] = await Promise.all([eventsApi.list(), familyApi.members()])
+      setEvents(ev)
+      setMembers(mem)
     } catch (err) {
       setError(apiError(err))
     }
@@ -62,13 +64,19 @@ export default function CalendarPage() {
     void load()
   }, [])
 
+  // Stabile Farbe je Mitglied (nach Position in der Mitgliederliste).
+  const colorFor = (ownerId: number | null): string => {
+    const idx = members.findIndex((m) => m.id === ownerId)
+    return idx >= 0 ? MEMBER_COLORS[idx % MEMBER_COLORS.length] : FALLBACK_COLOR
+  }
+
   const fcEvents: EventInput[] = events.map((e) => ({
     id: String(e.id),
     title: e.car_reserved ? `${e.title} 🚗` : e.title,
     start: e.starts_at,
     end: e.ends_at,
-    backgroundColor: COLORS[e.category] ?? COLORS.Sonstiges,
-    borderColor: COLORS[e.category] ?? COLORS.Sonstiges,
+    backgroundColor: colorFor(e.owner_id),
+    borderColor: colorFor(e.owner_id),
   }))
 
   function openCreate(arg: DateSelectArg) {
@@ -78,6 +86,7 @@ export default function CalendarPage() {
       mode: 'create',
       start: toLocalInput(arg.start),
       end: toLocalInput(arg.end),
+      ownerId: userId, // Standard: für mich selbst
     })
   }
 
@@ -91,7 +100,7 @@ export default function CalendarPage() {
       title: event.title,
       start: toLocalInput(new Date(event.starts_at)),
       end: toLocalInput(new Date(event.ends_at)),
-      category: event.category,
+      ownerId: event.owner_id ?? userId,
       carReserved: event.car_reserved,
     })
   }
@@ -114,8 +123,8 @@ export default function CalendarPage() {
       title: modal.title,
       starts_at: modal.start,
       ends_at: modal.end,
-      category: modal.category,
       car_reserved: modal.carReserved,
+      owner_id: modal.ownerId,
     }
     try {
       if (modal.mode === 'create') {
@@ -147,15 +156,20 @@ export default function CalendarPage() {
 
       <div className="rounded-2xl bg-surface p-4 shadow">
         <FullCalendar
-          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-          initialView="dayGridMonth"
+          plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
+          initialView="timeGridWeek"
           headerToolbar={{
             left: 'prev,next today',
             center: 'title',
-            right: 'dayGridMonth,timeGridWeek,timeGridDay',
+            right: 'listWeek,timeGridDay,timeGridWeek,dayGridMonth',
           }}
+          buttonText={{ today: 'Heute', month: 'Monat', week: 'Woche', day: 'Tag', list: 'Liste' }}
           locale={deLocale}
+          firstDay={1}
           height="auto"
+          nowIndicator
+          slotMinTime="06:00:00"
+          slotMaxTime="23:00:00"
           selectable
           editable
           select={openCreate}
@@ -166,14 +180,16 @@ export default function CalendarPage() {
         />
       </div>
 
-      <div className="flex flex-wrap gap-4 text-xs text-muted">
-        {CATEGORIES.map((c) => (
-          <span key={c} className="flex items-center gap-1">
-            <span className="inline-block h-3 w-3 rounded" style={{ background: COLORS[c] }} />
-            {c}
+      {/* Legende: WER (Familienmitglieder) */}
+      <div className="flex flex-wrap items-center gap-4 text-xs text-muted">
+        {members.map((m) => (
+          <span key={m.id} className="flex items-center gap-1.5">
+            <span className="inline-block h-3 w-3 rounded-full" style={{ background: colorFor(m.id) }} />
+            {m.first_name}
+            {m.id === userId && ' (ich)'}
           </span>
         ))}
-        <span>· Bereich ziehen = anlegen · Klick = bearbeiten · Ziehen = verschieben</span>
+        <span>· Bereich ziehen = anlegen · Klick = bearbeiten</span>
       </div>
 
       {modal.open && (
@@ -212,15 +228,21 @@ export default function CalendarPage() {
                 />
               </label>
             </div>
-            <select
-              value={modal.category}
-              onChange={(e) => setModal({ ...modal, category: e.target.value })}
-              className={`${inputClass} w-full`}
-            >
-              {CATEGORIES.map((c) => (
-                <option key={c}>{c}</option>
-              ))}
-            </select>
+            <label className="block text-xs text-muted">
+              Für
+              <select
+                value={modal.ownerId}
+                onChange={(e) => setModal({ ...modal, ownerId: Number(e.target.value) })}
+                className={`${inputClass} mt-1 w-full`}
+              >
+                {members.map((m) => (
+                  <option key={m.id} value={m.id}>
+                    {m.first_name}
+                    {m.id === userId ? ' (ich)' : ''}
+                  </option>
+                ))}
+              </select>
+            </label>
             <label className="flex items-center gap-2 text-sm text-muted">
               <input
                 type="checkbox"
