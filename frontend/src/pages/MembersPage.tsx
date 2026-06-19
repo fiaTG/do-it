@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { apiError, familyApi, inviteApi } from '../api'
+import { Baby, Shield, Users } from '../lib/icons'
 import { useAuth } from '../store/auth'
 import type { FamilyRole, User } from '../types'
 
@@ -55,7 +56,9 @@ export default function MembersPage() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      <h1 className="text-2xl font-bold text-primary">👪 Familienmitglieder</h1>
+      <h1 className="flex items-center gap-2 text-2xl font-bold text-primary">
+        <Users className="h-6 w-6" /> Familienmitglieder
+      </h1>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
         {members.map((m) => (
@@ -70,8 +73,16 @@ export default function MembersPage() {
             <div className="mt-2 text-center font-medium text-text">
               {m.first_name} {m.last_name}
             </div>
-            <span className="mt-1 rounded-full bg-surface-2 px-2 py-0.5 text-[10px] font-semibold text-muted">
-              {m.role === 'child' ? '🧒 Kind' : '🛡️ Verwalter'}
+            <span className="mt-1 inline-flex items-center gap-1 rounded-full bg-surface-2 px-2 py-0.5 text-[10px] font-semibold text-muted">
+              {m.role === 'child' ? (
+                <>
+                  <Baby className="h-3 w-3" /> Kind
+                </>
+              ) : (
+                <>
+                  <Shield className="h-3 w-3" /> Verwalter
+                </>
+              )}
             </span>
             {isGuardian && m.id !== me?.id && (
               <button

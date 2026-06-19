@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { imagesApi } from '../../api'
+import { APP_ICONS } from '../../lib/icons'
 import type { ImageItem } from '../../types'
 import WidgetCard from './WidgetCard'
 
@@ -13,7 +14,7 @@ export default function GalleryWidget({ onRemove }: { onRemove?: () => void }) {
   const preview = images.slice(0, 6)
 
   return (
-    <WidgetCard title="Galerie" icon="🖼️" to="/gallery" onRemove={onRemove}>
+    <WidgetCard title="Galerie" icon={APP_ICONS.gallery} to="/gallery" onRemove={onRemove}>
       {preview.length === 0 ? (
         <p className="text-sm text-muted">Noch keine Bilder.</p>
       ) : (

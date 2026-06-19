@@ -36,6 +36,12 @@ export default defineConfig(({ mode }) => ({
       },
     }),
   ],
+  // Genau eine React-Kopie erzwingen (Safeguard gegen doppelte React-Instanzen
+  // durch hoisting, die sonst „Cannot read properties of null (useContext)" o.ä.
+  // in Tests/3rd-Party-Komponenten auslösen).
+  resolve: {
+    dedupe: ['react', 'react-dom'],
+  },
   test: {
     environment: 'jsdom',
     globals: true,

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { apiError, authApi, subscriptionApi } from '../api'
+import { Check, Crown } from '../lib/icons'
 import { useAuth } from '../store/auth'
 import type { Subscription } from '../types'
 
@@ -64,7 +65,9 @@ export default function PremiumPage() {
 
   return (
     <div className="mx-auto max-w-lg space-y-6">
-      <h1 className="text-2xl font-bold text-primary">⭐ Premium</h1>
+      <h1 className="flex items-center gap-2 text-2xl font-bold text-primary">
+        <Crown className="h-6 w-6" /> Premium
+      </h1>
       {error && <p className="text-sm text-red-600">{error}</p>}
 
       <div className="rounded-2xl bg-surface p-6 shadow">
@@ -82,7 +85,7 @@ export default function PremiumPage() {
         <ul className="space-y-2">
           {BENEFITS.map((b) => (
             <li key={b} className="flex items-center gap-2 text-sm text-muted">
-              <span className={isPremium ? 'text-primary' : 'text-muted'}>✓</span>
+              <Check className={`h-4 w-4 shrink-0 ${isPremium ? 'text-primary' : 'text-muted'}`} />
               {b}
             </li>
           ))}

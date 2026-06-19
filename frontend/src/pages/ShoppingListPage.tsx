@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { apiError, shoppingApi, shoppingPdfUrl, shopsApi } from '../api'
 import ErrorBanner from '../components/ErrorBanner'
+import { ShoppingCart, Trash2 } from '../lib/icons'
 import { useAuth } from '../store/auth'
 import type { Shop, ShoppingItem } from '../types'
 
@@ -93,7 +94,9 @@ export default function ShoppingListPage() {
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-primary">🛒 Einkaufsliste</h1>
+        <h1 className="flex items-center gap-2 text-2xl font-bold text-primary">
+          <ShoppingCart className="h-6 w-6" /> Einkaufsliste
+        </h1>
         <a
           href={shoppingPdfUrl}
           target="_blank"
@@ -161,7 +164,7 @@ export default function ShoppingListPage() {
                   className="text-muted hover:text-red-500"
                   aria-label="Löschen"
                 >
-                  🗑️
+                  <Trash2 className="h-4 w-4" />
                 </button>
               )}
             </li>

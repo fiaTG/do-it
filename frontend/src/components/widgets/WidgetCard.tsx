@@ -1,21 +1,22 @@
 import { useState, type ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { type LucideIcon, MoreVertical, Trash2 } from '../../lib/icons'
 
 /**
  * Einheitlicher Rahmen für ein Dashboard-Widget: Titel mit Icon und Inhalt.
  * Ein Klick irgendwo auf die Kachel öffnet die zugehörige App; interaktive
- * Elemente (Checkboxen, das ⋯-Menü) stoppen die Weiterleitung selbst.
- * Das Entfernen vom Dashboard liegt dezent hinter dem ⋯-Menü.
+ * Elemente (Checkboxen, das Optionen-Menü) stoppen die Weiterleitung selbst.
+ * Das Entfernen vom Dashboard liegt dezent hinter dem Optionen-Menü.
  */
 export default function WidgetCard({
   title,
-  icon,
+  icon: Icon,
   to,
   onRemove,
   children,
 }: {
   title: string
-  icon: string
+  icon: LucideIcon
   to: string
   onRemove?: () => void
   children: ReactNode
@@ -35,8 +36,8 @@ export default function WidgetCard({
       className="flex cursor-pointer flex-col rounded-2xl bg-surface p-5 shadow-card transition hover:shadow-pop focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)]"
     >
       <div className="mb-3 flex items-center justify-between">
-        <h3 className="font-semibold text-text">
-          <span aria-hidden>{icon}</span> {title}
+        <h3 className="flex items-center gap-2 font-semibold text-text">
+          <Icon className="h-4 w-4 text-primary" aria-hidden /> {title}
         </h3>
         {onRemove && (
           <div className="relative" onClick={(e) => e.stopPropagation()}>
@@ -48,7 +49,7 @@ export default function WidgetCard({
               aria-haspopup="menu"
               aria-expanded={menuOpen}
             >
-              ⋯
+              <MoreVertical className="h-4 w-4" />
             </button>
             {menuOpen && (
               <>
@@ -61,7 +62,7 @@ export default function WidgetCard({
                     }}
                     className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-text hover:bg-surface-2"
                   >
-                    🗑️ Vom Dashboard entfernen
+                    <Trash2 className="h-4 w-4" /> Vom Dashboard entfernen
                   </button>
                 </div>
               </>

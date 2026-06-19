@@ -1,4 +1,5 @@
 import { type MouseEvent } from 'react'
+import { Car } from '../lib/icons'
 import type { EventItem, User } from '../types'
 
 // Selbstgebaute Tagesansicht mit einer Spalte je Familienmitglied (kostenlos,
@@ -132,9 +133,9 @@ export default function PersonDayView({ date, members, events, colorFor, onEvent
                     background: colorFor(e.owner_id),
                   }}
                 >
-                  <span className="block truncate font-semibold">
-                    {e.title}
-                    {e.car_reserved ? ' 🚗' : ''}
+                  <span className="flex items-center gap-1 truncate font-semibold">
+                    <span className="truncate">{e.title}</span>
+                    {e.car_reserved && <Car className="h-3 w-3 shrink-0" aria-label="Auto reserviert" />}
                   </span>
                   <span className="block opacity-80">{fmtTime(e.starts_at)}</span>
                 </button>

@@ -1,5 +1,6 @@
 import { useRef, useState, type ChangeEvent, type FormEvent } from 'react'
 import { apiError, authApi, profileApi } from '../api'
+import { KeyRound, User } from '../lib/icons'
 import { useAuth } from '../store/auth'
 
 export default function ProfilePage() {
@@ -83,7 +84,9 @@ export default function ProfilePage() {
 
   return (
     <div className="mx-auto max-w-lg space-y-6">
-      <h1 className="text-2xl font-bold text-primary">👤 Profil</h1>
+      <h1 className="flex items-center gap-2 text-2xl font-bold text-primary">
+        <User className="h-6 w-6" /> Profil
+      </h1>
 
       {message && <p className="text-sm text-green-700">{message}</p>}
       {error && <p className="text-sm text-red-600">{error}</p>}
@@ -143,7 +146,9 @@ export default function ProfilePage() {
 
       {/* Passwort ändern */}
       <form onSubmit={changePassword} className="space-y-4 rounded-2xl bg-surface p-6 shadow">
-        <h2 className="font-semibold text-text">🔒 Passwort ändern</h2>
+        <h2 className="flex items-center gap-2 font-semibold text-text">
+          <KeyRound className="h-4 w-4" /> Passwort ändern
+        </h2>
         {pwMessage && <p className="text-sm text-green-700">{pwMessage}</p>}
         {pwError && <p className="text-sm text-red-600">{pwError}</p>}
         <input

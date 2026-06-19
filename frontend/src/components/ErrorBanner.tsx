@@ -1,3 +1,5 @@
+import { X } from '../lib/icons'
+
 /** Nicht-blockierendes Fehler-Banner (z. B. für Rollback-Meldungen bei
  *  Optimistic UI). Ersetzt das frühere ganzseitige Ausblenden bei Fehlern. */
 export default function ErrorBanner({
@@ -20,7 +22,7 @@ export default function ErrorBanner({
           aria-label="Meldung schließen"
           className="text-red-400 hover:text-red-600"
         >
-          ✕
+          <X className="h-4 w-4" />
         </button>
       )}
     </div>

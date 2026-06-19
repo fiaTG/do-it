@@ -2,18 +2,29 @@ import { useState, useEffect } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useApps } from '../store/apps'
 import { useAuth } from '../store/auth'
+import {
+  APP_ICONS,
+  Crown,
+  Home,
+  LogOut,
+  type LucideIcon,
+  Menu,
+  User,
+  Users,
+  X,
+} from '../lib/icons'
 import Logo from './Logo'
 import ThemeToggle from './ThemeToggle'
 
-type NavItem = { to: string; label: string; icon: string; end?: boolean }
+type NavItem = { to: string; label: string; icon: LucideIcon; end?: boolean }
 
 // Feature-Apps erscheinen nur in der Navigation, wenn der Nutzer sie auf dem
 // Dashboard aktiviert hat (Slug -> Navigationseintrag).
 const FEATURE_NAV: Record<string, NavItem> = {
-  'shopping-list': { to: '/shopping', label: 'Einkaufsliste', icon: '🛒' },
-  todo: { to: '/todos', label: 'ToDo', icon: '✅' },
-  calendar: { to: '/calendar', label: 'Kalender', icon: '📅' },
-  gallery: { to: '/gallery', label: 'Galerie', icon: '🖼️' },
+  'shopping-list': { to: '/shopping', label: 'Einkaufsliste', icon: APP_ICONS['shopping-list'] },
+  todo: { to: '/todos', label: 'ToDo', icon: APP_ICONS.todo },
+  calendar: { to: '/calendar', label: 'Kalender', icon: APP_ICONS.calendar },
+  gallery: { to: '/gallery', label: 'Galerie', icon: APP_ICONS.gallery },
 }
 
 export default function Layout() {
@@ -38,11 +49,11 @@ export default function Layout() {
     .map(([, item]) => item)
 
   const nav: NavItem[] = [
-    { to: '/dashboard', label: 'Dashboard', icon: '🏠', end: true },
+    { to: '/dashboard', label: 'Dashboard', icon: Home, end: true },
     ...featureItems,
-    { to: '/members', label: 'Familie', icon: '👪' },
-    { to: '/profile', label: 'Profil', icon: '👤' },
-    { to: '/premium', label: 'Premium', icon: '⭐' },
+    { to: '/members', label: 'Familie', icon: Users },
+    { to: '/profile', label: 'Profil', icon: User },
+    { to: '/premium', label: 'Premium', icon: Crown },
   ]
 
   async function handleLogout() {
@@ -74,7 +85,7 @@ export default function Layout() {
             className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-white/10 md:hidden"
             aria-label="Menü schließen"
           >
-            ✕
+            <X className="h-5 w-5" />
           </button>
         </div>
         <div className="flex items-center gap-3 px-6 pb-4">
@@ -91,8 +102,8 @@ export default function Layout() {
               {user?.family ? `Familie ${user.family.name}` : 'Noch keine Familie'}
             </div>
             {user?.family?.is_premium && (
-              <span className="mt-1 inline-block rounded-full bg-white/15 px-2 py-0.5 text-[10px] font-semibold tracking-wide">
-                ⭐ PREMIUM
+              <span className="mt-1 inline-flex items-center gap-1 rounded-full bg-white/15 px-2 py-0.5 text-[10px] font-semibold tracking-wide">
+                <Crown className="h-3 w-3" /> PREMIUM
               </span>
             )}
           </div>
@@ -110,16 +121,16 @@ export default function Layout() {
                 }`
               }
             >
-              <span aria-hidden>{item.icon}</span>
+              <item.icon className="h-5 w-5 shrink-0" aria-hidden />
               {item.label}
             </NavLink>
           ))}
         </nav>
         <button
           onClick={handleLogout}
-          className="m-3 rounded-lg px-3 py-2 text-left text-sm hover:bg-white/10"
+          className="m-3 flex items-center gap-3 rounded-lg px-3 py-2 text-left text-sm hover:bg-white/10"
         >
-          🚪 Logout
+          <LogOut className="h-5 w-5 shrink-0" /> Logout
         </button>
       </aside>
 
@@ -131,7 +142,7 @@ export default function Layout() {
             className="flex h-9 w-9 items-center justify-center rounded-full text-muted transition hover:bg-surface-2 md:hidden"
             aria-label="Menü öffnen"
           >
-            ☰
+            <Menu className="h-5 w-5" />
           </button>
           <Logo size={24} className="font-bold text-primary md:hidden" />
           <ThemeToggle className="ml-auto text-muted hover:bg-surface-2" />

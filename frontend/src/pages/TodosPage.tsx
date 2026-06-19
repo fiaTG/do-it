@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { apiError, todosApi } from '../api'
 import ErrorBanner from '../components/ErrorBanner'
+import { CheckSquare, Trash2 } from '../lib/icons'
 import { useAuth } from '../store/auth'
 import type { Todo } from '../types'
 
@@ -72,7 +73,9 @@ export default function TodosPage() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      <h1 className="text-2xl font-bold text-primary">✅ ToDo-Liste</h1>
+      <h1 className="flex items-center gap-2 text-2xl font-bold text-primary">
+        <CheckSquare className="h-6 w-6" /> ToDo-Liste
+      </h1>
       <ErrorBanner message={error} onDismiss={() => setError('')} />
 
       <form onSubmit={add} className="flex gap-2 rounded-2xl bg-surface p-4 shadow">
@@ -110,7 +113,7 @@ export default function TodosPage() {
                   className="text-muted hover:text-red-500"
                   aria-label="Löschen"
                 >
-                  🗑️
+                  <Trash2 className="h-4 w-4" />
                 </button>
               )}
             </li>

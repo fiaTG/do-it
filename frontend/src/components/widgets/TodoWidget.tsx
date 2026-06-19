@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { todosApi } from '../../api'
+import { APP_ICONS, PartyPopper } from '../../lib/icons'
 import type { Todo } from '../../types'
 import WidgetCard from './WidgetCard'
 
@@ -30,12 +31,14 @@ export default function TodoWidget({ onRemove }: { onRemove?: () => void }) {
   return (
     <WidgetCard
       title={`ToDos${open.length ? ` (${open.length})` : ''}`}
-      icon="✅"
+      icon={APP_ICONS.todo}
       to="/todos"
       onRemove={onRemove}
     >
       {open.length === 0 ? (
-        <p className="text-sm text-muted">Alles erledigt 🎉</p>
+        <p className="flex items-center gap-1.5 text-sm text-muted">
+          <PartyPopper className="h-4 w-4 text-success" /> Alles erledigt
+        </p>
       ) : (
         <ul className="space-y-2">
           {open.slice(0, 5).map((t) => (

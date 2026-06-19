@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { eventsApi, imagesApi, shoppingApi, todosApi } from '../api'
+import { APP_ICONS, type LucideIcon } from '../lib/icons'
 
 type Metric = {
   slug: string
-  icon: string
+  icon: LucideIcon
   label: string
   to: string
   load: () => Promise<number>
@@ -14,21 +15,21 @@ type Metric = {
 const METRICS: Metric[] = [
   {
     slug: 'todo',
-    icon: '✅',
+    icon: APP_ICONS.todo,
     label: 'offene ToDos',
     to: '/todos',
     load: async () => (await todosApi.list()).filter((t) => !t.is_done).length,
   },
   {
     slug: 'shopping-list',
-    icon: '🛒',
+    icon: APP_ICONS['shopping-list'],
     label: 'offene Artikel',
     to: '/shopping',
     load: async () => (await shoppingApi.list()).filter((i) => !i.is_purchased).length,
   },
   {
     slug: 'calendar',
-    icon: '📅',
+    icon: APP_ICONS.calendar,
     label: 'anstehende Termine',
     to: '/calendar',
     load: async () => {
@@ -38,14 +39,14 @@ const METRICS: Metric[] = [
   },
   {
     slug: 'gallery',
-    icon: '🖼️',
+    icon: APP_ICONS.gallery,
     label: 'Bilder',
     to: '/gallery',
     load: async () => (await imagesApi.list()).length,
   },
 ]
 
-type Stat = { icon: string; label: string; to: string; value: number }
+type Stat = { icon: LucideIcon; label: string; to: string; value: number }
 
 /** Übersichts-Kacheln mit Kennzahlen der aktivierten Apps. */
 export default function DashboardStats({ slugs }: { slugs: string[] }) {
@@ -81,8 +82,11 @@ export default function DashboardStats({ slugs }: { slugs: string[] }) {
           onClick={() => navigate(s.to)}
           className="flex items-center gap-3 rounded-2xl bg-surface p-4 text-left shadow-card transition hover:shadow-pop"
         >
-          <span className="text-2xl" aria-hidden>
-            {s.icon}
+          <span
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-primary"
+            aria-hidden
+          >
+            <s.icon className="h-5 w-5" />
           </span>
           <span>
             <span className="block text-2xl font-bold leading-none text-text">{s.value}</span>

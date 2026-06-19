@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { eventsApi } from '../../api'
+import { APP_ICONS, Car } from '../../lib/icons'
 import type { EventItem } from '../../types'
 import WidgetCard from './WidgetCard'
 
@@ -28,7 +29,7 @@ export default function CalendarWidget({ onRemove }: { onRemove?: () => void }) 
     .slice(0, 4)
 
   return (
-    <WidgetCard title="Kalender" icon="📅" to="/calendar" onRemove={onRemove}>
+    <WidgetCard title="Kalender" icon={APP_ICONS.calendar} to="/calendar" onRemove={onRemove}>
       {upcoming.length === 0 ? (
         <p className="text-sm text-muted">Keine anstehenden Termine.</p>
       ) : (
@@ -37,9 +38,9 @@ export default function CalendarWidget({ onRemove }: { onRemove?: () => void }) 
             <li key={e.id} className="text-sm leading-tight">
               <span className="text-muted">{formatWhen(e.starts_at)}</span>
               <br />
-              <span className="text-text">
+              <span className="inline-flex items-center gap-1 text-text">
                 {e.title}
-                {e.car_reserved && ' 🚗'}
+                {e.car_reserved && <Car className="h-3.5 w-3.5 text-muted" aria-label="Auto reserviert" />}
               </span>
             </li>
           ))}

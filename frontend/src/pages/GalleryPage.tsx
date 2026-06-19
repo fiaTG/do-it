@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { apiError, imagesApi } from '../api'
+import { ImageIcon, Trash2 } from '../lib/icons'
 import type { ImageItem } from '../types'
 
 export default function GalleryPage() {
@@ -48,7 +49,9 @@ export default function GalleryPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-primary">🖼️ Galerie</h1>
+      <h1 className="flex items-center gap-2 text-2xl font-bold text-primary">
+        <ImageIcon className="h-6 w-6" /> Galerie
+      </h1>
 
       {error && <p className="text-sm text-red-600">{error}</p>}
 
@@ -90,10 +93,10 @@ export default function GalleryPage() {
                 e.stopPropagation()
                 void remove(img.id)
               }}
-              className="absolute right-2 top-2 rounded-full bg-black/40 px-2 text-white opacity-0 transition group-hover:opacity-100"
+              className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-black/40 text-white opacity-0 transition group-hover:opacity-100"
               aria-label="Löschen"
             >
-              ✕
+              <Trash2 className="h-4 w-4" />
             </button>
             {img.title && (
               <figcaption className="truncate px-2 py-1 text-sm text-muted">

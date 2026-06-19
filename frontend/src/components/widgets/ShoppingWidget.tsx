@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { shoppingApi } from '../../api'
+import { APP_ICONS } from '../../lib/icons'
 import type { ShoppingItem } from '../../types'
 import WidgetCard from './WidgetCard'
 
@@ -30,7 +31,7 @@ export default function ShoppingWidget({ onRemove }: { onRemove?: () => void }) 
   return (
     <WidgetCard
       title={`Einkaufsliste${open.length ? ` (${open.length})` : ''}`}
-      icon="🛒"
+      icon={APP_ICONS['shopping-list']}
       to="/shopping"
       onRemove={onRemove}
     >

@@ -7,6 +7,7 @@ import ShoppingWidget from '../components/widgets/ShoppingWidget'
 import TodoWidget from '../components/widgets/TodoWidget'
 import { useApps } from '../store/apps'
 import { useAuth } from '../store/auth'
+import { APP_ICONS, Plus } from '../lib/icons'
 
 // Welche Widget-Komponente gehört zu welcher App (Slug)?
 const WIDGETS: Record<string, ComponentType<{ onRemove?: () => void }>> = {
@@ -14,15 +15,6 @@ const WIDGETS: Record<string, ComponentType<{ onRemove?: () => void }>> = {
   todo: TodoWidget,
   'shopping-list': ShoppingWidget,
   gallery: GalleryWidget,
-}
-
-// Anzeige-Icon je App (das DB-Feld `icon` enthält FontAwesome-Klassen, die das
-// Frontend nicht nutzt – darum hier auf Emojis mappen).
-const APP_ICON: Record<string, string> = {
-  'shopping-list': '🛒',
-  todo: '✅',
-  calendar: '📅',
-  gallery: '🖼️',
 }
 
 export default function DashboardPage() {
@@ -127,8 +119,14 @@ export default function DashboardPage() {
                 onClick={() => void addApp(app.id)}
                 className="group flex items-center gap-3 rounded-xl border border-border bg-surface px-4 py-3 text-left shadow-card transition hover:border-primary hover:shadow-pop"
               >
-                <span className="text-2xl" aria-hidden>
-                  {APP_ICON[app.slug] ?? '➕'}
+                <span
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary-soft text-primary"
+                  aria-hidden
+                >
+                  {(() => {
+                    const Icon = APP_ICONS[app.slug] ?? Plus
+                    return <Icon className="h-5 w-5" />
+                  })()}
                 </span>
                 <span>
                   <span className="block text-sm font-medium text-text">{app.name}</span>

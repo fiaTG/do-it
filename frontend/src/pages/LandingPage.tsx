@@ -1,12 +1,13 @@
 import { Link } from 'react-router-dom'
 import Logo from '../components/Logo'
 import ThemeToggle from '../components/ThemeToggle'
+import { APP_ICONS, type LucideIcon, Users } from '../lib/icons'
 
-const FEATURES = [
-  { icon: '🛒', title: 'Einkaufsliste', text: 'Gemeinsame Liste – jeder ergänzt, was fehlt.' },
-  { icon: '📅', title: 'Kalender', text: 'Termine der ganzen Familie, inkl. Auto-Reservierung.' },
-  { icon: '✅', title: 'ToDos', text: 'Aufgaben verteilen und abhaken.' },
-  { icon: '🖼️', title: 'Galerie', text: 'Eure schönsten Momente an einem Ort.' },
+const FEATURES: { icon: LucideIcon; title: string; text: string }[] = [
+  { icon: APP_ICONS['shopping-list'], title: 'Einkaufsliste', text: 'Gemeinsame Liste – jeder ergänzt, was fehlt.' },
+  { icon: APP_ICONS.calendar, title: 'Kalender', text: 'Termine der ganzen Familie, inkl. Auto-Reservierung.' },
+  { icon: APP_ICONS.todo, title: 'ToDos', text: 'Aufgaben verteilen und abhaken.' },
+  { icon: APP_ICONS.gallery, title: 'Galerie', text: 'Eure schönsten Momente an einem Ort.' },
 ]
 
 export default function LandingPage() {
@@ -62,7 +63,9 @@ export default function LandingPage() {
             className="aspect-[4/3] w-full rounded-3xl object-cover shadow-2xl"
           />
           <div className="absolute -bottom-4 -left-4 hidden rounded-2xl bg-surface px-5 py-3 shadow-pop sm:block">
-            <p className="text-sm font-semibold text-primary">👪 Eine App für alle</p>
+            <p className="flex items-center gap-2 text-sm font-semibold text-primary">
+              <Users className="h-4 w-4" /> Eine App für alle
+            </p>
           </div>
         </div>
       </section>
@@ -72,7 +75,9 @@ export default function LandingPage() {
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {FEATURES.map((f) => (
             <div key={f.title} className="rounded-2xl bg-surface p-6 shadow-card transition hover:shadow-pop">
-              <div className="text-3xl">{f.icon}</div>
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-soft text-primary">
+                <f.icon className="h-6 w-6" />
+              </div>
               <h3 className="mt-3 font-semibold text-text">{f.title}</h3>
               <p className="mt-1 text-sm text-muted">{f.text}</p>
             </div>

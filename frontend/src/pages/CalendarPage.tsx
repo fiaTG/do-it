@@ -8,6 +8,7 @@ import type { EventClickArg, EventInput } from '@fullcalendar/core'
 import deLocale from '@fullcalendar/core/locales/de'
 import { apiError, eventsApi, familyApi } from '../api'
 import PersonDayView from '../components/PersonDayView'
+import { Calendar, Car } from '../lib/icons'
 import { useAuth } from '../store/auth'
 import type { EventItem, User } from '../types'
 
@@ -179,7 +180,9 @@ export default function CalendarPage() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-bold text-primary">📅 Kalender</h1>
+      <h1 className="flex items-center gap-2 text-2xl font-bold text-primary">
+        <Calendar className="h-6 w-6" /> Kalender
+      </h1>
       {error && <p className="text-sm text-red-600">{error}</p>}
 
       {/* Umschalter: Übersicht (Woche/Monat/Liste) vs. Tag nach Person */}
@@ -365,7 +368,7 @@ export default function CalendarPage() {
                 onChange={(e) => setModal({ ...modal, carReserved: e.target.checked })}
                 className="h-5 w-5 accent-primary"
               />
-              🚗 Auto reservieren
+              <Car className="h-4 w-4 text-muted" /> Auto reservieren
             </label>
             <div className="flex items-center justify-between pt-2">
               {modal.mode === 'edit' && !modal.readOnly ? (
