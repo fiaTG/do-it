@@ -14,22 +14,22 @@ export default defineConfig(({ mode }) => ({
       // PWA bleibt fürs Web aktiv.
       disable: mode === 'capacitor',
       registerType: 'autoUpdate',
-      includeAssets: ['icon.svg'],
+      includeAssets: ['icon.png'],
       manifest: {
         name: 'Nidula',
         short_name: 'Nidula',
         description:
           'Organisiert euer Familienleben: Einkaufsliste, Kalender, ToDos und Galerie an einem Ort.',
         lang: 'de',
-        theme_color: '#3a5a40',
-        background_color: '#f1e8da',
+        theme_color: '#3f5547',
+        background_color: '#f2ece1',
         display: 'standalone',
         start_url: '/',
         icons: [
           {
-            src: '/icon.svg',
-            sizes: 'any',
-            type: 'image/svg+xml',
+            src: '/icon.png',
+            sizes: '512x512',
+            type: 'image/png',
             purpose: 'any maskable',
           },
         ],

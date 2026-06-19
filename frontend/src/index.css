@@ -10,79 +10,77 @@
    ========================================================================== */
 
 :root {
-  /* --- Roh-Palette: Grün & Erde --- */
-  --forest: #3a5a40;
-  --forest-dark: #2f4a35;
-  --sage: #8fa68e;
-  --terracotta: #d9794f;
-  --clay: #c2643f;
-
-  /* --- Roh-Palette: Warm & Familie --- */
-  --sand: #e6d2be;
-  --warm-sand: #dcc4a8;
-  --cream: #f3ece1;
-  --bark: #2c2420;
+  /* --- Marken-Palette „Nidula" (exakt aus dem Brand-Board) --- */
+  --deep-sage: #3f5547; /* Tiefes Salbei */
+  --moss: #7a8f7a; /* Moosgrün */
+  --sand: #e7d8c1; /* Sand */
+  --cream: #faf7f2; /* Creme */
+  --terracotta: #d97a63; /* Terrakotta */
+  --slate: #2e3136; /* Schiefer */
+  /* Aliase für Komponenten-Verläufe */
+  --forest: #3f5547;
+  --forest-dark: #344838;
 
   /* --- Semantische Tokens (Light) --- */
-  /* bg bewusst ruhig/warm (Creme), nicht strahlend; Karten (surface) heben sich ab. */
-  --bg: #f1e8da;
-  --surface: #fffdf8;
-  --surface-2: #ebe0d0;
-  --border: #e0d4c2;
+  /* bg warm (zwischen Sand & Creme), nicht strahlend; Karten (Creme) heben sich ab. */
+  --bg: #f2ece1;
+  --surface: #faf7f2;
+  --surface-2: #ece0cf;
+  --border: #e2d6c3;
 
-  --text: #2c2420;
-  --text-muted: #6f6357;
+  --text: #2e3136;
+  --text-muted: #6f6c63;
 
-  --primary: #3a5a40;
-  --primary-hover: #2f4a35;
-  --primary-contrast: #fbf7ef;
-  --primary-soft: #e3e9dd;
+  --primary: #3f5547;
+  --primary-hover: #344838;
+  --primary-contrast: #faf7f2;
+  --primary-soft: #e4eae3;
 
-  --accent: #d9794f;
+  --accent: #d97a63;
   --accent-contrast: #ffffff;
 
-  --success: #6e8c6f;
+  --success: #7a8f7a;
   --warning: #e0a458;
-  --ring: #8fa68e;
+  --ring: #7a8f7a;
 
-  /* Seitenleiste / Navigation (tiefes Grün) */
-  --sidebar-bg: #2f4a38;
-  --sidebar-text: #ece3d5;
-  --sidebar-muted: #9db099;
+  /* Seitenleiste / Navigation (Tiefes Salbei) */
+  --sidebar-bg: #3a4f42;
+  --sidebar-text: #f1ece2;
+  --sidebar-muted: #9aae98;
 
   /* Radien / Schatten */
   --radius-card: 1rem;
   --radius-control: 0.625rem;
-  --shadow-card: 0 1px 2px rgb(44 36 32 / 0.05), 0 4px 16px rgb(44 36 32 / 0.07);
-  --shadow-pop: 0 8px 30px rgb(44 36 32 / 0.14);
+  --shadow-card: 0 1px 2px rgb(46 49 54 / 0.05), 0 4px 16px rgb(46 49 54 / 0.07);
+  --shadow-pop: 0 8px 30px rgb(46 49 54 / 0.14);
 
   color-scheme: light;
 }
 
 [data-theme="dark"] {
-  --bg: #1e1b16;
-  --surface: #29251f;
-  --surface-2: #332e26;
-  --border: #423b31;
+  --bg: #1f221d;
+  --surface: #2a2e27;
+  --surface-2: #343a30;
+  --border: #424a3c;
 
-  --text: #f1e9dc;
-  --text-muted: #b2a492;
+  --text: #f1ece2;
+  --text-muted: #aca899;
 
-  --primary: #86a487;
-  --primary-hover: #9bb89b;
-  --primary-contrast: #18140f;
-  --primary-soft: #2e3a30;
+  --primary: #8aa088;
+  --primary-hover: #9cb39a;
+  --primary-contrast: #1a1f18;
+  --primary-soft: #2d362c;
 
-  --accent: #e08a5f;
+  --accent: #e0907a;
   --accent-contrast: #1c140f;
 
-  --success: #86a487;
+  --success: #8aa088;
   --warning: #e0a458;
-  --ring: #86a487;
+  --ring: #8aa088;
 
-  --sidebar-bg: #18211a;
-  --sidebar-text: #ece3d5;
-  --sidebar-muted: #8a9a88;
+  --sidebar-bg: #1b211a;
+  --sidebar-text: #f1ece2;
+  --sidebar-muted: #8c9889;
 
   --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 16px rgb(0 0 0 / 0.35);
   --shadow-pop: 0 8px 30px rgb(0 0 0 / 0.5);
@@ -99,12 +97,12 @@
   /* Roh-Palette (selten direkt genutzt, aber verfügbar) */
   --color-forest: var(--forest);
   --color-forest-dark: var(--forest-dark);
-  --color-sage: var(--sage);
+  --color-deep-sage: var(--deep-sage);
+  --color-moss: var(--moss);
   --color-terracotta: var(--terracotta);
-  --color-clay: var(--clay);
   --color-sand: var(--sand);
-  --color-warm-sand: var(--warm-sand);
   --color-cream: var(--cream);
+  --color-slate: var(--slate);
 
   /* Semantische Farben */
   --color-bg: var(--bg);

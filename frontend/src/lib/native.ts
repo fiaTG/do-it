@@ -25,7 +25,7 @@ export async function syncStatusBar(theme: Theme): Promise<void> {
   try {
     await StatusBar.setStyle({ style: theme === 'dark' ? Style.Light : Style.Dark })
     if (platform === 'android') {
-      await StatusBar.setBackgroundColor({ color: theme === 'dark' ? '#1e1b16' : '#f1e8da' })
+      await StatusBar.setBackgroundColor({ color: theme === 'dark' ? '#1f221d' : '#f2ece1' })
     }
   } catch {
     // Im Web nicht verfügbar – ignorieren.
