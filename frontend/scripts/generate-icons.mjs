@@ -28,6 +28,22 @@ const bgPng = (size, c1, c2) => sharp(Buffer.from(bg(size, c1, c2))).png().toBuf
 const markPng = (px) =>
   sharp(MARK).resize(px, px, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } }).png().toBuffer()
 
+// Eng zugeschnittene Marke: die transparenten Ränder der Quelldatei wegtrimmen,
+// damit Haus & Nest auch in kleinen UI-Badges (28–40px) groß & erkennbar sind.
+const MARK_TRIMMED = await sharp(MARK).trim({ threshold: 12 }).png().toBuffer()
+const markTrimmedPng = (px) =>
+  sharp(MARK_TRIMMED)
+    .resize(px, px, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
+    .png()
+    .toBuffer()
+
+async function webLogo(size, frac, out) {
+  await sharp(await bgPng(size, SAGE, SAGE_DK))
+    .composite([{ input: await markTrimmedPng(Math.round(size * frac)), gravity: 'center' }])
+    .png()
+    .toFile(out)
+}
+
 async function onBg(size, c1, c2, frac, out) {
   await sharp(await bgPng(size, c1, c2))
     .composite([{ input: await markPng(Math.round(size * frac)), gravity: 'center' }])
@@ -55,8 +71,9 @@ await transparentMark(1024, 0.78, 'assets/icon-foreground.png')
 await onBg(2732, SAGE, SAGE_DK, 0.24, 'assets/splash.png')
 await onBg(2732, DEEP, DEEP_DK, 0.24, 'assets/splash-dark.png')
 
-// Web-/PWA-Icon.
+// Web-/PWA-Icon (maskable → mehr Rand) + enges UI-Logo-Badge (Marke füllt Kachel).
 await mkdir('public', { recursive: true })
 await onBg(512, SAGE, SAGE_DK, 0.74, 'public/icon.png')
+await webLogo(512, 0.92, 'public/logo-mark.png')
 
 console.log('Nidula-Assets erzeugt (aus brand/nidula-mark.png)')

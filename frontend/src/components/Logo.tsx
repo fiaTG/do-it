@@ -1,9 +1,9 @@
 /**
  * Nidula-Markenzeichen: gerendertes Logo-Badge (Nest mit Haus & Herz auf
- * Salbei-Grün) + Wortmarke. Nutzt bewusst das generierte App-Icon
- * (`public/icon.png`) statt der transparenten Roh-Marke (`brand/nidula-mark.png`),
- * weil die Marke cremefarben ist und auf hellen Hintergründen verschwinden
- * würde – das Badge hat auf hell wie dunkel garantiert Kontrast.
+ * Salbei-Grün) + Wortmarke. Nutzt `public/logo-mark.png` – die ENG getrimmte
+ * Variante (Marke füllt die Kachel, gut erkennbar ab 24px), nicht das maskable
+ * App-Icon `public/icon.png` (das braucht Rand). Bewusst das Badge statt der
+ * cremefarbenen Roh-Marke, weil die auf hellem Grund verschwinden würde.
  */
 export default function Logo({
   size = 28,
@@ -17,7 +17,7 @@ export default function Logo({
   return (
     <span className={`inline-flex items-center gap-2 ${className}`}>
       <img
-        src="/icon.png"
+        src="/logo-mark.png"
         alt="Nidula"
         width={size}
         height={size}
