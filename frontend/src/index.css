@@ -94,6 +94,12 @@
    Utilities direkt auf die CSS-Variablen zeigen → Dark Mode greift live.
    ========================================================================== */
 @theme inline {
+  /* Marken-Schriften (ADR-0018): Inter = Body, Fraunces = Headlines.
+     Überschreibt Tailwinds Defaults → Utilities `font-sans`/`font-serif`
+     ziehen direkt diese Familien. */
+  --font-sans: "Inter Variable", system-ui, -apple-system, sans-serif;
+  --font-serif: "Fraunces Variable", Georgia, "Times New Roman", serif;
+
   /* Roh-Palette (selten direkt genutzt, aber verfügbar) */
   --color-forest: var(--forest);
   --color-forest-dark: var(--forest-dark);
@@ -136,9 +142,20 @@ body,
 
 body {
   margin: 0;
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: var(--font-sans);
   background-color: var(--bg);
   color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Marken-Look: Seitenüberschriften in der weichen Serife (Fraunces).
+   Bewusst nur h1/h2 (Seitentitel/Hero), damit Karten-/Listen-Titel (h3+)
+   im ruhigen Inter bleiben. */
+h1,
+h2 {
+  font-family: var(--font-serif);
+  letter-spacing: -0.01em;
 }
 
 /* FullCalendar an die Tokens binden, damit der Kalender im Dark Mode mitzieht. */

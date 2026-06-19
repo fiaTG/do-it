@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import Logo from '../components/Logo'
 import ThemeToggle from '../components/ThemeToggle'
 
 const FEATURES = [
@@ -13,7 +14,7 @@ export default function LandingPage() {
     <div className="min-h-screen bg-bg text-text">
       {/* Navigation */}
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
-        <span className="text-lg font-bold text-primary">🪺 Nidula</span>
+        <Logo size={30} className="text-lg font-bold text-primary" />
         <nav className="flex items-center gap-2">
           <ThemeToggle className="text-text hover:bg-surface-2" />
           <Link to="/login" className="rounded-lg px-4 py-2 text-sm font-medium text-primary hover:bg-primary-soft">

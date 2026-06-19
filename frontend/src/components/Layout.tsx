@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useApps } from '../store/apps'
 import { useAuth } from '../store/auth'
+import Logo from './Logo'
 import ThemeToggle from './ThemeToggle'
 
 type NavItem = { to: string; label: string; icon: string; end?: boolean }
@@ -67,7 +68,7 @@ export default function Layout() {
         }`}
       >
         <div className="flex items-center justify-between px-6 py-6">
-          <span className="text-lg font-bold tracking-wide">🪺 Nidula</span>
+          <Logo size={30} className="text-lg font-bold tracking-wide" />
           <button
             onClick={() => setDrawerOpen(false)}
             className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-white/10 md:hidden"
@@ -132,7 +133,7 @@ export default function Layout() {
           >
             ☰
           </button>
-          <span className="font-bold text-primary md:hidden">🪺 Nidula</span>
+          <Logo size={24} className="font-bold text-primary md:hidden" />
           <ThemeToggle className="ml-auto text-muted hover:bg-surface-2" />
         </header>
         <div className="min-w-0 flex-1 px-4 pb-[calc(env(safe-area-inset-bottom)_+_1.5rem)] md:px-10 md:pb-10">

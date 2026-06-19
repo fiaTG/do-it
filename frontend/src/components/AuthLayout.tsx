@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
+import Logo from './Logo'
 
 /**
  * Split-Screen-Rahmen für Login/Registrierung: links ein Marken-Panel mit
@@ -21,7 +22,7 @@ export default function AuthLayout({
         <div className="absolute inset-0 bg-gradient-to-t from-forest via-forest/55 to-forest/10" />
         <div className="absolute inset-0 flex flex-col justify-between p-12 text-white">
           <Link to="/" className="text-xl font-bold tracking-wide">
-            🪺 Nidula
+            <Logo size={32} />
           </Link>
           <div>
             <h2 className="text-3xl font-bold leading-tight">
