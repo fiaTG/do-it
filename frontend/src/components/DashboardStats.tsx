@@ -42,7 +42,7 @@ const METRICS: Metric[] = [
     icon: APP_ICONS.gallery,
     label: 'Bilder',
     to: '/gallery',
-    load: async () => (await imagesApi.list()).length,
+    load: async () => (await imagesApi.list()).total,
   },
 ]
 

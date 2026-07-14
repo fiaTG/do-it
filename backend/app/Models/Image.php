@@ -13,7 +13,17 @@ class Image extends Model
         'title',
         'path',
         'thumbnail_path',
+        'taken_at',
+        'width',
+        'height',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'taken_at' => 'datetime',
+        ];
+    }
 
     public function family(): BelongsTo
     {

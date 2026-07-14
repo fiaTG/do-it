@@ -88,6 +88,6 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('events', EventController::class)
             ->only(['index', 'store', 'update', 'destroy']);
         Route::apiResource('images', ImageController::class)
-            ->only(['index', 'store', 'destroy']);
+            ->only(['index', 'show', 'store', 'destroy']);
     });
 });

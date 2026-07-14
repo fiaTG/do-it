@@ -18,13 +18,34 @@ class ImageController extends Controller
 {
     use InteractsWithFamily;
 
+    /**
+     * Chronologisch nach Aufnahmedatum (Fallback: Upload-Datum), seitenweise
+     * für Infinite Scroll. `meta.total`/`meta.limit` treiben die
+     * Freemium-Quota-Anzeige im Frontend (ADR-0013).
+     */
     public function index(Request $request): AnonymousResourceCollection
     {
         $familyId = $this->familyId($request);
+        $family = $request->user()->family;
 
-        return ImageResource::collection(
-            Image::where('family_id', $familyId)->latest()->get()
-        );
+        $images = Image::where('family_id', $familyId)
+            ->orderByRaw('COALESCE(taken_at, created_at) DESC')
+            ->paginate(60);
+
+        return ImageResource::collection($images)->additional([
+            'meta' => [
+                'limit' => $family !== null && ! $family->isPremium()
+                    ? (int) config('features.free_limits.gallery_images')
+                    : null,
+            ],
+        ]);
+    }
+
+    public function show(Request $request, Image $image): ImageResource
+    {
+        $this->authorize('view', $image);
+
+        return new ImageResource($image);
     }
 
     /**
@@ -52,13 +73,16 @@ class ImageController extends Controller
             );
         }
 
-        $path = ImageUpload::storeStripped($request->file('image'), "gallery/{$familyId}");
+        $meta = ImageUpload::storeStripped($request->file('image'), "gallery/{$familyId}");
 
         $image = Image::create([
             'family_id' => $familyId,
             'user_id' => $request->user()->id,
             'title' => $data['title'] ?? null,
-            'path' => $path,
+            'path' => $meta['path'],
+            'width' => $meta['width'],
+            'height' => $meta['height'],
+            'taken_at' => $meta['taken_at'],
         ]);
 
         // Thumbnail entkoppelt erzeugen (lokal sync, in Produktion async via Worker).

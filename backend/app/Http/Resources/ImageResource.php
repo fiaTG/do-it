@@ -36,6 +36,9 @@ class ImageResource extends JsonResource
             ])->all(),
             'created_by' => $this->user_id,
             'created_at' => $this->created_at?->toIso8601String(),
+            'taken_at' => $this->taken_at?->toIso8601String(),
+            'width' => $this->width,
+            'height' => $this->height,
         ];
     }
 }

@@ -4,6 +4,7 @@ import type {
   EventItem,
   Family,
   ImageItem,
+  ImagePage,
   Invite,
   Shop,
   ShoppingItem,
@@ -234,8 +235,23 @@ export const eventsApi = {
 }
 
 export const imagesApi = {
-  async list(): Promise<ImageItem[]> {
-    const { data } = await api.get<{ data: ImageItem[] }>('/images')
+  /** Seitenweise (60/Seite), sortiert nach Aufnahme- (Fallback: Upload-)Datum. */
+  async list(page = 1): Promise<ImagePage> {
+    const { data } = await api.get<{
+      data: ImageItem[]
+      meta: { current_page: number; last_page: number; total: number; limit: number | null }
+    }>('/images', { params: { page } })
+    return {
+      images: data.data,
+      currentPage: data.meta.current_page,
+      lastPage: data.meta.last_page,
+      total: data.meta.total,
+      limit: data.meta.limit,
+    }
+  },
+  /** Frisches Bild mit neu signierten URLs holen (z. B. nach Ablauf der 60-Minuten-Signatur). */
+  async show(id: number): Promise<ImageItem> {
+    const { data } = await api.get<{ data: ImageItem }>(`/images/${id}`)
     return data.data
   },
   async upload(file: File, title: string): Promise<ImageItem> {

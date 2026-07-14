@@ -86,6 +86,19 @@ export interface ImageItem {
   srcset: ImageVariant[]
   created_by: number | null
   created_at: string
+  taken_at: string | null
+  width: number | null
+  height: number | null
+}
+
+export interface ImagePage {
+  images: ImageItem[]
+  currentPage: number
+  lastPage: number
+  /** Free-Tier-Limit der Galerie, `null` = Premium/unbegrenzt. */
+  limit: number | null
+  /** Gesamtzahl aller Bilder der Familie (nicht nur diese Seite). */
+  total: number
 }
 
 export interface Invite {

@@ -16,6 +16,8 @@ it('uploads an image and creates a thumbnail', function () {
 
     $response->assertCreated()->assertJsonPath('data.title', 'Urlaub');
     expect($response->json('data.thumbnail_url'))->not->toBeNull();
+    expect($response->json('data.width'))->toBe(1200);
+    expect($response->json('data.height'))->toBe(800);
 
     $image = Image::first();
     expect($image->thumbnail_path)->not->toBeNull();
@@ -72,4 +74,80 @@ it('strips embedded metadata (EXIF/GPS) from uploaded images', function () {
     expect(isset($after['IFD0']))->toBeFalse();
     expect(isset($after['EXIF']))->toBeFalse();
     expect(isset($after['GPS']))->toBeFalse();
+});
+
+it('captures the EXIF DateTimeOriginal as taken_at before stripping it', function () {
+    Storage::fake('public');
+    Sanctum::actingAs(familyMember());
+
+    $fixture = base_path('tests/fixtures/photo-with-exif.jpg');
+
+    $this->post('/api/v1/images', [
+        'image' => new UploadedFile($fixture, 'photo.jpg', 'image/jpeg', null, true),
+    ], ['Accept' => 'application/json'])->assertCreated();
+
+    // Aufnahmedatum laut EXIF-Fixture: 2025:03:25 20:11:56.
+    expect(Image::first()->taken_at->format('Y-m-d H:i:s'))->toBe('2025-03-25 20:11:56');
+});
+
+it('falls back to no taken_at for images without EXIF', function () {
+    Storage::fake('public');
+    Sanctum::actingAs(familyMember());
+
+    $this->post('/api/v1/images', [
+        'image' => UploadedFile::fake()->image('screenshot.png', 800, 600),
+    ], ['Accept' => 'application/json'])->assertCreated();
+
+    expect(Image::first()->taken_at)->toBeNull();
+});
+
+it('paginates the gallery and reports the free-tier quota', function () {
+    Storage::fake('public');
+    $user = familyMember();
+    Sanctum::actingAs($user);
+
+    foreach (range(1, 65) as $i) {
+        Image::create([
+            'family_id' => $user->family_id,
+            'user_id' => $user->id,
+            'path' => "gallery/{$user->family_id}/fake-{$i}.jpg",
+        ]);
+    }
+
+    $response = $this->getJson('/api/v1/images')->assertOk();
+
+    expect($response->json('data'))->toHaveCount(60);
+    expect($response->json('meta.total'))->toBe(65);
+    expect($response->json('meta.last_page'))->toBe(2);
+    expect($response->json('meta.limit'))->toBe(30); // Free-Familie, kein Abo
+
+    $secondPage = $this->getJson('/api/v1/images?page=2')->assertOk();
+    expect($secondPage->json('data'))->toHaveCount(5);
+});
+
+it('returns a single image with fresh signed URLs for family members', function () {
+    Storage::fake('public');
+    $user = familyMember();
+    Sanctum::actingAs($user);
+
+    $this->post('/api/v1/images', [
+        'image' => UploadedFile::fake()->image('a.jpg', 1200, 800),
+    ], ['Accept' => 'application/json']);
+    $image = Image::first();
+
+    $this->getJson("/api/v1/images/{$image->id}")
+        ->assertOk()
+        ->assertJsonPath('data.id', $image->id);
+});
+
+it('does not let a user fetch an image from another family', function () {
+    Storage::fake('public');
+    Sanctum::actingAs(familyMember());
+    $this->post('/api/v1/images', [
+        'image' => UploadedFile::fake()->image('a.jpg', 1200, 800),
+    ], ['Accept' => 'application/json']);
+    $image = Image::first();
+
+    Sanctum::actingAs(familyMember());
+    $this->getJson("/api/v1/images/{$image->id}")->assertForbidden();
 });

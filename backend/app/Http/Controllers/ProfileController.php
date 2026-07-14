@@ -43,7 +43,7 @@ class ProfileController extends Controller
             Storage::disk(config('filesystems.media'))->delete($user->avatar_path);
         }
 
-        $path = ImageUpload::storeStripped($request->file('avatar'), "avatars/{$user->id}");
+        $path = ImageUpload::storeStripped($request->file('avatar'), "avatars/{$user->id}")['path'];
         $user->update(['avatar_path' => $path]);
 
         return new UserResource($user->fresh()->load('family.subscription'));

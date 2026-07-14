@@ -8,7 +8,10 @@ export default function GalleryWidget({ onRemove }: { onRemove?: () => void }) {
   const [images, setImages] = useState<ImageItem[]>([])
 
   useEffect(() => {
-    imagesApi.list().then(setImages).catch(() => {})
+    imagesApi
+      .list()
+      .then(({ images }) => setImages(images))
+      .catch(() => {})
   }, [])
 
   const preview = images.slice(0, 6)
@@ -24,6 +27,7 @@ export default function GalleryWidget({ onRemove }: { onRemove?: () => void }) {
               key={img.id}
               src={img.thumbnail_url}
               alt={img.title ?? ''}
+              loading="lazy"
               className="aspect-square w-full rounded-lg object-cover"
             />
           ))}
