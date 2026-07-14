@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# Lokale Umgebungskonfiguration (VITE_API_URL je Rechner; .env.capacitor
+# bleibt als eingecheckter Standard, *.local deckt die Geräte-Overrides ab)
+.env
+
 # Native Hüllen (Capacitor): vollständig aus capacitor.config.ts + `npx cap add`
 # + `npx cap sync` regenerierbar; enthalten u. a. eine Kopie des dist-Builds.
 # Sobald native Anpassungen (Icons, Permissions) dazukommen, hier entfernen.
