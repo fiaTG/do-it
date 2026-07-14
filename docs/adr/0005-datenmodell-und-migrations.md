@@ -46,11 +46,13 @@ Konkrete Änderungen gegenüber heute:
 ## Konsequenzen
 
 **Positiv**
+
 - Schema wird versioniert, reproduzierbar (`migrate --seed`) und review-bar.
 - Beziehungen explizit → weniger handgeschriebene JOINs, weniger Bugs.
 - Lange schwelende Schemafehler (S7, B1, B3) werden strukturell gelöst.
 
 **Negativ / Kosten**
+
 - Einmaliger Aufwand, Schema + Datenimport sauber zu übersetzen.
 - Umbenennungen erfordern ein sorgfältiges Migrationsskript für Altdaten.
 

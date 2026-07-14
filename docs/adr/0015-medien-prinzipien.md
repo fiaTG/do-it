@@ -50,11 +50,13 @@ für die Entwicklung, aber für **private Familienfotos** ungeeignet.
 ## Konsequenzen
 
 **Positiv**
+
 - Echter Schutz der Privatsphäre (kein Standort-Leak, keine offenen Foto-URLs).
 - Skalierbar und performant (CDN, responsive Größen, stateless).
 - Originale bleiben unangetastet (Datensicherheit, Wiederherstellbarkeit).
 
 **Negativ / Kosten**
+
 - Mehr Implementierung: EXIF-Strip-Bibliothek, signierte URLs / Proxy, mehrere
   Größen pro Bild (mehr Storage, mehr Worker-Last).
 - Private URLs sind nicht ewig cachebar (Signatur-Ablauf) → CDN-Strategie nötig.

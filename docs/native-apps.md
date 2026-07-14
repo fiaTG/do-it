@@ -29,7 +29,7 @@ einen **eigenen Vite-Mode** `capacitor` mit `frontend/.env.capacitor`, ohne den
 Web-Build (`.env`, `localhost`) zu verändern:
 
 | Ziel | `VITE_API_URL` (in `.env.capacitor` bzw. `.env.capacitor.local`) |
-|------|----------------|
+| ------ | ---------------- |
 | Android-Emulator → Host | `http://10.0.2.2:8080/api/v1` (Standard) |
 | Echtes Gerät im LAN | `http://<LAN-IP-des-PCs>:8080/api/v1` |
 | Produktion | `https://api.<domain>/api/v1` |
@@ -111,6 +111,7 @@ verteilt. Dieses Runbook wurde am 2026-06-17 einmal komplett durchgespielt – d
 markierten ⚠️-Stellen sind die Punkte, die wirklich Zeit gekostet haben.
 
 ### 0. Dev-Umgebung auf dem Mac (von Null)
+
 1. **Xcode**: ⚠️ Der App Store bietet nur das **neueste** Xcode an, das ein
    neueres macOS verlangt (z. B. macOS 26 für Xcode 26). Auf **Sequoia 15.x** ein
    passendes **Xcode 16.x** über <https://developer.apple.com/download/all/>
@@ -119,10 +120,12 @@ markierten ⚠️-Stellen sind die Punkte, die wirklich Zeit gekostet haben.
    installieren lassen.
 2. ⚠️ **Xcode mit den CLI-Tools verknüpfen** (sonst `xcrun simctl` =
    „unable to find utility / invalid developer directory"):
+
    ```bash
    sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
    sudo xcodebuild -license accept
    ```
+
 3. **Homebrew** installieren (<https://brew.sh>), die „Next steps"-Zeilen des
    Installers ausführen (Apple Silicon: `eval "$(/opt/homebrew/bin/brew shellenv)"`).
 4. `brew install node cocoapods git`
@@ -131,6 +134,7 @@ markierten ⚠️-Stellen sind die Punkte, die wirklich Zeit gekostet haben.
 6. Eine **Apple-ID** (kostenlos reicht; App läuft dann 7 Tage, danach neu signieren).
 
 ### 1. Code holen
+
 ```bash
 cd ~
 git clone https://github.com/fiaTG/do-it.git
@@ -139,10 +143,12 @@ git checkout modernize/phase-0-foundation
 ```
 
 ### 2. Backend starten
+
 ⚠️ **`vendor/` fehlt im frischen Klon** (gitignored). Sail baut sein Image aus
 `vendor/laravel/sail/runtimes/8.5/Dockerfile` – ohne `vendor/` schlägt
 `docker compose up` fehl („unable to prepare context … vendor/…"). Darum zuerst
 per Composer-Container `vendor/` erzeugen (kein lokales PHP nötig):
+
 ```bash
 cd ~/do-it/backend
 cp .env.example .env
@@ -151,13 +157,16 @@ docker compose up -d --build
 docker compose exec laravel.test php artisan key:generate
 docker compose exec laravel.test php artisan migrate --seed
 ```
+
 Check: `curl http://localhost:8080/api/v1/health` → `{"status":"ok",...}`.
 ⚠️ Docker Desktop muss **laufen** – „unable to get image / docker.sock no such
 file" heißt: Docker ist aus/nicht bereit.
 
 ### 3. (Optional) Web im Browser testen
+
 ⚠️ Auch `frontend/.env` ist gitignored. Ohne sie ist `VITE_API_URL` leer → die
 Web-Seite bleibt **weiß**. Darum:
+
 ```bash
 cd ~/do-it/frontend
 npm install
@@ -166,7 +175,9 @@ npm run dev                 # http://localhost:5173
 ```
 
 ### 4. API-URL für die native App setzen
+
 Native Builds nutzen Vite-Mode `capacitor` (`.env.capacitor` + `.env.capacitor.local`).
+
 - **Simulator** erreicht den Mac unter `localhost`.
 - **Echtes iPhone** braucht die **LAN-IP des Macs** (gleiches WLAN). IP:
   `ipconfig getifaddr en0`.
@@ -179,37 +190,46 @@ printf 'VITE_API_URL=http://localhost:8080/api/v1\n' > .env.capacitor.local
 # ODER echtes iPhone (IP einsetzen):
 printf 'VITE_API_URL=http://192.168.0.246:8080/api/v1\n' > .env.capacitor.local
 ```
+
 ⚠️⚠️ **Die Variable MUSS exakt `VITE_API_URL` heißen (alles GROSS).** Vite liest
 nur `VITE_`-Präfixe; ein Tippfehler wie `Vite_API_URL` wird **ignoriert** → es
 greift die `.env.capacitor`-Standard-IP (`10.0.2.2`) → Login hängt ewig.
 Verifizieren, welche IP wirklich im Build steckt:
+
 ```bash
 npm run build:native
 grep -ro "10.0.2.2\|192.168.0.246\|localhost" dist/assets | sort -u
 ```
 
 ### 5. iOS-Plattform anlegen + ATS
+
 ```bash
 cd ~/do-it/frontend
 npm run build:native
 npx cap add ios               # erzeugt frontend/ios/ (+ pod install)
 npx capacitor-assets generate --ios
 ```
+
 ⚠️ **Klartext-HTTP erlauben** (nur Dev) – iOS' App Transport Security blockt
 sonst http. Per Terminal (sicher, ohne XML-Handarbeit):
+
 ```bash
 /usr/libexec/PlistBuddy -c "Add :NSAppTransportSecurity dict" ios/App/App/Info.plist
 /usr/libexec/PlistBuddy -c "Add :NSAppTransportSecurity:NSAllowsArbitraryLoads bool true" ios/App/App/Info.plist
 ```
+
 (Die Origin `capacitor://localhost` ist in `config/cors.php` bereits erlaubt.
 Der PWA-Service-Worker ist im capacitor-Build deaktiviert – sonst minutenlang
 schwarzer Start, siehe `vite.config.ts`.)
 
 ### 6. Signieren & starten
+
 ```bash
 npm run ios:open          # = build:native + cap sync ios + cap open ios
 ```
+
 In Xcode:
+
 1. Target **App** → **Signing & Capabilities** → „Automatically manage signing" →
    **Apple-ID-Team** wählen (Bundle-ID `app.heimathafen` ggf. eindeutig machen,
    z. B. `app.heimathafen.fia`).
@@ -227,7 +247,7 @@ nochmal **▶ Run** – `cap:sync` allein aktualisiert das Gerät **nicht**.
 ### Troubleshooting (alles real aufgetreten)
 
 | Symptom | Ursache → Fix |
-|---|---|
+| --- | --- |
 | Web-Seite **weiß**, Titel da | `frontend/.env` fehlt → `cp .env.example .env`, dev neu starten |
 | App startet, **lange schwarz** | PWA-Service-Worker (in capacitor-Build via `vite.config.ts disable` aus); alte App vorm Re-Run löschen: `xcrun simctl uninstall booted app.heimathafen` |
 | Login **hängt** ewig (Rädchen) | App ruft falschen Host (`10.0.2.2`/`localhost`) → `.env.capacitor.local` mit korrektem `VITE_API_URL` (GROSS!) + `cap:sync` + Xcode Run; im Web-Inspector die Request-URL prüfen |
@@ -239,6 +259,7 @@ nochmal **▶ Run** – `cap:sync` allein aktualisiert das Gerät **nicht**.
 | Simulator „failed to launch / No such process" | transienter Xcode-Glitch → Product → Clean Build Folder, `xcrun simctl shutdown all`, Run; ggf. anderes Gerät |
 
 **Debugging-Werkzeuge:**
+
 - **iOS WebView:** Safari → Einstellungen → Erweitert → „Funktionen für
   Webentwickler" an; am iPhone Einstellungen → Safari → Erweitert → Web-Inspector
   an. Dann Safari-Menü **Entwickler → [iPhone] → WebView** → Konsole/Netzwerk.

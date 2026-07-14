@@ -36,12 +36,14 @@ Ziel-Pakete werden daraus abgeleitet:
 ## Konsequenzen
 
 **Positiv**
+
 - **Ein** Frontend für Web + Mobile + Desktop → minimaler Pflegeaufwand,
   konsistentes Verhalten überall.
 - Stufenweiser Ausbau: erst Web/PWA live, native Pakete bei Bedarf nachziehen –
   ohne Rewrite.
 
 **Negativ / Kosten**
+
 - Gewrappte Web-Apps fühlen sich nicht 100 % „nativ" an wie echtes
   Swift/Kotlin/React-Native; für dieses Tool akzeptabel.
 - Store-Veröffentlichung (Apple/Google) bringt eigene Hürden (Accounts,

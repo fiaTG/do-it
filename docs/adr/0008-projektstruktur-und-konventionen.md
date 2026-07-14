@@ -51,11 +51,13 @@ Konventionen.
 ## Konsequenzen
 
 **Positiv**
+
 - Backend und Frontend sind unabhängig entwickel- und testbar.
 - Duplizierung verschwindet (eine Sidebar/Flash-Komponente; ein API-Client).
 - Einheitlicher, automatisch geprüfter Stil (Pint + ESLint in CI, ADR-0010).
 
 **Negativ / Kosten**
+
 - Zwei Konventions-Sets, zwei Toolchains (Composer/Pint + npm/ESLint).
 - Mehr Dateien/Indirektion – dafür jede Datei klein und fokussiert.
 - Englische Bezeichner sind gewöhnungsbedürftig, wenn man bisher deutsch benannt

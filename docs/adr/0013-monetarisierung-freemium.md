@@ -47,11 +47,13 @@ bestehenden Mechanismus ein.
 ## Konsequenzen
 
 **Positiv**
+
 - Klares, vertrauensbildendes Markenversprechen als Verkaufsargument.
 - Weniger Datenschutz-/Jugendschutz-Risiko und -Aufwand.
 - Planbarer, wiederkehrender Umsatz (Abo) statt schwankender Werbeerlöse.
 
 **Negativ / Kosten**
+
 - **Höherer Fokus auf Produktqualität:** Da niemand durch Werbung „zum Zahlen
   genervt" wird, müssen die Premium-Features aus eigenem Antrieb begehrenswert
   sein.

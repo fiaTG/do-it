@@ -33,11 +33,13 @@ erhalten bleiben.
 ## Konsequenzen
 
 **Positiv**
+
 - Sauberster möglicher Ausgangszustand, keine Altlasten im neuen Code.
 - Klare „Definition of Done" pro Feature (Verhalten der alten App = Referenz).
 - Daten gehen nicht verloren.
 
 **Negativ / Kosten**
+
 - Während der Übergangszeit existieren zwei Codebasen parallel.
 - Jedes Feature muss bewusst nachgebaut werden – nichts wird „einfach übernommen".
 - Risiko, kleine undokumentierte Verhaltensweisen der Alt-App zu übersehen

@@ -50,11 +50,13 @@ muster bewusst auf, bis konkreter Bedarf besteht:
 ## Konsequenzen
 
 **Positiv**
+
 - Geringe Komplexität, schnelle Entwicklung, einfacher Betrieb – passend zur
   Projektgröße und zum Solo-/Kleinteam-Kontext.
 - Klare Module erlauben späteres, **gezieltes** Herauslösen (Strangler), falls nötig.
 
 **Negativ / Risiken**
+
 - Bei plötzlichem Hyperscale wäre eine Re-Architektur nötig – bewusst akzeptiert,
   weil verfrühte Verteilung teurer wäre als ein späterer, datengetriebener Umbau.
 

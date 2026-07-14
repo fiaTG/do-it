@@ -16,9 +16,11 @@ Was wird konkret beschlossen? Möglichst eindeutig und überprüfbar.
 ## Konsequenzen
 
 **Positiv**
+
 - …
 
 **Negativ / Kosten**
+
 - …
 
 ## Alternativen

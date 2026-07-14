@@ -44,6 +44,7 @@ Client-Quelle für alle Plattformen.
 ## Konsequenzen
 
 **Positiv**
+
 - Eine Backend-API bedient Web, Mobile und Desktop gleichermaßen → das App-Ziel
   ist ohne späteren Architekturbruch erreichbar.
 - Sicherheits-Grundlagen (CSRF, Hashing, Rate-Limit) kommen aus dem Framework →
@@ -52,6 +53,7 @@ Client-Quelle für alle Plattformen.
 - PHP-Wissen bleibt nutzbar; modernes JS/TS-Frontend als Lern-/Portfolio-Gewinn.
 
 **Negativ / Kosten**
+
 - **Zwei Projekte** (API + SPA) statt einem → mehr Setup, ein API-Vertrag muss
   gepflegt werden. Das ist der bewusst akzeptierte Preis für Multi-Plattform.
 - Zwei Ökosysteme (Composer + npm), zwei Lernkurven (Laravel + React).

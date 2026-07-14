@@ -33,11 +33,13 @@ Alle umgebungsabhängigen Werte und Secrets laufen über **`.env`** (Laravel-Sta
 ## Konsequenzen
 
 **Positiv**
+
 - Keine Secrets mehr im Code/Git; pro Umgebung eigene Konfiguration.
 - Reproduzierbare Builds durch eingecheckte `composer.lock`.
 - Portabel über Maschinen/Container hinweg.
 
 **Negativ / Kosten**
+
 - Jeder, der das Projekt aufsetzt, muss `.env` aus `.env.example` befüllen
   (in der README zu dokumentieren).
 

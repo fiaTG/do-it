@@ -28,6 +28,7 @@ Default `guardian`):
 (z. B. Termin für ein Kind anlegen), Kinder nur sich selbst.
 
 **Durchsetzung serverseitig** (Frontend spiegelt nur, Sicherheit liegt im Backend):
+
 - `EventPolicy::canManage` – Verwalter alle, Kind nur `owner_id == user`.
 - `EventController` – beim Anlegen Owner für Kinder auf sich erzwungen, Owner-ID
   per `Rule::exists(... family_id)` validiert; Kinder dürfen Owner nicht umhängen.
@@ -39,10 +40,12 @@ Default `guardian`):
 ## Konsequenzen
 
 **Positiv**
+
 - Kinder können fremde Familientermine nicht mehr verändern; Eltern behalten die
   Kontrolle. Klares, einfaches, erweiterbares Modell.
 
 **Negativ / Kosten**
+
 - Grobe Granularität (alles vs. nur eigenes). Rollen-UI nötig (Familien-Seite).
 - Default `guardian`: neu eingeladene Mitglieder sind zunächst Verwalter, bis ein
   Verwalter sie zum Kind macht.

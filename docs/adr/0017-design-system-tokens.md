@@ -42,12 +42,14 @@ Ein **semantisches Design-Token-System** als einzige Quelle der Wahrheit:
 ## Konsequenzen
 
 **Positiv**
+
 - Konsistentes, hochwertiges Erscheinungsbild; ein zentraler Ort für Anpassungen.
 - **Dark Mode** und Re-Theming werden trivial (nur semantische Tokens tauschen).
 - Klare Markenidentität „Heimathafen"; gute Grundlage für Barrierefreiheit
   (Kontraste zentral steuerbar).
 
 **Negativ / Kosten**
+
 - Einmaliger Aufwand: Tokens definieren (`variables.css` bzw. `@theme`) und
   bestehende Komponenten von Ad-hoc-Klassen/Brand-Farben auf semantische Tokens
   umstellen.

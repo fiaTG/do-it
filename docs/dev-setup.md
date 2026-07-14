@@ -7,8 +7,8 @@ Das Projekt besteht ab jetzt aus zwei Teilen:
 
 | Ordner      | Inhalt                          | Läuft auf            |
 |-------------|----------------------------------|----------------------|
-| `backend/`  | Laravel-API (Docker/Sail, MySQL, Mailpit) | http://localhost:8080 |
-| `frontend/` | React-SPA (Vite + TypeScript)    | http://localhost:5173 |
+| `backend/`  | Laravel-API (Docker/Sail, MySQL, Mailpit) | <http://localhost:8080> |
+| `frontend/` | React-SPA (Vite + TypeScript)    | <http://localhost:5173> |
 
 Die Ports sind bewusst neben XAMPP gelegt (XAMPP belegt 80 und 3306), damit beides
 parallel laufen kann.
@@ -31,6 +31,7 @@ docker compose exec laravel.test php artisan migrate
 Health-Check: <http://localhost:8080/api/v1/health> → JSON `{"status":"ok",...}`
 
 Weitere Dienste:
+
 - **Mailpit** (abgefangene E-Mails): <http://localhost:8025>
 - **MySQL**: Host `127.0.0.1`, Port **3307**, DB `familyboard`, User `sail`, PW `password`
 - **MinIO** (S3-kompatibler Medienspeicher, ADR-0014): API `:9000`, Web-Konsole

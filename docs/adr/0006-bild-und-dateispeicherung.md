@@ -30,11 +30,13 @@ abgelegt, in der DB steht nur noch der **Pfad/Key**.
 ## Konsequenzen
 
 **Positiv**
+
 - Schlankere, schnellere DB; günstigere Backups.
 - Browser-Caching und spätere Optimierung (Thumbnails, CDN) möglich.
 - Sauberere Templates (kein Base64-Blob im HTML).
 
 **Negativ / Kosten**
+
 - Datei-Lebenszyklus muss verwaltet werden (Löschen verwaister Dateien).
 - In Containern muss der Storage-Pfad als Volume persistiert werden, sonst sind
   Uploads bei jedem Neustart weg.

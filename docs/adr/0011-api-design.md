@@ -31,11 +31,13 @@ Redirects zurück.
 ## Konsequenzen
 
 **Positiv**
+
 - Ein stabiler, dokumentierter Vertrag für alle Clients; native Apps brechen
   nicht bei Backend-Updates (dank Versionierung).
 - Einheitliche Fehler-/Datenformate vereinfachen das Frontend erheblich.
 
 **Negativ / Kosten**
+
 - Mehr Disziplin/Boilerplate (Resources, Requests, Doku) als bei „schnell mal
   JSON ausgeben".
 - API-Doku muss gepflegt werden.

@@ -49,11 +49,13 @@ das Re-Theming (z. B. Dark Mode über `[data-theme="dark"]`) bereits trivial mac
 ## Konsequenzen
 
 **Positiv**
+
 - Konsistente Identität auf Web/iOS/Android; geringe Pflege, keine Design-Divergenz.
 - Plattform-Anpassungen bleiben klein und gezielt.
 - **Billiger Rebrand** möglich (wichtig wegen des offenen Namens).
 
 **Negativ / Kosten**
+
 - Fühlt sich nicht zu 100 % „nativ" je OS an – bewusst akzeptiert.
 - Disziplin nötig, Plattform-Overrides wirklich minimal zu halten (sonst schleichend
   doch zwei Designs).
@@ -69,6 +71,7 @@ das Re-Theming (z. B. Dark Mode über `[data-theme="dark"]`) bereits trivial mac
 ## Umsetzung (2026-06-18, markenneutral)
 
 Die brand-unabhängigen Teile sind umgesetzt (`frontend/src/lib/native.ts`):
+
 - **`data-platform="ios|android|web"`** am `<html>` (in `main.tsx` vor dem ersten
   Paint gesetzt) – Mechanismus für plattform-bewusste Token-Overrides steht bereit,
   wird aber bewusst noch nicht für abweichende Optik genutzt.

@@ -35,12 +35,14 @@ neu gebaut werden.
 ## Konsequenzen
 
 **Positiv**
+
 - Reproduzierbarer Build, Cache-Busting, Minifizierung ohne Handarbeit.
 - Kein generiertes CSS mehr im Git → keine Merge-Konflikte.
 - Mit Tailwind konsistentes, schnell iterierbares Design; PWA ebnet den Weg zu
   den nativen Clients.
 
 **Negativ / Kosten**
+
 - Node/npm als Build-Abhängigkeit (im Container abgedeckt).
 - Tailwind hat eine eigene Lernkurve; das bestehende Design muss neu umgesetzt
   (nicht 1:1 portiert) werden.

@@ -42,17 +42,17 @@ Sie sind die Checkliste, was beim Neuaufbau gelöst sein muss.
 
 ### 2.1 Sicherheit (Login, Registrierung & allgemein)
 
-| ID  | Befund | Ort | Schwere |
-|-----|--------|-----|---------|
-| S1  | Echte Mailtrap-SMTP-Zugangsdaten hartkodiert und im Git eingecheckt | `private/dashboard/dashboard.php:135-136` | hoch |
-| S2  | **Kein CSRF-Schutz** auf irgendeinem Formular | überall | hoch |
-| S3  | Kein `session_regenerate_id()` nach Login → **Session-Fixation** | `private/auth/login.php` | hoch |
-| S4  | Kein Brute-Force-Schutz / Rate-Limiting am Login | `private/auth/login.php` | hoch |
-| S5  | `display_errors=1` + `E_ALL` → Information Disclosure | `private/auth/register.php:2-4` | mittel |
-| S6  | Passwortänderung prüft **keine** Passwort-Stärke (Registrierung schon) | `private/dashboard/setup.php` | mittel |
-| S7  | `invites.email` UNIQUE → E-Mail systemweit nur einmal einladbar; Tokens ohne Ablauf | DB-Schema / `dashboard.php` | mittel |
-| S8  | Sicherheit hängt komplett an Apache-`.htaccess` (deny-all + Whitelist); greift unter nginx/Container nicht | `private/.htaccess` | mittel |
-| S9  | Passwörter werden vor dem Hashen `trim()`t | `login.php:7`, `register.php:21` | niedrig |
+| ID | Befund | Ort | Schwere |
+| ----- | -------- | ----- | --------- |
+| S1 | Echte Mailtrap-SMTP-Zugangsdaten hartkodiert und im Git eingecheckt | `private/dashboard/dashboard.php:135-136` | hoch |
+| S2 | **Kein CSRF-Schutz** auf irgendeinem Formular | überall | hoch |
+| S3 | Kein `session_regenerate_id()` nach Login → **Session-Fixation** | `private/auth/login.php` | hoch |
+| S4 | Kein Brute-Force-Schutz / Rate-Limiting am Login | `private/auth/login.php` | hoch |
+| S5 | `display_errors=1` + `E_ALL` → Information Disclosure | `private/auth/register.php:2-4` | mittel |
+| S6 | Passwortänderung prüft **keine** Passwort-Stärke (Registrierung schon) | `private/dashboard/setup.php` | mittel |
+| S7 | `invites.email` UNIQUE → E-Mail systemweit nur einmal einladbar; Tokens ohne Ablauf | DB-Schema / `dashboard.php` | mittel |
+| S8 | Sicherheit hängt komplett an Apache-`.htaccess` (deny-all + Whitelist); greift unter nginx/Container nicht | `private/.htaccess` | mittel |
+| S9 | Passwörter werden vor dem Hashen `trim()`t | `login.php:7`, `register.php:21` | niedrig |
 | S10 | E-Mail-Enumeration bei Registrierung | `register.php:57` | niedrig |
 | S11 | Session-Cookies ungehärtet; kein HTTPS-Zwang | global | niedrig |
 
@@ -81,39 +81,46 @@ Sie sind die Checkliste, was beim Neuaufbau gelöst sein muss.
 Jede Phase ist eigenständig abschließbar. Reihenfolge = empfohlene Bearbeitung.
 
 ### Phase 0 – Fundament & Container *(ADR-0001, 0002)*
+
 - Neues **Laravel-11-API-Projekt** + neues **React-SPA-Projekt** im Repo (Greenfield).
 - Docker via Laravel Sail (PHP, MySQL, Mailpit). Kein XAMPP mehr.
 - `.env`-Konfiguration, Secrets raus aus dem Code *(ADR-0007)*.
 - **Ergebnis:** `sail up` startet die API, das SPA lädt und erreicht die API.
 
 ### Phase 1 – Datenmodell *(ADR-0005, 0006)*
+
 - Schema als Eloquent-Migrations nachbauen, Befunde S7/B1 fixen.
 - Modelle + Beziehungen; Bilder von BLOB auf `Storage` migrieren (Import-Skript).
 - **Ergebnis:** Schema + Seed-Daten reproduzierbar per `migrate --seed`.
 
 ### Phase 2 – API-Fundament & Auth *(ADR-0011, 0004)*
+
 - API-Konventionen festlegen: `/api/v1`, API Resources, Fehlerformat, CORS.
 - **Sanctum-Auth**: Registrierung, Login, Logout, Passwort ändern, Einladung –
   mit CSRF (Web), Token (native), Rate-Limiting, Policies. Behebt S1–S11.
 - **Ergebnis:** sichere, dokumentierte Auth-API + erste geschützte Endpunkte.
 
 ### Phase 3 – Features: API + SPA *(ADR-0008)*
+
 - Pro App (Einkaufsliste, Kalender, ToDo, Galerie): API-Endpunkte **und**
   React-Views; geteiltes Layout mit *einer* Sidebar-Komponente (löst M1/M2).
 - Dashboard + App-/Widget-Auswahl (`userapps`) über die API.
 - **Ergebnis:** funktionsgleiche, aber sauber getrennte App.
 
 ### Phase 4 – Frontend-Politur & PWA *(ADR-0009, 0012)*
+
 - Tailwind-Design, **Landing Scene neu gestalten** (Bilder/Layout).
 - **PWA** aktivieren (installierbar auf Desktop & Mobile).
 - **Ergebnis:** modernes, responsives, installierbares Web-Frontend, live-fähig.
 
 ### Phase 5 – Qualität & Auslieferung *(ADR-0010)*
+
 - Pest- (Backend) + Vitest/Playwright- (Frontend) Tests; GitHub-Actions-CI.
 - README auf Docker umstellen; alte XAMPP-Anleitung archivieren.
 - Optional bei echtem Betrieb: HTTPS, Backups, echtes SMTP, Monitoring, DSGVO.
 
 ### Phase 6 – Native Pakete (optional, bei Bedarf) *(ADR-0012)*
+
 - **Capacitor** für iOS/Android, **Tauri** für Windows/macOS – dasselbe SPA gewrappt.
 - **Ergebnis:** Store-/Desktop-Apps aus einer Codebasis.
 
@@ -122,7 +129,7 @@ Jede Phase ist eigenständig abschließbar. Reihenfolge = empfohlene Bearbeitung
 ## 4. ADR-Index
 
 | ADR | Titel | Status |
-|-----|-------|--------|
+| ----- | ------- | -------- |
 | [0001](adr/0001-ziel-stack-laravel.md) | Ziel-Stack: Laravel-API + React-SPA | Akzeptiert |
 | [0002](adr/0002-containerisierung-docker-sail.md) | Containerisierung mit Docker (Laravel Sail) | Akzeptiert |
 | [0003](adr/0003-vorgehen-greenfield-rewrite.md) | Vorgehen: Greenfield-Neuaufbau mit DB-Übernahme | Akzeptiert |

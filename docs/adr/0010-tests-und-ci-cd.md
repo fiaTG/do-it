@@ -23,9 +23,9 @@ Aushängeschild; für einen späteren echten Betrieb sind sie Pflicht.
     Todo abhaken, Bild hochladen).
   - Autorisierungs-Tests: ein Nutzer kommt **nicht** an Ressourcen fremder
     Familien.
-- **CI über GitHub Actions:** bei jedem Push/PR laufen für das **Backend** `pint`
-  + Pest + `composer validate`, für das **Frontend** ESLint + Vitest + Build.
-  Merge nur bei grüner Pipeline.
+- **CI über GitHub Actions:** bei jedem Push/PR laufen für das **Backend**
+  `pint` + Pest + `composer validate`, für das **Frontend** ESLint + Vitest +
+  Build. Merge nur bei grüner Pipeline.
 - **Setup-Doku:** README auf Docker/Sail umstellen; alte XAMPP-Anleitung als
   historisch markieren/archivieren.
 - **Optional bei echtem Betrieb (Phase 5):** Deploy-Job, HTTPS, DB-Backups,
@@ -34,11 +34,13 @@ Aushängeschild; für einen späteren echten Betrieb sind sie Pflicht.
 ## Konsequenzen
 
 **Positiv**
+
 - Regressionen werden automatisch gefangen; Refactoring wird gefahrlos.
 - Grüne CI als sichtbares Qualitätssignal im Portfolio.
 - Die heutigen Sicherheitslücken bekommen Tests, die ihr Wiederauftreten verhindern.
 
 **Negativ / Kosten**
+
 - Tests schreiben kostet zusätzliche Zeit pro Feature.
 - CI-Konfiguration muss gepflegt werden.
 

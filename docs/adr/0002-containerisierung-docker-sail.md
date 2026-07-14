@@ -29,12 +29,14 @@ Die Entwicklungsumgebung wird über **Docker mit Laravel Sail** bereitgestellt.
 ## Konsequenzen
 
 **Positiv**
+
 - Reproduzierbare, identische Umgebung auf jeder Maschine („läuft bei mir" → läuft überall).
 - Saubere Trennung App/DB/Mail; einfaches Onboarding (ein Befehl).
 - Direkter Pfad Richtung echtem Deployment (gleiches Image-Prinzip).
 - Mailpit ersetzt die hartkodierten Mailtrap-Creds (S1) lokal komplett.
 
 **Negativ / Kosten**
+
 - Docker Desktop muss installiert sein; etwas Ressourcen-Overhead.
 - Sail ist auf Entwicklung ausgelegt – für echte Produktion braucht es später
   ein eigenes, schlankeres Dockerfile/Compose (in Phase 5, falls Betrieb kommt).

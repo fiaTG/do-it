@@ -49,6 +49,7 @@ Compute/Worker passen zum Docker-Ansatz aus [ADR-0002](0002-containerisierung-do
 ## Konsequenzen
 
 **Positiv**
+
 - **Unabhängige Skalierung:** Compute und Speicher wachsen getrennt; teure
   Server-Upgrades nur, wenn wirklich Rechenlast nötig ist.
 - **Keine „Disk-full"-Abstürze:** Medien liegen außerhalb des App-Servers.
@@ -57,6 +58,7 @@ Compute/Worker passen zum Docker-Ansatz aus [ADR-0002](0002-containerisierung-do
 - Dank Storage-Abstraktion (ADR-0006) geringer Migrationsaufwand vom Dev-Setup.
 
 **Negativ / Kosten**
+
 - **Erhöhter Entwicklungsaufwand:** Uploads müssen direkt an die S3-API gehen
   oder im Hintergrund dorthin verschoben werden (signierte URLs / Worker).
 - **Zusätzliche Komplexität:** Compute + S3 + optionale Redis-Warteschlange sind

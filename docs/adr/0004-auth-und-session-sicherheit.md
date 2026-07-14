@@ -46,11 +46,13 @@ Authentifizierung wird mit **Laravel Sanctum** umgesetzt.
 ## Konsequenzen
 
 **Positiv**
+
 - Ein Auth-Mechanismus deckt Web *und* native Clients ab.
 - Der Großteil der Sicherheitsbefunde ist mit gewarteten Framework-Mitteln gelöst.
 - Einheitliche Passwort-Policy an genau einer Stelle; robuste Einladungen.
 
 **Negativ / Kosten**
+
 - Zwei Auth-Pfade (Cookie für Web, Token für native) erhöhen die Komplexität
   leicht und müssen beide getestet werden.
 - Sanctum-SPA-Auth verlangt korrektes CORS-/Domain-/Cookie-Setup (Stolperfalle).
