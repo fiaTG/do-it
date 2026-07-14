@@ -42,7 +42,9 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          # Muss zur Sail-Runtime passen (PHP 8.5) – die composer.lock enthält
+          # Pakete mit php >= 8.4, mit 8.3 scheitert composer install.
+          php-version: '8.5'
           extensions: pdo_mysql, mbstring, dom, gd, zip, bcmath, fileinfo
           coverage: none
 
