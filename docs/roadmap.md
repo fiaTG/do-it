@@ -16,7 +16,7 @@ live geht und perspektivisch als App auf **Mobile (iOS/Android)** und **Desktop
 | Aspekt            | Heute                                   | Ziel                                            |
 |-------------------|-----------------------------------------|-------------------------------------------------|
 | Architektur       | alles in einer PHP-Seite                 | **Backend-API + getrenntes Frontend-SPA**       |
-| Backend           | Vanilla PHP, rohes PDO                    | **PHP 8.3 + Laravel 11** als JSON-API           |
+| Backend           | Vanilla PHP, rohes PDO                    | **PHP 8.5 + Laravel 12** als JSON-API           |
 | Frontend          | HTML in `echo`, Inline-CSS/JS           | **React + TypeScript** SPA (Vite, Tailwind)     |
 | Clients           | nur Browser                              | **Web/PWA + Mobile (Capacitor) + Desktop (Tauri/PWA)** |
 | Laufzeit          | XAMPP (Apache lokal)                     | **Docker** (Laravel Sail)                       |
@@ -82,7 +82,7 @@ Jede Phase ist eigenständig abschließbar. Reihenfolge = empfohlene Bearbeitung
 
 ### Phase 0 – Fundament & Container *(ADR-0001, 0002)*
 
-- Neues **Laravel-11-API-Projekt** + neues **React-SPA-Projekt** im Repo (Greenfield).
+- Neues **Laravel-API-Projekt** (inzwischen Laravel 12) + neues **React-SPA-Projekt** im Repo (Greenfield).
 - Docker via Laravel Sail (PHP, MySQL, Mailpit). Kein XAMPP mehr.
 - `.env`-Konfiguration, Secrets raus aus dem Code *(ADR-0007)*.
 - **Ergebnis:** `sail up` startet die API, das SPA lädt und erreicht die API.

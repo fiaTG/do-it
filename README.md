@@ -16,8 +16,8 @@ Board". Hintergrund: [`docs/adr/0018-cross-platform-design-und-brand.md`](docs/a
 
 | Teil | Stack | Läuft auf |
 |------|-------|-----------|
-| `backend/` | PHP 8 · **Laravel 11** (JSON-API, Sanctum) · MySQL | <http://localhost:8080> |
-| `frontend/` | **React + TypeScript** (Vite, Tailwind, PWA) | <http://localhost:5173> |
+| `backend/` | PHP 8.5 · **Laravel 12** (JSON-API, Sanctum) · MySQL | <http://localhost:8080> |
+| `frontend/` | **React 19 + TypeScript** (Vite, Tailwind, PWA, Capacitor) | <http://localhost:5173> |
 
 Auth läuft über Sanctum (Cookie fürs Web-SPA, Token für spätere native Apps).
 Die Ports liegen bewusst neben einer evtl. laufenden XAMPP-Installation.

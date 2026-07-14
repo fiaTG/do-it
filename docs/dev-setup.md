@@ -1,9 +1,9 @@
-# Entwicklungs-Setup (neuer Stack)
+# Entwicklungs-Setup
 
-> Gilt für den modernisierten Stack (Phase 0+). Die **alte** XAMPP-App bleibt
-> davon unberührt und läuft weiter wie bisher. Hintergrund: [roadmap.md](roadmap.md).
+> Hintergrund zum Neuaufbau: [roadmap.md](roadmap.md). Die alte XAMPP-App wurde
+> inzwischen vollständig aus dem Repo entfernt.
 
-Das Projekt besteht ab jetzt aus zwei Teilen:
+Das Projekt besteht aus zwei Teilen:
 
 | Ordner      | Inhalt                          | Läuft auf            |
 |-------------|----------------------------------|----------------------|
@@ -65,3 +65,23 @@ Startseite einen Konnektivitäts-Check gegen `/health` – grün = API erreichba
 cd frontend
 npm run build      # erzeugt dist/
 ```
+
+## Stolpersteine (real aufgetreten)
+
+- **Neue Laravel-Routen greifen erst nach Container-Neustart:** Der laufende
+  Serverprozess hält den Routen-Stand im Speicher. `php artisan route:list`
+  zeigt die neue Route, der Server antwortet trotzdem 405 – bis
+  `docker compose restart laravel.test` lief.
+- **Geänderte Queue-Jobs brauchen einen Worker-Neustart:** Der `worker`-Container
+  führt sonst weiter den alten Job-Code aus (Job „läuft durch", neue Felder
+  fehlen aber). Lösung: `docker compose restart worker`.
+- In beiden Fällen sind die **Pest-Tests nicht betroffen** (eigener Prozess) –
+  grüne Tests bei gleichzeitig falschem Laufzeitverhalten sind das typische
+  Erkennungszeichen.
+- **Scheduler:** Der Galerie-Papierkorb (ADR-0020) räumt abgelaufene Bilder über
+  `model:prune` auf (täglich via `routes/console.php` eingeplant). Lokal läuft
+  kein Scheduler – bei Bedarf manuell `docker compose exec laravel.test php
+  artisan model:prune`. In Produktion braucht es cron (`schedule:run`) oder
+  einen `schedule:work`-Prozess.
+- **Vitest ohne `.env`:** Tests laden `frontend/.env.test` (eingecheckt) –
+  eine lokale `.env` ist dafür nicht nötig.
