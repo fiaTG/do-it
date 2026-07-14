@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Image;
+use App\Support\ImageVariants;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\Sanctum;
@@ -138,6 +139,83 @@ it('returns a single image with fresh signed URLs for family members', function 
     $this->getJson("/api/v1/images/{$image->id}")
         ->assertOk()
         ->assertJsonPath('data.id', $image->id);
+});
+
+it('batch-deletes multiple own images including all files', function () {
+    Storage::fake('public');
+    $user = familyMember();
+    Sanctum::actingAs($user);
+
+    foreach (['a.jpg', 'b.jpg'] as $name) {
+        $this->post('/api/v1/images', [
+            'image' => UploadedFile::fake()->image($name, 1200, 800),
+        ], ['Accept' => 'application/json']);
+    }
+    $images = Image::all();
+
+    $this->postJson('/api/v1/images/batch-delete', ['ids' => $images->pluck('id')->all()])
+        ->assertNoContent();
+
+    expect(Image::count())->toBe(0);
+    foreach ($images as $image) {
+        Storage::disk('public')->assertMissing($image->path);
+        Storage::disk('public')->assertMissing($image->thumbnail_path);
+        foreach (ImageVariants::WIDTHS as $width) {
+            Storage::disk('public')->assertMissing(ImageVariants::path($image->path, $width));
+        }
+    }
+});
+
+it('refuses a batch-delete containing a foreign family image and deletes nothing', function () {
+    Storage::fake('public');
+    $user = familyMember();
+    Sanctum::actingAs($user);
+    $this->post('/api/v1/images', [
+        'image' => UploadedFile::fake()->image('own.jpg', 1200, 800),
+    ], ['Accept' => 'application/json']);
+    $own = Image::first();
+
+    Sanctum::actingAs(familyMember());
+    $this->post('/api/v1/images', [
+        'image' => UploadedFile::fake()->image('foreign.jpg', 1200, 800),
+    ], ['Accept' => 'application/json']);
+    $foreign = Image::where('id', '!=', $own->id)->first();
+
+    Sanctum::actingAs($user);
+    $this->postJson('/api/v1/images/batch-delete', ['ids' => [$own->id, $foreign->id]])
+        ->assertForbidden();
+
+    // Kein partielles Löschen: beide Rows und alle Dateien bleiben erhalten.
+    expect(Image::count())->toBe(2);
+    Storage::disk('public')->assertExists($own->path);
+    Storage::disk('public')->assertExists($own->thumbnail_path);
+    Storage::disk('public')->assertExists($foreign->path);
+    Storage::disk('public')->assertExists($foreign->thumbnail_path);
+});
+
+it('rejects a batch-delete with an empty ids array', function () {
+    Storage::fake('public');
+    Sanctum::actingAs(familyMember());
+
+    $this->postJson('/api/v1/images/batch-delete', ['ids' => []])
+        ->assertStatus(422)->assertJsonValidationErrorFor('ids');
+});
+
+it('ignores non-existent ids in a batch-delete', function () {
+    Storage::fake('public');
+    $user = familyMember();
+    Sanctum::actingAs($user);
+    $this->post('/api/v1/images', [
+        'image' => UploadedFile::fake()->image('a.jpg', 1200, 800),
+    ], ['Accept' => 'application/json']);
+    $image = Image::first();
+
+    $this->postJson('/api/v1/images/batch-delete', ['ids' => [$image->id, 999999]])
+        ->assertNoContent();
+
+    expect(Image::count())->toBe(0);
+    Storage::disk('public')->assertMissing($image->path);
+    Storage::disk('public')->assertMissing($image->thumbnail_path);
 });
 
 it('does not let a user fetch an image from another family', function () {

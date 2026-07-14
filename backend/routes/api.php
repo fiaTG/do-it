@@ -87,6 +87,7 @@ Route::prefix('v1')->group(function () {
             ->only(['index', 'store', 'update', 'destroy']);
         Route::apiResource('events', EventController::class)
             ->only(['index', 'store', 'update', 'destroy']);
+        Route::post('images/batch-delete', [ImageController::class, 'batchDestroy']);
         Route::apiResource('images', ImageController::class)
             ->only(['index', 'show', 'store', 'destroy']);
     });

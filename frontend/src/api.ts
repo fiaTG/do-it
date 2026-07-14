@@ -254,15 +254,27 @@ export const imagesApi = {
     const { data } = await api.get<{ data: ImageItem }>(`/images/${id}`)
     return data.data
   },
-  async upload(file: File, title: string): Promise<ImageItem> {
+  async upload(file: File, title: string, onProgress?: (percent: number) => void): Promise<ImageItem> {
     const form = new FormData()
     form.append('image', file)
     if (title) form.append('title', title)
-    const { data } = await api.post<{ data: ImageItem }>('/images', form)
+    const { data } = await api.post<{ data: ImageItem }>('/images', form, {
+      onUploadProgress: (event) => {
+        // event.total kann fehlen (z. B. chunked Transfer) – dann kein Prozentwert.
+        if (onProgress && event.total) onProgress(Math.round((event.loaded / event.total) * 100))
+      },
+    })
     return data.data
   },
   async remove(id: number): Promise<void> {
     await api.delete(`/images/${id}`)
+  },
+  async batchRemove(ids: number[]): Promise<void> {
+    // Das Backend nimmt max. 100 IDs pro Request (Validierung) – größere
+    // Auswahlen daher in Blöcken löschen.
+    for (let i = 0; i < ids.length; i += 100) {
+      await api.post('/images/batch-delete', { ids: ids.slice(i, i + 100) })
+    }
   },
 }
 

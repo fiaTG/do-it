@@ -95,15 +95,44 @@ class ImageController extends Controller
     {
         $this->authorize('delete', $image);
 
-        // Original, Thumbnail und alle responsiven Varianten aufräumen.
+        Storage::disk(config('filesystems.media'))->delete($this->filePaths($image));
+        $image->delete();
+
+        return response()->noContent();
+    }
+
+    public function batchDestroy(Request $request): Response
+    {
+        $data = $request->validate([
+            'ids' => ['required', 'array', 'min:1', 'max:100'],
+            'ids.*' => ['integer'],
+        ]);
+
+        // Nicht existierende IDs stillschweigend ignorieren (idempotent).
+        $images = Image::whereIn('id', $data['ids'])->get();
+
+        // Erst ALLE autorisieren, dann löschen – kein partielles Löschen bei 403.
+        foreach ($images as $image) {
+            $this->authorize('delete', $image);
+        }
+
+        $disk = Storage::disk(config('filesystems.media'));
+        foreach ($images as $image) {
+            $disk->delete($this->filePaths($image));
+            $image->delete();
+        }
+
+        return response()->noContent();
+    }
+
+    /** Alle Dateien eines Bildes: Original, Thumbnail und responsive Varianten. */
+    private function filePaths(Image $image): array
+    {
         $variants = array_map(
             fn (int $width) => ImageVariants::path($image->path, $width),
             ImageVariants::WIDTHS,
         );
-        Storage::disk(config('filesystems.media'))
-            ->delete(array_filter([$image->path, $image->thumbnail_path, ...$variants]));
-        $image->delete();
 
-        return response()->noContent();
+        return array_filter([$image->path, $image->thumbnail_path, ...$variants]);
     }
 }
