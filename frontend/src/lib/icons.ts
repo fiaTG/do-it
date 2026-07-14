@@ -9,6 +9,7 @@
  */
 import {
   Baby,
+  Cake,
   Calendar,
   CalendarDays,
   Car,
@@ -42,6 +43,7 @@ export type { LucideIcon }
 
 export {
   Baby,
+  Cake,
   Calendar,
   CalendarDays,
   Car,

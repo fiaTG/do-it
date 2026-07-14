@@ -5,6 +5,7 @@ const SIZES = {
   xs: 'h-5 w-5 text-[9px]',
   sm: 'h-7 w-7 text-[11px]',
   md: 'h-9 w-9 text-sm',
+  lg: 'h-16 w-16 text-xl',
 } as const
 
 /**
