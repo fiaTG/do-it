@@ -4,18 +4,15 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import listPlugin from '@fullcalendar/list'
 import interactionPlugin from '@fullcalendar/interaction'
-import type { EventClickArg, EventInput } from '@fullcalendar/core'
+import type { EventClickArg, EventContentArg, EventInput } from '@fullcalendar/core'
 import deLocale from '@fullcalendar/core/locales/de'
 import { apiError, eventsApi, familyApi } from '../api'
+import MemberAvatar from '../components/MemberAvatar'
 import PersonDayView from '../components/PersonDayView'
 import { Calendar, Car } from '../lib/icons'
+import { FALLBACK_COLOR, memberColor } from '../lib/memberColors'
 import { useAuth } from '../store/auth'
 import type { EventItem, User } from '../types'
-
-// Feste Farbpalette – je Familienmitglied eine Farbe (stabil über die Reihenfolge
-// der Mitgliederliste). Familienkalender: Farbe = WER, nicht welcher Lebensbereich.
-const MEMBER_COLORS = ['#3E7C9B', '#E58A72', '#8FCBB8', '#F4C95D', '#A9825A', '#9B6FB0', '#5BA88A', '#D08770']
-const FALLBACK_COLOR = '#5b7689'
 
 interface ModalState {
   open: boolean
@@ -74,10 +71,12 @@ export default function CalendarPage() {
     void load()
   }, [])
 
-  // Stabile Farbe je Mitglied (nach Position in der Mitgliederliste).
+  // Farbe je Mitglied: selbst gewählt (users.color) oder stabiler ID-Fallback.
+  const memberById = (id: number | null): User | undefined =>
+    members.find((m) => m.id === id)
   const colorFor = (ownerId: number | null): string => {
-    const idx = members.findIndex((m) => m.id === ownerId)
-    return idx >= 0 ? MEMBER_COLORS[idx % MEMBER_COLORS.length] : FALLBACK_COLOR
+    const member = memberById(ownerId)
+    return member ? memberColor(member) : FALLBACK_COLOR
   }
 
   // Kinder dürfen nur eigene Termine bearbeiten.
@@ -87,13 +86,29 @@ export default function CalendarPage() {
     .filter((e) => !hidden.includes(e.owner_id ?? -1))
     .map((e) => ({
       id: String(e.id),
-      title: e.car_reserved ? `${e.title} 🚗` : e.title,
+      title: e.title,
       start: e.starts_at,
       end: e.ends_at,
       backgroundColor: colorFor(e.owner_id),
       borderColor: colorFor(e.owner_id),
       editable: canEdit(e), // nur eigene/als Verwalter ziehbar
+      extendedProps: { ownerId: e.owner_id, carReserved: e.car_reserved },
     }))
+
+  // Eigener Event-Inhalt: Mini-Avatar des Owners + Zeit + Titel, damit in der
+  // Übersicht sofort erkennbar ist, WESSEN Termin es ist (nicht nur die Farbe).
+  function renderEventContent(arg: EventContentArg) {
+    const owner = memberById(arg.event.extendedProps.ownerId as number | null)
+    const carReserved = arg.event.extendedProps.carReserved as boolean
+    return (
+      <span className="flex min-w-0 items-center gap-1 px-0.5">
+        {owner && <MemberAvatar member={owner} size="xs" />}
+        {arg.timeText && <span className="shrink-0 text-[10px] opacity-80">{arg.timeText}</span>}
+        <span className="truncate text-[11px] font-semibold">{arg.event.title}</span>
+        {carReserved && <Car className="h-3 w-3 shrink-0" aria-label="Auto reserviert" />}
+      </span>
+    )
+  }
 
   function toggleHidden(id: number) {
     setHidden((h) => (h.includes(id) ? h.filter((x) => x !== id) : [...h, id]))
@@ -203,7 +218,7 @@ export default function CalendarPage() {
         </button>
       </div>
 
-      {/* Legende = Personen; antippen blendet ein Mitglied ein/aus */}
+      {/* Legende = Personen (Avatar + Farbe); antippen blendet ein Mitglied ein/aus */}
       <div className="flex flex-wrap items-center gap-2 text-xs">
         {members.map((m) => {
           const off = hidden.includes(m.id)
@@ -212,11 +227,11 @@ export default function CalendarPage() {
               key={m.id}
               type="button"
               onClick={() => toggleHidden(m.id)}
-              className={`flex items-center gap-1.5 rounded-full px-2 py-1 transition ${
-                off ? 'opacity-40' : 'hover:bg-surface-2'
+              className={`flex items-center gap-1.5 rounded-full py-1 pl-1 pr-2.5 transition ${
+                off ? 'opacity-40 grayscale' : 'hover:bg-surface-2'
               }`}
             >
-              <span className="inline-block h-3 w-3 rounded-full" style={{ background: colorFor(m.id) }} />
+              <MemberAvatar member={m} size="sm" />
               <span className={off ? 'text-muted line-through' : 'text-text'}>
                 {m.first_name}
                 {m.id === userId && ' (ich)'}
@@ -249,6 +264,7 @@ export default function CalendarPage() {
             editable
             select={(arg) => openCreateAt(arg.start, arg.end, userId)}
             events={fcEvents}
+            eventContent={renderEventContent}
             eventClick={openEditFromCalendar}
             eventDrop={persistMove}
             eventResize={persistMove}
@@ -340,25 +356,40 @@ export default function CalendarPage() {
               </label>
             </div>
             {modal.readOnly ? (
-              <p className="text-xs text-muted">
-                Für: {members.find((m) => m.id === modal.ownerId)?.first_name ?? '—'}
-              </p>
+              <div className="flex items-center gap-2 text-xs text-muted">
+                Für:
+                {memberById(modal.ownerId) && (
+                  <MemberAvatar member={memberById(modal.ownerId)!} size="sm" />
+                )}
+                {memberById(modal.ownerId)?.first_name ?? '—'}
+              </div>
             ) : (
-              <label className="block text-xs text-muted">
+              <div className="text-xs text-muted">
                 Für
-                <select
-                  value={modal.ownerId}
-                  onChange={(e) => setModal({ ...modal, ownerId: Number(e.target.value) })}
-                  className={`${inputClass} mt-1 w-full`}
-                >
-                  {ownerOptions.map((m) => (
-                    <option key={m.id} value={m.id}>
-                      {m.first_name}
-                      {m.id === userId ? ' (ich)' : ''}
-                    </option>
-                  ))}
-                </select>
-              </label>
+                {/* Avatar-Chips statt Dropdown: WER ist auf einen Blick wählbar. */}
+                <div className="mt-1 flex flex-wrap gap-2">
+                  {ownerOptions.map((m) => {
+                    const active = modal.ownerId === m.id
+                    return (
+                      <button
+                        key={m.id}
+                        type="button"
+                        onClick={() => setModal({ ...modal, ownerId: m.id })}
+                        className={`flex items-center gap-1.5 rounded-full border py-1 pl-1 pr-2.5 text-sm transition ${
+                          active
+                            ? 'border-transparent text-white'
+                            : 'border-border text-text hover:bg-surface-2'
+                        }`}
+                        style={active ? { background: memberColor(m) } : undefined}
+                      >
+                        <MemberAvatar member={m} size="sm" />
+                        {m.first_name}
+                        {m.id === userId ? ' (ich)' : ''}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
             )}
             <label className="flex items-center gap-2 text-sm text-muted">
               <input

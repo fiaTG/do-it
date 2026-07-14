@@ -17,6 +17,26 @@ it('updates profile fields', function () {
         ->assertJsonPath('data.socials.instagram', 'https://instagram.com/x');
 });
 
+it('updates the personal calendar color', function () {
+    Sanctum::actingAs(familyMember());
+
+    $this->putJson('/api/v1/profile', [
+        'first_name' => 'A',
+        'last_name' => 'B',
+        'color' => '#3E7C9B',
+    ])->assertOk()->assertJsonPath('data.color', '#3E7C9B');
+});
+
+it('rejects an invalid calendar color', function () {
+    Sanctum::actingAs(familyMember());
+
+    $this->putJson('/api/v1/profile', [
+        'first_name' => 'A',
+        'last_name' => 'B',
+        'color' => 'blau',
+    ])->assertStatus(422)->assertJsonValidationErrorFor('color');
+});
+
 it('rejects an invalid gender', function () {
     Sanctum::actingAs(familyMember());
 

@@ -24,6 +24,7 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'family_id' => $this->family_id,
             'role' => $this->role,
+            'color' => $this->color,
             'family' => new FamilyResource($this->whenLoaded('family')),
             'avatar_url' => $this->avatar_path
                 ? URL::temporarySignedRoute('media.avatar', now()->addHour(), ['user' => $this->id])

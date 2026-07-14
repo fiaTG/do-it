@@ -1,6 +1,7 @@
 import { useRef, useState, type ChangeEvent, type FormEvent } from 'react'
 import { apiError, authApi, profileApi } from '../api'
-import { KeyRound, User } from '../lib/icons'
+import { Check, KeyRound, User } from '../lib/icons'
+import { MEMBER_PALETTE, memberColor } from '../lib/memberColors'
 import { useAuth } from '../store/auth'
 
 export default function ProfilePage() {
@@ -12,6 +13,7 @@ export default function ProfilePage() {
   const [lastName, setLastName] = useState(user?.last_name ?? '')
   const [birthdate, setBirthdate] = useState(user?.birthdate ?? '')
   const [gender, setGender] = useState(user?.gender ?? '')
+  const [color, setColor] = useState(user?.color ?? null)
   const [facebook, setFacebook] = useState(user?.socials.facebook ?? '')
   const [instagram, setInstagram] = useState(user?.socials.instagram ?? '')
   const [linkedin, setLinkedin] = useState(user?.socials.linkedin ?? '')
@@ -56,6 +58,7 @@ export default function ProfilePage() {
         last_name: lastName,
         birthdate: birthdate || null,
         gender: gender || null,
+        color,
         facebook: facebook || null,
         instagram: instagram || null,
         linkedin: linkedin || null,
@@ -132,6 +135,32 @@ export default function ProfilePage() {
               <option value="other">divers</option>
             </select>
           </label>
+        </div>
+
+        <div>
+          <p className="pt-2 text-sm font-semibold text-muted">Meine Kalenderfarbe</p>
+          <p className="text-xs text-muted">
+            Färbt alle deine Termine im Familienkalender. Erneut antippen setzt auf Standard zurück.
+          </p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {MEMBER_PALETTE.map((c) => {
+              const active = (color ?? memberColor(user)) === c
+              return (
+                <button
+                  key={c}
+                  type="button"
+                  onClick={() => setColor(color === c ? null : c)}
+                  aria-label={`Kalenderfarbe ${c}`}
+                  className={`flex h-9 w-9 items-center justify-center rounded-full transition ${
+                    active ? 'ring-2 ring-offset-2 ring-offset-surface' : 'hover:scale-110'
+                  }`}
+                  style={{ background: c, ['--tw-ring-color' as string]: c }}
+                >
+                  {active && <Check className="h-4 w-4 text-white" />}
+                </button>
+              )
+            })}
+          </div>
         </div>
 
         <p className="pt-2 text-sm font-semibold text-muted">Social Media</p>

@@ -1,5 +1,7 @@
 import { type MouseEvent } from 'react'
 import { Car } from '../lib/icons'
+import { memberTint } from '../lib/memberColors'
+import MemberAvatar from './MemberAvatar'
 import type { EventItem, User } from '../types'
 
 // Selbstgebaute Tagesansicht mit einer Spalte je Familienmitglied (kostenlos,
@@ -82,7 +84,7 @@ export default function PersonDayView({ date, members, events, colorFor, onEvent
     <div className="flex">
       {/* Zeit-Spalte */}
       <div className="w-12 shrink-0">
-        <div className="h-8" />
+        <div className="h-14" />
         <div className="relative" style={{ height: TOTAL_HEIGHT }}>
           {HOURS.map((h, i) => (
             <div
@@ -100,13 +102,18 @@ export default function PersonDayView({ date, members, events, colorFor, onEvent
       <div className="flex flex-1 overflow-x-auto">
         {members.map((m) => (
           <div key={m.id} className="min-w-[7rem] flex-1 border-l border-border">
-            <div className="flex h-8 items-center justify-center gap-1.5 text-xs font-medium text-text">
-              <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ background: colorFor(m.id) }} />
-              {m.first_name}
+            {/* Spaltenkopf: Avatar + Name, unterstrichen in der Personenfarbe. */}
+            <div
+              className="flex h-14 flex-col items-center justify-center gap-1 border-b-2 text-xs font-medium text-text"
+              style={{ borderBottomColor: colorFor(m.id) }}
+            >
+              <MemberAvatar member={m} size="sm" />
+              <span className="max-w-full truncate px-1">{m.first_name}</span>
             </div>
+            {/* Spaltenfläche dezent in der Personenfarbe getönt. */}
             <div
               className="relative cursor-pointer"
-              style={{ height: TOTAL_HEIGHT }}
+              style={{ height: TOTAL_HEIGHT, background: memberTint(colorFor(m.id)) }}
               onClick={(ev) => handleColumnClick(m, ev)}
             >
               {HOURS.map((h, i) => (

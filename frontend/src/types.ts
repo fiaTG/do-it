@@ -19,6 +19,8 @@ export interface User {
   email: string
   family_id: number | null
   role: FamilyRole
+  /** Persönliche Kalenderfarbe (Hex); null = ID-basierter Palette-Fallback. */
+  color: string | null
   family?: Family | null
   avatar_url: string | null
   birthdate: string | null

@@ -19,6 +19,8 @@ class ProfileController extends Controller
             'last_name' => ['required', 'string', 'max:255'],
             'birthdate' => ['nullable', 'date'],
             'gender' => ['nullable', 'in:m,w,other'],
+            // Persönliche Kalenderfarbe (Hex, z. B. #3E7C9B).
+            'color' => ['nullable', 'regex:/^#[0-9a-fA-F]{6}$/'],
             'facebook' => ['nullable', 'string', 'max:255'],
             'instagram' => ['nullable', 'string', 'max:255'],
             'linkedin' => ['nullable', 'string', 'max:255'],

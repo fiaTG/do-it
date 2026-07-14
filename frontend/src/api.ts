@@ -80,6 +80,7 @@ export interface ProfilePayload {
   last_name: string
   birthdate: string | null
   gender: string | null
+  color: string | null
   facebook: string | null
   instagram: string | null
   linkedin: string | null

@@ -29,6 +29,7 @@ class User extends Authenticatable
         'password',
         'family_id',
         'role',
+        'color',
         'avatar_path',
         'birthdate',
         'gender',
