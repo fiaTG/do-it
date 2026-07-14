@@ -16,8 +16,8 @@ Board". Hintergrund: [`docs/adr/0018-cross-platform-design-und-brand.md`](docs/a
 
 | Teil | Stack | Läuft auf |
 |------|-------|-----------|
-| `backend/` | PHP 8 · **Laravel 11** (JSON-API, Sanctum) · MySQL | http://localhost:8080 |
-| `frontend/` | **React + TypeScript** (Vite, Tailwind, PWA) | http://localhost:5173 |
+| `backend/` | PHP 8 · **Laravel 11** (JSON-API, Sanctum) · MySQL | <http://localhost:8080> |
+| `frontend/` | **React + TypeScript** (Vite, Tailwind, PWA) | <http://localhost:5173> |
 
 Auth läuft über Sanctum (Cookie fürs Web-SPA, Token für spätere native Apps).
 Die Ports liegen bewusst neben einer evtl. laufenden XAMPP-Installation.
@@ -40,12 +40,12 @@ npm install
 npm run dev
 ```
 
-Dann **http://localhost:5173** öffnen. Demo-Login:
+Dann **<http://localhost:5173>** öffnen. Demo-Login:
 
 - **E-Mail:** `dozent@example.com`
 - **Passwort:** `test123!`
 
-Weitere Dienste: **Mailpit** (abgefangene E-Mails) unter http://localhost:8025.
+Weitere Dienste: **Mailpit** (abgefangene E-Mails) unter <http://localhost:8025>.
 Ausführliche Anleitung: [`docs/dev-setup.md`](docs/dev-setup.md).
 
 ## Tests
@@ -65,11 +65,3 @@ GitHub Actions ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
 
 - [`docs/roadmap.md`](docs/roadmap.md) – Modernisierungs-Fahrplan & Befunde
 - [`docs/adr/`](docs/adr/) – Architecture Decision Records
-- [`docs/familyboard_markdown/`](docs/familyboard_markdown/) – ursprüngliche
-  Projektdokumentation (Schulprojekt)
-
-## Legacy
-
-Die ursprüngliche Vanilla-PHP-App (XAMPP) liegt weiterhin in `public/` und
-`private/` und ist über `http://localhost/files/Do-IT/` lauffähig. Sie wird
-durch den neuen Stack abgelöst.

@@ -6,34 +6,6 @@ Thumbs.db
 *.bak
 *.swp
 
-# PHP-spezifische Ignore-Regeln
-/vendor/
-# composer.lock wird bewusst eingecheckt (reproduzierbare Builds, siehe ADR-0007)
-
-
-# Sensible Dateien (Datenbank und Konfiguration)
-private/config/db.php
-.env
-
-# Build- und Cache-Dateien
-node_modules/
-public/styles.css
-public/js/*.min.js
-
-# SCSS generierte Dateien (falls du SCSS kompilierst)
-*.css.map
-
-# Hochgeladene Bilder (falls sie nicht ins Git sollen)
-public/img/uploads/
-
-# Logs und Debug-Dateien
-logs/
-*.log
-
-# Falls du später eine SQLite-DB nutzt
-database.sqlite
-*.sqlite3
-
 # Falls du mit PHPStorm oder VSCode arbeitest
 .idea/
 .vscode/
