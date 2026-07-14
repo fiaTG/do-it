@@ -63,6 +63,12 @@ class GenerateThumbnail implements ShouldQueue
             $disk->put(ImageVariants::path($this->image->path, $width), (string) $variant);
         }
 
-        $this->image->update(['thumbnail_path' => $thumbnailPath]);
+        // Winziger Blur-up-Platzhalter (LQIP): ~24px breit, als data-URI direkt
+        // in der DB – das Grid zeigt ihn unscharf, bis das Thumbnail geladen ist.
+        $placeholder = $manager->decode($original)->scaleDown(width: 24)->encode(new JpegEncoder(quality: 50));
+        $this->image->update([
+            'thumbnail_path' => $thumbnailPath,
+            'placeholder' => 'data:image/jpeg;base64,'.base64_encode((string) $placeholder),
+        ]);
     }
 }

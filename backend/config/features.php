@@ -17,4 +17,8 @@ return [
         'gallery_images' => 30,
     ],
 
+    // Papierkorb (ADR-0020): so lange bleiben gelöschte Bilder wiederherstellbar,
+    // danach entfernt `model:prune` Rows UND Dateien endgültig.
+    'trash_retention_days' => 30,
+
 ];

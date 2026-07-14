@@ -39,6 +39,17 @@ class ImageResource extends JsonResource
             'taken_at' => $this->taken_at?->toIso8601String(),
             'width' => $this->width,
             'height' => $this->height,
+            // Blur-up-Platzhalter (data-URI); null bei Altbestand oder solange
+            // der Thumbnail-Job noch läuft.
+            'placeholder' => $this->placeholder,
+            // Solange der Job das Thumbnail nicht erzeugt hat, streamt der
+            // Proxy das Original – das Frontend zeigt "Wird verarbeitet".
+            'processing' => $this->thumbnail_path === null,
+            // Papierkorb (ADR-0020): nur in der Trash-Liste gesetzt.
+            'deleted_at' => $this->deleted_at?->toIso8601String(),
+            'expires_at' => $this->deleted_at
+                ?->addDays((int) config('features.trash_retention_days'))
+                ->toIso8601String(),
         ];
     }
 }

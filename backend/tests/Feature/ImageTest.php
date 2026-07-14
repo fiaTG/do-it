@@ -36,7 +36,7 @@ it('rejects a non-image upload', function () {
         ->assertStatus(422)->assertJsonValidationErrorFor('image');
 });
 
-it('deletes an image and both files', function () {
+it('moves a deleted image to the trash and keeps its files', function () {
     Storage::fake('public');
     $user = familyMember();
     Sanctum::actingAs($user);
@@ -48,9 +48,17 @@ it('deletes an image and both files', function () {
     $image = Image::first();
     $this->deleteJson("/api/v1/images/{$image->id}")->assertNoContent();
 
+    // Papierkorb (ADR-0020): Soft-Delete, Dateien bleiben für Restore erhalten.
     expect(Image::count())->toBe(0);
-    Storage::disk('public')->assertMissing($image->path);
-    Storage::disk('public')->assertMissing($image->thumbnail_path);
+    expect(Image::onlyTrashed()->count())->toBe(1);
+    Storage::disk('public')->assertExists($image->path);
+    Storage::disk('public')->assertExists($image->thumbnail_path);
+
+    $this->getJson('/api/v1/images')->assertOk()->assertJsonPath('meta.total', 0);
+    $trash = $this->getJson('/api/v1/images/trash')->assertOk();
+    expect($trash->json('data'))->toHaveCount(1);
+    expect($trash->json('data.0.deleted_at'))->not->toBeNull();
+    expect($trash->json('data.0.expires_at'))->not->toBeNull();
 });
 
 it('strips embedded metadata (EXIF/GPS) from uploaded images', function () {
@@ -141,7 +149,7 @@ it('returns a single image with fresh signed URLs for family members', function 
         ->assertJsonPath('data.id', $image->id);
 });
 
-it('batch-deletes multiple own images including all files', function () {
+it('batch-deletes multiple own images into the trash', function () {
     Storage::fake('public');
     $user = familyMember();
     Sanctum::actingAs($user);
@@ -156,13 +164,12 @@ it('batch-deletes multiple own images including all files', function () {
     $this->postJson('/api/v1/images/batch-delete', ['ids' => $images->pluck('id')->all()])
         ->assertNoContent();
 
+    // Papierkorb statt endgültig: Rows soft-deleted, Dateien bleiben (ADR-0020).
     expect(Image::count())->toBe(0);
+    expect(Image::onlyTrashed()->count())->toBe(2);
     foreach ($images as $image) {
-        Storage::disk('public')->assertMissing($image->path);
-        Storage::disk('public')->assertMissing($image->thumbnail_path);
-        foreach (ImageVariants::WIDTHS as $width) {
-            Storage::disk('public')->assertMissing(ImageVariants::path($image->path, $width));
-        }
+        Storage::disk('public')->assertExists($image->path);
+        Storage::disk('public')->assertExists($image->thumbnail_path);
     }
 });
 
@@ -214,8 +221,155 @@ it('ignores non-existent ids in a batch-delete', function () {
         ->assertNoContent();
 
     expect(Image::count())->toBe(0);
+    expect(Image::onlyTrashed()->count())->toBe(1);
+});
+
+it('restores images from the trash', function () {
+    Storage::fake('public');
+    $user = familyMember();
+    Sanctum::actingAs($user);
+
+    $this->post('/api/v1/images', [
+        'title' => 'Zurückgeholt',
+        'image' => UploadedFile::fake()->image('a.jpg', 1200, 800),
+    ], ['Accept' => 'application/json']);
+    $image = Image::first();
+
+    $this->deleteJson("/api/v1/images/{$image->id}")->assertNoContent();
+    $this->postJson('/api/v1/images/restore', ['ids' => [$image->id]])->assertNoContent();
+
+    expect(Image::count())->toBe(1);
+    expect(Image::onlyTrashed()->count())->toBe(0);
+    $this->getJson('/api/v1/images')->assertOk()->assertJsonPath('data.0.title', 'Zurückgeholt');
+});
+
+it('blocks a restore that would exceed the free gallery limit', function () {
+    config(['features.free_limits.gallery_images' => 1]);
+    Storage::fake('public');
+    $user = familyMember();
+    Sanctum::actingAs($user);
+
+    // Bild A hochladen, in den Papierkorb, dann Bild B hochladen (Limit 1 ist
+    // wieder belegt – Papierkorb zählt nicht mit). Restore von A wäre Bild 2.
+    $this->post('/api/v1/images', [
+        'image' => UploadedFile::fake()->image('a.jpg', 800, 600),
+    ], ['Accept' => 'application/json'])->assertCreated();
+    $a = Image::first();
+    $this->deleteJson("/api/v1/images/{$a->id}")->assertNoContent();
+
+    $this->post('/api/v1/images', [
+        'image' => UploadedFile::fake()->image('b.jpg', 800, 600),
+    ], ['Accept' => 'application/json'])->assertCreated();
+
+    $this->postJson('/api/v1/images/restore', ['ids' => [$a->id]])->assertForbidden();
+    expect(Image::onlyTrashed()->count())->toBe(1);
+});
+
+it('purges trashed images permanently including all files', function () {
+    Storage::fake('public');
+    $user = familyMember();
+    Sanctum::actingAs($user);
+
+    $this->post('/api/v1/images', [
+        'image' => UploadedFile::fake()->image('a.jpg', 1200, 800),
+    ], ['Accept' => 'application/json']);
+    $image = Image::first();
+
+    $this->deleteJson("/api/v1/images/{$image->id}")->assertNoContent();
+    $this->postJson('/api/v1/images/purge', ['ids' => [$image->id]])->assertNoContent();
+
+    expect(Image::withTrashed()->count())->toBe(0);
     Storage::disk('public')->assertMissing($image->path);
     Storage::disk('public')->assertMissing($image->thumbnail_path);
+    foreach (ImageVariants::WIDTHS as $width) {
+        Storage::disk('public')->assertMissing(ImageVariants::path($image->path, $width));
+    }
+});
+
+it('purge only touches trashed images, active ones stay', function () {
+    Storage::fake('public');
+    $user = familyMember();
+    Sanctum::actingAs($user);
+
+    $this->post('/api/v1/images', [
+        'image' => UploadedFile::fake()->image('active.jpg', 800, 600),
+    ], ['Accept' => 'application/json']);
+    $active = Image::first();
+
+    // Purge auf ein AKTIVES Bild ist ein No-op (Endpoint arbeitet onlyTrashed).
+    $this->postJson('/api/v1/images/purge', ['ids' => [$active->id]])->assertNoContent();
+    expect(Image::count())->toBe(1);
+    Storage::disk('public')->assertExists($active->path);
+});
+
+it('forbids restoring or purging another family\'s trashed image', function () {
+    Storage::fake('public');
+    $owner = familyMember();
+    Sanctum::actingAs($owner);
+    $this->post('/api/v1/images', [
+        'image' => UploadedFile::fake()->image('a.jpg', 800, 600),
+    ], ['Accept' => 'application/json']);
+    $image = Image::first();
+    $this->deleteJson("/api/v1/images/{$image->id}")->assertNoContent();
+
+    Sanctum::actingAs(familyMember());
+    $this->postJson('/api/v1/images/restore', ['ids' => [$image->id]])->assertForbidden();
+    $this->postJson('/api/v1/images/purge', ['ids' => [$image->id]])->assertForbidden();
+    expect(Image::onlyTrashed()->count())->toBe(1);
+});
+
+it('does not count trashed images against the upload limit', function () {
+    config(['features.free_limits.gallery_images' => 1]);
+    Storage::fake('public');
+    Sanctum::actingAs(familyMember());
+
+    $this->post('/api/v1/images', [
+        'image' => UploadedFile::fake()->image('a.jpg', 800, 600),
+    ], ['Accept' => 'application/json'])->assertCreated();
+    $this->deleteJson('/api/v1/images/'.Image::first()->id)->assertNoContent();
+
+    // Limit 1, aber das gelöschte Bild liegt im Papierkorb -> Upload erlaubt.
+    $this->post('/api/v1/images', [
+        'image' => UploadedFile::fake()->image('b.jpg', 800, 600),
+    ], ['Accept' => 'application/json'])->assertCreated();
+});
+
+it('prunes expired trash including files but keeps recent trash', function () {
+    Storage::fake('public');
+    $user = familyMember();
+    Sanctum::actingAs($user);
+
+    foreach (['old.jpg', 'recent.jpg'] as $name) {
+        $this->post('/api/v1/images', [
+            'image' => UploadedFile::fake()->image($name, 800, 600),
+        ], ['Accept' => 'application/json']);
+    }
+    [$old, $recent] = Image::all();
+    $this->postJson('/api/v1/images/batch-delete', ['ids' => [$old->id, $recent->id]])
+        ->assertNoContent();
+
+    // Frist des einen Bildes künstlich ablaufen lassen (31 Tage her).
+    Image::withTrashed()->whereKey($old->id)->update(['deleted_at' => now()->subDays(31)]);
+
+    $this->artisan('model:prune', ['--model' => Image::class])->assertSuccessful();
+
+    expect(Image::withTrashed()->count())->toBe(1);
+    expect(Image::onlyTrashed()->first()->id)->toBe($recent->id);
+    Storage::disk('public')->assertMissing($old->path);
+    Storage::disk('public')->assertMissing($old->thumbnail_path);
+    Storage::disk('public')->assertExists($recent->path);
+});
+
+it('generates a blur-up placeholder for uploaded images', function () {
+    Storage::fake('public');
+    Sanctum::actingAs(familyMember());
+
+    $response = $this->post('/api/v1/images', [
+        'image' => UploadedFile::fake()->image('a.jpg', 1200, 800),
+    ], ['Accept' => 'application/json'])->assertCreated();
+
+    expect($response->json('data.placeholder'))->toStartWith('data:image/jpeg;base64,');
+    expect($response->json('data.processing'))->toBeFalse();
 });
 
 it('does not let a user fetch an image from another family', function () {

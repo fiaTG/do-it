@@ -41,10 +41,15 @@ Route::prefix('v1')->group(function () {
     // Medien-Proxy (ADR-0015): nur über gültige Signatur erreichbar, kein Cookie
     // nötig (funktioniert für <img>). Speicher bleibt privat.
     Route::middleware('signed')->group(function () {
-        Route::get('/media/images/{image}', [MediaController::class, 'image'])->name('media.image');
-        Route::get('/media/images/{image}/thumbnail', [MediaController::class, 'thumbnail'])->name('media.thumbnail');
+        // withTrashed: auch Papierkorb-Bilder (ADR-0020) brauchen Vorschaubilder;
+        // die signierten URLs dafür entstehen nur in der Trash-Liste für
+        // berechtigte Familienmitglieder.
+        Route::get('/media/images/{image}', [MediaController::class, 'image'])
+            ->name('media.image')->withTrashed();
+        Route::get('/media/images/{image}/thumbnail', [MediaController::class, 'thumbnail'])
+            ->name('media.thumbnail')->withTrashed();
         Route::get('/media/images/{image}/variant/{width}', [MediaController::class, 'variant'])
-            ->whereNumber('width')->name('media.variant');
+            ->whereNumber('width')->name('media.variant')->withTrashed();
         Route::get('/media/avatars/{user}', [MediaController::class, 'avatar'])->name('media.avatar');
     });
 
@@ -88,6 +93,11 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('events', EventController::class)
             ->only(['index', 'store', 'update', 'destroy']);
         Route::post('images/batch-delete', [ImageController::class, 'batchDestroy']);
+        // Papierkorb (ADR-0020) – Literal-Routen VOR der Resource, sonst
+        // schluckt images/{image} das "trash"-Segment.
+        Route::get('images/trash', [ImageController::class, 'trash']);
+        Route::post('images/restore', [ImageController::class, 'restore']);
+        Route::post('images/purge', [ImageController::class, 'purge']);
         Route::apiResource('images', ImageController::class)
             ->only(['index', 'show', 'store', 'destroy']);
     });

@@ -7,12 +7,11 @@ use App\Http\Resources\ImageResource;
 use App\Jobs\GenerateThumbnail;
 use App\Models\Image;
 use App\Support\ImageUpload;
-use App\Support\ImageVariants;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Storage;
 
 class ImageController extends Controller
 {
@@ -21,7 +20,8 @@ class ImageController extends Controller
     /**
      * Chronologisch nach Aufnahmedatum (Fallback: Upload-Datum), seitenweise
      * für Infinite Scroll. `meta.total`/`meta.limit` treiben die
-     * Freemium-Quota-Anzeige im Frontend (ADR-0013).
+     * Freemium-Quota-Anzeige im Frontend (ADR-0013). Papierkorb-Bilder sind
+     * durch SoftDeletes automatisch ausgeblendet.
      */
     public function index(Request $request): AnonymousResourceCollection
     {
@@ -62,7 +62,7 @@ class ImageController extends Controller
         ]);
 
         // Entitlement-Gate (ADR-0013): Free-Familien haben ein Galerie-Limit,
-        // Premium ist unbegrenzt.
+        // Premium ist unbegrenzt. Papierkorb-Bilder zählen nicht mit (ADR-0020).
         $family = $request->user()->family;
         if ($family !== null && ! $family->isPremium()) {
             $limit = (int) config('features.free_limits.gallery_images');
@@ -91,11 +91,14 @@ class ImageController extends Controller
         return (new ImageResource($image->fresh()))->response()->setStatusCode(201);
     }
 
+    /**
+     * Löschen = in den Papierkorb (ADR-0020): Soft-Delete, die Dateien bleiben
+     * bis zum Purge erhalten, damit Wiederherstellen möglich ist.
+     */
     public function destroy(Request $request, Image $image): Response
     {
         $this->authorize('delete', $image);
 
-        Storage::disk(config('filesystems.media'))->delete($this->filePaths($image));
         $image->delete();
 
         return response()->noContent();
@@ -103,36 +106,87 @@ class ImageController extends Controller
 
     public function batchDestroy(Request $request): Response
     {
-        $data = $request->validate([
-            'ids' => ['required', 'array', 'min:1', 'max:100'],
-            'ids.*' => ['integer'],
-        ]);
+        $images = $this->trashableImages($request);
 
-        // Nicht existierende IDs stillschweigend ignorieren (idempotent).
-        $images = Image::whereIn('id', $data['ids'])->get();
-
-        // Erst ALLE autorisieren, dann löschen – kein partielles Löschen bei 403.
         foreach ($images as $image) {
-            $this->authorize('delete', $image);
-        }
-
-        $disk = Storage::disk(config('filesystems.media'));
-        foreach ($images as $image) {
-            $disk->delete($this->filePaths($image));
             $image->delete();
         }
 
         return response()->noContent();
     }
 
-    /** Alle Dateien eines Bildes: Original, Thumbnail und responsive Varianten. */
-    private function filePaths(Image $image): array
+    /** Papierkorb der Familie, zuletzt gelöschte zuerst. */
+    public function trash(Request $request): AnonymousResourceCollection
     {
-        $variants = array_map(
-            fn (int $width) => ImageVariants::path($image->path, $width),
-            ImageVariants::WIDTHS,
-        );
+        $familyId = $this->familyId($request);
 
-        return array_filter([$image->path, $image->thumbnail_path, ...$variants]);
+        return ImageResource::collection(
+            Image::onlyTrashed()
+                ->where('family_id', $familyId)
+                ->orderByDesc('deleted_at')
+                ->get()
+        );
+    }
+
+    /**
+     * Wiederherstellen aus dem Papierkorb. Prüft für Free-Familien das
+     * Galerie-Limit, sonst ließe es sich über den Papierkorb umgehen (ADR-0020).
+     */
+    public function restore(Request $request): Response
+    {
+        $familyId = $this->familyId($request);
+        $images = $this->trashableImages($request, onlyTrashed: true);
+
+        $family = $request->user()->family;
+        if ($images->isNotEmpty() && $family !== null && ! $family->isPremium()) {
+            $limit = (int) config('features.free_limits.gallery_images');
+            abort_if(
+                Image::where('family_id', $familyId)->count() + $images->count() > $limit,
+                403,
+                "Galerie-Limit ($limit Bilder) erreicht. Bitte Platz schaffen oder Premium aktivieren.",
+            );
+        }
+
+        foreach ($images as $image) {
+            $image->restore();
+        }
+
+        return response()->noContent();
+    }
+
+    /** Endgültig löschen (nur aus dem Papierkorb): entfernt Dateien und Rows. */
+    public function purge(Request $request): Response
+    {
+        $images = $this->trashableImages($request, onlyTrashed: true);
+
+        foreach ($images as $image) {
+            $image->purge();
+        }
+
+        return response()->noContent();
+    }
+
+    /**
+     * Gemeinsames Muster der Batch-Endpunkte: ids validieren, Bilder laden
+     * (nicht existierende IDs stillschweigend ignorieren – idempotent) und
+     * ERST ALLE autorisieren, dann handeln – keine partielle Ausführung bei 403.
+     *
+     * @return Collection<int, Image>
+     */
+    private function trashableImages(Request $request, bool $onlyTrashed = false)
+    {
+        $data = $request->validate([
+            'ids' => ['required', 'array', 'min:1', 'max:100'],
+            'ids.*' => ['integer'],
+        ]);
+
+        $query = $onlyTrashed ? Image::onlyTrashed() : Image::query();
+        $images = $query->whereIn('id', $data['ids'])->get();
+
+        foreach ($images as $image) {
+            $this->authorize('delete', $image);
+        }
+
+        return $images;
     }
 }

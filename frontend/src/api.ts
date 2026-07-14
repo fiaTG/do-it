@@ -276,6 +276,22 @@ export const imagesApi = {
       await api.post('/images/batch-delete', { ids: ids.slice(i, i + 100) })
     }
   },
+  /** Papierkorb (ADR-0020): zuletzt gelöschte zuerst. */
+  async trash(): Promise<ImageItem[]> {
+    const { data } = await api.get<{ data: ImageItem[] }>('/images/trash')
+    return data.data
+  },
+  async restore(ids: number[]): Promise<void> {
+    for (let i = 0; i < ids.length; i += 100) {
+      await api.post('/images/restore', { ids: ids.slice(i, i + 100) })
+    }
+  },
+  /** Endgültig löschen – nur für Bilder, die bereits im Papierkorb liegen. */
+  async purge(ids: number[]): Promise<void> {
+    for (let i = 0; i < ids.length; i += 100) {
+      await api.post('/images/purge', { ids: ids.slice(i, i + 100) })
+    }
+  },
 }
 
 /** Extrahiert eine lesbare Fehlermeldung aus einer Axios-Fehlerantwort. */

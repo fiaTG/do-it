@@ -149,3 +149,4 @@ Jede Phase ist eigenständig abschließbar. Reihenfolge = empfohlene Bearbeitung
 | [0017](adr/0017-design-system-tokens.md) | Design-System mit Tokens & „Heimathafen"-Theming | Akzeptiert |
 | [0018](adr/0018-cross-platform-design-und-brand.md) | Cross-Platform-Design-Strategie & Austauschbarkeit der Marke | Akzeptiert |
 | [0019](adr/0019-familien-rollen-und-berechtigungen.md) | Familien-Rollen & Berechtigungen (Verwalter/Kind) | Akzeptiert |
+| [0020](adr/0020-galerie-papierkorb.md) | Galerie-Papierkorb (Soft-Delete mit Aufbewahrungsfrist) | Akzeptiert |

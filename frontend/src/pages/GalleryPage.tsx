@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { apiError, imagesApi } from '../api'
+import GalleryTrash from '../components/GalleryTrash'
 import {
   Check,
   CheckSquare,
@@ -8,6 +9,7 @@ import {
   ChevronRight,
   Download,
   ImageIcon,
+  RotateCcw,
   Trash2,
   Upload,
   X,
@@ -43,6 +45,55 @@ function groupLabel(date: Date): string {
   return date.toLocaleDateString('de-DE', { month: 'long', year: 'numeric' })
 }
 
+/**
+ * Grid-Thumbnail mit Blur-up: solange das echte Thumbnail lädt, zeigt ein
+ * winziger unscharfer Platzhalter (LQIP aus der DB) die Bildfläche. Bilder
+ * ohne Platzhalter (Altbestand) rendern wie bisher direkt.
+ */
+function BlurThumb({
+  img,
+  onClick,
+  onError,
+}: {
+  img: ImageItem
+  onClick: () => void
+  onError: () => void
+}) {
+  const [loaded, setLoaded] = useState(false)
+
+  return (
+    <div className="relative overflow-hidden">
+      {img.placeholder && !loaded && (
+        <img
+          src={img.placeholder}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full scale-110 object-cover blur-md"
+        />
+      )}
+      <img
+        src={img.thumbnail_url}
+        alt={img.title ?? ''}
+        loading="lazy"
+        width={img.width ?? undefined}
+        height={img.height ?? undefined}
+        style={img.width && img.height ? { aspectRatio: `${img.width} / ${img.height}` } : undefined}
+        onClick={onClick}
+        onLoad={() => setLoaded(true)}
+        onError={onError}
+        className={`relative w-full cursor-pointer object-cover transition-opacity duration-300 ${
+          loaded || !img.placeholder ? 'opacity-100' : 'opacity-0'
+        }`}
+      />
+      {img.processing && (
+        <span className="absolute bottom-2 left-2 animate-pulse rounded-full bg-black/50 px-2 py-0.5 text-xs text-white">
+          Wird verarbeitet …
+        </span>
+      )}
+    </div>
+  )
+}
+
 /** Bilder kommen server-sortiert (neueste zuerst) – hier nur noch nach Tages-Label bündeln. */
 function groupImages(images: ImageItem[]): ImageGroup[] {
   const groups: ImageGroup[] = []
@@ -71,6 +122,8 @@ export default function GalleryPage() {
   const [selectMode, setSelectMode] = useState(false)
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set())
   const [deleting, setDeleting] = useState(false)
+  const [showTrash, setShowTrash] = useState(false)
+  const [toast, setToast] = useState<{ message: string; undoIds: number[] } | null>(null)
   const [error, setError] = useState('')
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
   const fileInput = useRef<HTMLInputElement>(null)
@@ -82,6 +135,15 @@ export default function GalleryPage() {
   // Eingereihte, noch nicht abgeschlossene Uploads – total im State hinkt bis
   // zum Reload hinterher, fürs Quota-Gate zählen laufende Uploads darum mit.
   const inFlight = useRef(0)
+  const processingPolled = useRef<Set<number>>(new Set())
+  const mounted = useRef(true)
+
+  useEffect(() => {
+    mounted.current = true
+    return () => {
+      mounted.current = false
+    }
+  }, [])
 
   async function loadFirstPage() {
     try {
@@ -190,12 +252,51 @@ export default function GalleryPage() {
     }
   }
 
-  async function remove(img: ImageItem) {
-    const confirmed = window.confirm(
-      img.title ? `„${img.title}" wirklich löschen?` : 'Dieses Bild wirklich löschen?',
-    )
-    if (!confirmed) return
+  // In Produktion läuft der Thumbnail-Job async – Bilder, die noch "processing"
+  // sind, einmalig nach kurzer Zeit nachladen, damit Thumbnail/Platzhalter
+  // erscheinen, sobald der Worker fertig ist.
+  useEffect(() => {
+    const pending = images.filter((i) => i.processing && !processingPolled.current.has(i.id))
+    if (pending.length === 0) return
+    pending.forEach((i) => processingPolled.current.add(i.id))
+    setTimeout(() => {
+      if (!mounted.current) return
+      pending.forEach((p) => {
+        imagesApi
+          .show(p.id)
+          .then((fresh) => {
+            if (mounted.current) {
+              setImages((prev) => prev.map((i) => (i.id === p.id ? fresh : i)))
+            }
+          })
+          .catch(() => {})
+      })
+    }, 4000)
+  }, [images])
 
+  // Toast blendet sich nach 8s selbst aus.
+  useEffect(() => {
+    if (!toast) return
+    const timer = setTimeout(() => setToast(null), 8000)
+    return () => clearTimeout(timer)
+  }, [toast])
+
+  async function undoDelete() {
+    if (!toast) return
+    const ids = toast.undoIds
+    setToast(null)
+    try {
+      await imagesApi.restore(ids)
+      await loadFirstPage()
+    } catch (err) {
+      // Z. B. Free-Limit inzwischen belegt – Backend-Meldung anzeigen.
+      setError(apiError(err))
+    }
+  }
+
+  // Kein Confirm mehr: Löschen ist dank Papierkorb (ADR-0020) umkehrbar,
+  // der Toast bietet direktes Rückgängig an.
+  async function remove(img: ImageItem) {
     try {
       await imagesApi.remove(img.id)
       // Sofort ausblenden, dann Serverstand nachladen: die Offset-Pagination
@@ -203,6 +304,7 @@ export default function GalleryPage() {
       setImages((prev) => prev.filter((i) => i.id !== img.id))
       setLightboxIndex(null)
       await loadFirstPage()
+      setToast({ message: 'In den Papierkorb verschoben.', undoIds: [img.id] })
     } catch (err) {
       setError(apiError(err))
     }
@@ -229,10 +331,6 @@ export default function GalleryPage() {
     if (deleting) return
     const ids = Array.from(selectedIds)
     if (ids.length === 0) return
-    const confirmed = window.confirm(
-      ids.length === 1 ? 'Dieses Bild wirklich löschen?' : `${ids.length} Bilder wirklich löschen?`,
-    )
-    if (!confirmed) return
 
     setDeleting(true)
     try {
@@ -244,6 +342,13 @@ export default function GalleryPage() {
       setLightboxIndex(null)
       cancelSelect()
       await loadFirstPage()
+      setToast({
+        message:
+          ids.length === 1
+            ? 'In den Papierkorb verschoben.'
+            : `${ids.length} Bilder in den Papierkorb verschoben.`,
+        undoIds: ids,
+      })
     } catch (err) {
       setError(apiError(err))
     } finally {
@@ -315,6 +420,14 @@ export default function GalleryPage() {
               <CheckSquare className="h-4 w-4" /> Auswählen
             </button>
           )}
+          <button
+            onClick={() => setShowTrash((prev) => !prev)}
+            className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-semibold ${
+              showTrash ? 'bg-primary text-white' : 'bg-surface-2 text-muted hover:text-primary'
+            }`}
+          >
+            <Trash2 className="h-4 w-4" /> Papierkorb
+          </button>
           {limit !== null && (
             <span
               className={`rounded-full px-3 py-1 text-sm font-semibold ${
@@ -347,6 +460,8 @@ export default function GalleryPage() {
       )}
 
       {error && <p className="text-sm text-red-600">{error}</p>}
+
+      {showTrash && <GalleryTrash onChanged={() => void loadFirstPage()} />}
 
       {quotaReached ? (
         <p className="rounded-2xl bg-surface p-4 text-sm text-muted shadow">
@@ -447,16 +562,10 @@ export default function GalleryPage() {
                   selectMode && selectedIds.has(img.id) ? 'ring-2 ring-primary' : ''
                 }`}
               >
-                <img
-                  src={img.thumbnail_url}
-                  alt={img.title ?? ''}
-                  loading="lazy"
-                  width={img.width ?? undefined}
-                  height={img.height ?? undefined}
-                  style={img.width && img.height ? { aspectRatio: `${img.width} / ${img.height}` } : undefined}
+                <BlurThumb
+                  img={img}
                   onClick={() => (selectMode ? toggleSelect(img.id) : setLightboxIndex(index))}
                   onError={() => void handleImageError(img)}
-                  className="w-full cursor-pointer object-cover"
                 />
                 {selectMode && (
                   <span
@@ -491,6 +600,25 @@ export default function GalleryPage() {
 
       <div ref={sentinelRef} className="h-1" />
       {loadingMore && <p className="text-center text-sm text-muted">Lädt weitere Bilder …</p>}
+
+      {toast && (
+        <div className="fixed bottom-6 left-1/2 z-50 flex -translate-x-1/2 items-center gap-3 rounded-full bg-black/80 py-2 pl-4 pr-2 text-sm text-white shadow-lg">
+          <span>{toast.message}</span>
+          <button
+            onClick={() => void undoDelete()}
+            className="flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 font-semibold hover:bg-white/25"
+          >
+            <RotateCcw className="h-3.5 w-3.5" /> Rückgängig
+          </button>
+          <button
+            onClick={() => setToast(null)}
+            aria-label="Hinweis schließen"
+            className="flex h-7 w-7 items-center justify-center rounded-full hover:bg-white/15"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      )}
 
       {lightboxIndex !== null && lightboxImage && (
         <div

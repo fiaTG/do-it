@@ -89,6 +89,13 @@ export interface ImageItem {
   taken_at: string | null
   width: number | null
   height: number | null
+  /** Blur-up-Platzhalter als data-URI; null bei Altbestand/laufender Verarbeitung. */
+  placeholder: string | null
+  /** true, solange der Thumbnail-Job noch nicht durchgelaufen ist. */
+  processing: boolean
+  /** Nur im Papierkorb gesetzt (ADR-0020). */
+  deleted_at: string | null
+  expires_at: string | null
 }
 
 export interface ImagePage {
