@@ -2,8 +2,9 @@ import { useEffect, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { apiError, eventsApi, familyApi, inviteApi } from '../api'
 import MemberAvatar from '../components/MemberAvatar'
-import { Baby, Cake, Calendar, Crown, Mail, PartyPopper, Shield, Users, X } from '../lib/icons'
+import { Baby, Cake, Calendar, Crown, Mail, MapPin, PartyPopper, Shield, Users, X } from '../lib/icons'
 import { memberColor } from '../lib/memberColors'
+import { searchPlaces, type GeocodingResult } from '../lib/weather'
 import { useAuth } from '../store/auth'
 import type { EventItem, FamilyRole, Invite, User } from '../types'
 
@@ -48,6 +49,7 @@ function eventLabel(event: EventItem, now: Date): string {
 
 export default function MembersPage() {
   const me = useAuth((s) => s.user)
+  const setUser = useAuth((s) => s.setUser)
   const isGuardian = me?.role !== 'child'
   const [members, setMembers] = useState<User[]>([])
   const [events, setEvents] = useState<EventItem[]>([])
@@ -58,6 +60,9 @@ export default function MembersPage() {
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
+  const [placeQuery, setPlaceQuery] = useState('')
+  const [placeResults, setPlaceResults] = useState<GeocodingResult[]>([])
+  const [placeSearching, setPlaceSearching] = useState(false)
 
   async function load() {
     try {
@@ -110,6 +115,39 @@ export default function MembersPage() {
     }
   }
 
+  async function searchPlace(e: FormEvent) {
+    e.preventDefault()
+    if (placeQuery.trim().length < 2) return
+    setPlaceSearching(true)
+    setError('')
+    try {
+      const results = await searchPlaces(placeQuery.trim())
+      setPlaceResults(results)
+      if (results.length === 0) setError('Kein Ort gefunden – anders schreiben?')
+    } catch {
+      setError('Ortssuche gerade nicht erreichbar.')
+    } finally {
+      setPlaceSearching(false)
+    }
+  }
+
+  async function chooseLocation(place: GeocodingResult) {
+    setError('')
+    try {
+      const updated = await familyApi.updateLocation({
+        location_name: place.name,
+        latitude: place.latitude,
+        longitude: place.longitude,
+      })
+      if (me) setUser({ ...me, family: updated })
+      setPlaceResults([])
+      setPlaceQuery('')
+      setMessage(`Familienort auf ${updated.location_name} gesetzt – das Dashboard zeigt jetzt euer Wetter.`)
+    } catch (err) {
+      setError(apiError(err))
+    }
+  }
+
   async function revoke(invite: Invite) {
     if (!window.confirm(`Einladung an ${invite.email} zurückziehen?`)) return
     setError('')
@@ -145,6 +183,52 @@ export default function MembersPage() {
             </span>
           )}
         </div>
+
+        <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-muted">
+          <MapPin className="h-4 w-4 shrink-0" />
+          {me?.family?.location_name ? (
+            <span>
+              Familienort: <span className="font-semibold text-text">{me.family.location_name}</span>
+            </span>
+          ) : (
+            <span>Noch kein Familienort – fürs Wetter auf dem Dashboard.</span>
+          )}
+        </div>
+        {isGuardian && (
+          <form onSubmit={searchPlace} className="mt-2 space-y-2">
+            <div className="flex gap-2">
+              <input
+                placeholder="Ort suchen (z. B. Mannheim) …"
+                value={placeQuery}
+                onChange={(e) => setPlaceQuery(e.target.value)}
+                className="flex-1 rounded-lg border border-border px-3 py-2 text-sm outline-none focus:border-primary"
+              />
+              <button
+                disabled={placeSearching}
+                className="rounded-lg bg-surface-2 px-4 py-2 text-sm font-semibold text-muted hover:text-primary disabled:opacity-60"
+              >
+                {placeSearching ? 'Sucht …' : 'Suchen'}
+              </button>
+            </div>
+            {placeResults.length > 0 && (
+              <ul className="space-y-1">
+                {placeResults.map((r, i) => (
+                  <li key={`${r.latitude}-${r.longitude}-${i}`}>
+                    <button
+                      type="button"
+                      onClick={() => void chooseLocation(r)}
+                      className="w-full rounded-lg bg-surface-2 px-3 py-1.5 text-left text-sm hover:text-primary"
+                    >
+                      {r.name}
+                      {r.admin1 ? `, ${r.admin1}` : ''}
+                      {r.country ? ` (${r.country})` : ''}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </form>
+        )}
 
         {isGuardian && (
           <form onSubmit={invite} className="mt-4 space-y-2">

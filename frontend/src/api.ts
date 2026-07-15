@@ -1,6 +1,7 @@
 import { api, ensureCsrf, isNative, setAuthToken } from './lib/api'
 import type {
   AppItem,
+  Contact,
   EventItem,
   Family,
   ImageItem,
@@ -128,6 +129,59 @@ export const familyApi = {
   async updateRole(userId: number, role: 'guardian' | 'child'): Promise<User> {
     const { data } = await api.patch<{ data: User }>(`/family/members/${userId}/role`, { role })
     return data.data
+  },
+  /** Heimatort fürs Wetter setzen (nur Verwalter). */
+  async updateLocation(payload: {
+    location_name: string
+    latitude: number
+    longitude: number
+  }): Promise<Family> {
+    const { data } = await api.patch<{ data: Family }>('/family/location', payload)
+    return data.data
+  },
+}
+
+export interface ContactPayload {
+  name: string
+  category: string | null
+  phone: string | null
+  email: string | null
+  website: string | null
+  address: string | null
+  notes: string | null
+  photo?: File | null
+}
+
+function contactForm(payload: ContactPayload): FormData {
+  const form = new FormData()
+  form.append('name', payload.name)
+  for (const key of ['category', 'phone', 'email', 'website', 'address', 'notes'] as const) {
+    const value = payload[key]
+    if (value) form.append(key, value)
+  }
+  if (payload.photo) form.append('photo', payload.photo)
+  return form
+}
+
+export const contactsApi = {
+  async list(): Promise<Contact[]> {
+    const { data } = await api.get<{ data: Contact[] }>('/contacts')
+    return data.data
+  },
+  async create(payload: ContactPayload): Promise<Contact> {
+    const { data } = await api.post<{ data: Contact }>('/contacts', contactForm(payload))
+    return data.data
+  },
+  async update(id: number, payload: ContactPayload): Promise<Contact> {
+    // Multipart + PATCH verträgt sich nicht (PHP parst den Body nicht) –
+    // daher POST mit Laravel-Method-Spoofing.
+    const form = contactForm(payload)
+    form.append('_method', 'PATCH')
+    const { data } = await api.post<{ data: Contact }>(`/contacts/${id}`, form)
+    return data.data
+  },
+  async remove(id: number): Promise<void> {
+    await api.delete(`/contacts/${id}`)
   },
 }
 

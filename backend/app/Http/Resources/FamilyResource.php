@@ -20,6 +20,10 @@ class FamilyResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'is_premium' => $this->isPremium(),
+            // Heimatort fürs Wetter-Widget (von Verwaltern gepflegt).
+            'location_name' => $this->location_name,
+            'latitude' => $this->latitude !== null ? (float) $this->latitude : null,
+            'longitude' => $this->longitude !== null ? (float) $this->longitude : null,
         ];
     }
 }

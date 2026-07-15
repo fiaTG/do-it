@@ -1,7 +1,8 @@
 # Nidula
 
 Eine Web-App, mit der eine Familie ihren Alltag gemeinsam organisiert:
-Einkaufsliste, Kalender, ToDos und Bildergalerie – modular auswählbar pro Nutzer.
+Einkaufsliste, Kalender, ToDos, Bildergalerie und Adressbuch – modular
+auswählbar pro Nutzer, dazu das Zuhause-Wetter auf dem Dashboard.
 („Nidula" = lat. *kleines Nest*; zuvor Arbeitstitel „Heimathafen", davor „Family
 Board". Hintergrund: [`docs/adr/0018-cross-platform-design-und-brand.md`](docs/adr/0018-cross-platform-design-und-brand.md).)
 

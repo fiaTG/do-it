@@ -8,7 +8,7 @@ use Illuminate\Database\Seeder;
 class AppSeeder extends Seeder
 {
     /**
-     * Die vier auswählbaren Dashboard-Apps. Idempotent über den Slug.
+     * Die auswählbaren Dashboard-Apps. Idempotent über den Slug.
      */
     public function run(): void
     {
@@ -17,6 +17,7 @@ class AppSeeder extends Seeder
             ['slug' => 'shopping-list', 'name' => 'Einkaufsliste', 'icon' => 'fa-solid fa-cart-shopping'],
             ['slug' => 'todo', 'name' => 'ToDo-Liste', 'icon' => 'fa-solid fa-list-check'],
             ['slug' => 'calendar', 'name' => 'Kalender', 'icon' => 'fa-solid fa-calendar'],
+            ['slug' => 'contacts', 'name' => 'Adressbuch', 'icon' => 'fa-solid fa-address-book'],
         ];
 
         foreach ($apps as $app) {

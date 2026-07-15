@@ -163,9 +163,9 @@ aber spürbar"):
 
 | Idee | Umfang | Free/Premium | Anmerkung |
 | ------ | -------- | -------------- | ----------- |
-| Familien-Adressbuch (Arzt, Schule, Verwandte – mit Foto, Tel, Web, Adresse) | 1 Runde | Free (5. Kern-App) | CRUD wie Einkaufsliste, Fotos über bestehende Medien-Pipeline |
+| ~~Familien-Adressbuch~~ | – | Free (5. Kern-App) | ✔ umgesetzt 2026-07-15 (App-Slug `contacts`) |
 | Fun Area: Mini-Games mit Familien-Highscore | Snake: 1 Runde; weitere Spiele je ~1 Runde | Fun Area + 1 Spiel free, weitere Spiele Premium | Canvas, keine Fremdbibliotheken; scores-Tabelle pro Familie |
-| Wetter-Widget (Dashboard) | klein | Free | Open-Meteo: kostenlos, kein API-Key |
+| ~~Wetter-Widget (Dashboard)~~ | – | Free | ✔ umgesetzt 2026-07-15 (Open-Meteo, Familienort auf der Familienseite) |
 | Tankpreise Umgebung | mittel | Premium | Tankerkönig-API (MTS-K, kostenloser Key), Backend-Proxy mit Cache |
 | Wiederkehrende Termine (Mülltonnen wöchentl., TÜV jährl.) | mittel | Free (Kalender-Grundfunktion) | FullCalendar rrule-Plugin |
 | iCal-Import/Kalender-Sync (z. B. gemeindliche Abfuhrkalender) | mittel | Premium | löst das „Bald: Kalender-Sync"-Versprechen der PremiumPage ein |

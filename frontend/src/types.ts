@@ -2,6 +2,10 @@ export interface Family {
   id: number
   name: string
   is_premium: boolean
+  /** Heimatort fürs Wetter-Widget (von Verwaltern gepflegt). */
+  location_name: string | null
+  latitude: number | null
+  longitude: number | null
 }
 
 export interface Subscription {
@@ -108,6 +112,20 @@ export interface ImagePage {
   limit: number | null
   /** Gesamtzahl aller Bilder der Familie (nicht nur diese Seite). */
   total: number
+}
+
+export interface Contact {
+  id: number
+  name: string
+  category: string | null
+  phone: string | null
+  email: string | null
+  website: string | null
+  address: string | null
+  notes: string | null
+  photo_url: string | null
+  created_by: number | null
+  created_at: string | null
 }
 
 export interface Invite {

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\FamilyController;
 use App\Http\Controllers\ImageController;
@@ -51,6 +52,8 @@ Route::prefix('v1')->group(function () {
         Route::get('/media/images/{image}/variant/{width}', [MediaController::class, 'variant'])
             ->whereNumber('width')->name('media.variant')->withTrashed();
         Route::get('/media/avatars/{user}', [MediaController::class, 'avatar'])->name('media.avatar');
+        Route::get('/media/contact-photos/{contact}', [MediaController::class, 'contactPhoto'])
+            ->name('media.contact-photo');
     });
 
     // --- Geschützt (Sanctum: Cookie fürs SPA oder Bearer-Token) ---------------
@@ -73,6 +76,7 @@ Route::prefix('v1')->group(function () {
         Route::post('/family', [FamilyController::class, 'store']);
         Route::get('/family/members', [FamilyController::class, 'members']);
         Route::patch('/family/members/{member}/role', [FamilyController::class, 'updateRole']);
+        Route::patch('/family/location', [FamilyController::class, 'updateLocation']);
         Route::post('/invites', [InviteController::class, 'store']);
         Route::get('/invites', [InviteController::class, 'index']);
         Route::delete('/invites/{invite}', [InviteController::class, 'destroy']);
@@ -102,5 +106,7 @@ Route::prefix('v1')->group(function () {
         Route::post('images/purge', [ImageController::class, 'purge']);
         Route::apiResource('images', ImageController::class)
             ->only(['index', 'show', 'store', 'destroy']);
+        Route::apiResource('contacts', ContactController::class)
+            ->only(['index', 'store', 'update', 'destroy']);
     });
 });

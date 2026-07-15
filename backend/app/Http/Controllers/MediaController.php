@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Contact;
 use App\Models\Image;
 use App\Models\User;
 use App\Support\ImageVariants;
@@ -47,6 +48,13 @@ class MediaController extends Controller
         abort_if($user->avatar_path === null, 404);
 
         return $this->stream($user->avatar_path);
+    }
+
+    public function contactPhoto(Contact $contact): StreamedResponse
+    {
+        abort_if($contact->photo_path === null, 404);
+
+        return $this->stream($contact->photo_path);
     }
 
     private function stream(string $path): StreamedResponse

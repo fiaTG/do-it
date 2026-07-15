@@ -1,6 +1,7 @@
 import { useEffect, useState, type ComponentType, type FormEvent } from 'react'
 import { apiError, familyApi } from '../api'
 import DashboardStats from '../components/DashboardStats'
+import WeatherWidget from '../components/WeatherWidget'
 import CalendarWidget from '../components/widgets/CalendarWidget'
 import GalleryWidget from '../components/widgets/GalleryWidget'
 import ShoppingWidget from '../components/widgets/ShoppingWidget'
@@ -88,6 +89,7 @@ export default function DashboardPage() {
         <p className="mt-1 text-white/80">
           {user?.family ? `Willkommen in eurem Nest, Familie ${user.family.name}.` : 'Willkommen in eurem Nest.'}
         </p>
+        <WeatherWidget />
       </header>
 
       {mine.length > 0 && <DashboardStats slugs={mine.map((a) => a.slug)} />}

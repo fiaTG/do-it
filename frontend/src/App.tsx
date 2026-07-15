@@ -3,6 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import Layout from './components/Layout'
 import ProtectedRoute from './components/ProtectedRoute'
 import RequireApp from './components/RequireApp'
+import ContactsPage from './pages/ContactsPage'
 import DashboardPage from './pages/DashboardPage'
 import GalleryPage from './pages/GalleryPage'
 import LandingPage from './pages/LandingPage'
@@ -87,6 +88,14 @@ export default function App() {
               element={
                 <RequireApp slug="gallery">
                   <GalleryPage />
+                </RequireApp>
+              }
+            />
+            <Route
+              path="/contacts"
+              element={
+                <RequireApp slug="contacts">
+                  <ContactsPage />
                 </RequireApp>
               }
             />

@@ -13,7 +13,7 @@ class Family extends Model
     /** @use HasFactory<FamilyFactory> */
     use HasFactory;
 
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'location_name', 'latitude', 'longitude'];
 
     public function users(): HasMany
     {

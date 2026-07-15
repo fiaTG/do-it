@@ -45,6 +45,28 @@ class FamilyController extends Controller
     }
 
     /**
+     * Heimatort der Familie setzen (nur Verwalter) – Koordinaten kommen aus der
+     * Ortssuche im Frontend (Open-Meteo Geocoding), das Wetter-Widget liest sie.
+     */
+    public function updateLocation(Request $request): FamilyResource
+    {
+        $user = $request->user();
+        $this->familyId($request);
+
+        abort_unless($user->isGuardian(), 403, 'Nur Verwalter dürfen den Familienort ändern.');
+
+        $data = $request->validate([
+            'location_name' => ['required', 'string', 'max:255'],
+            'latitude' => ['required', 'numeric', 'between:-90,90'],
+            'longitude' => ['required', 'numeric', 'between:-180,180'],
+        ]);
+
+        $user->family->update($data);
+
+        return new FamilyResource($user->family->fresh());
+    }
+
+    /**
      * Rolle eines Familienmitglieds setzen (nur Verwalter, nicht die eigene).
      */
     public function updateRole(Request $request, User $member): UserResource
