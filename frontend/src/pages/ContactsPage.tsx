@@ -37,6 +37,7 @@ export default function ContactsPage() {
   const [photo, setPhoto] = useState<File | null>(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+  const [photoView, setPhotoView] = useState<Contact | null>(null)
   const photoInput = useRef<HTMLInputElement>(null)
 
   async function load() {
@@ -175,13 +176,20 @@ export default function ContactsPage() {
         {visible.map((c) => (
           <div key={c.id} className="flex flex-col rounded-2xl bg-surface p-5 shadow">
             <div className="flex items-start gap-3">
-              <span className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary-soft text-sm font-bold text-primary">
-                {c.photo_url ? (
+              {c.photo_url ? (
+                <button
+                  type="button"
+                  onClick={() => setPhotoView(c)}
+                  aria-label={`Foto von ${c.name} vergrößern`}
+                  className="h-16 w-16 shrink-0 overflow-hidden rounded-xl transition hover:scale-105"
+                >
                   <img src={c.photo_url} alt="" loading="lazy" className="h-full w-full object-cover" />
-                ) : (
-                  initials(c.name) || <BookUser className="h-5 w-5" />
-                )}
-              </span>
+                </button>
+              ) : (
+                <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-lg font-bold text-primary">
+                  {initials(c.name) || <BookUser className="h-6 w-6" />}
+                </span>
+              )}
               <div className="min-w-0 flex-1">
                 <p className="truncate font-semibold text-text">{c.name}</p>
                 {c.category && (
@@ -232,6 +240,20 @@ export default function ContactsPage() {
           </div>
         ))}
       </div>
+
+      {photoView && photoView.photo_url && (
+        <div
+          onClick={() => setPhotoView(null)}
+          className="fixed inset-0 z-50 flex flex-col items-center justify-center gap-3 bg-black/80 p-4"
+        >
+          <img
+            src={photoView.photo_url}
+            alt={photoView.name}
+            className="max-h-[80vh] max-w-full rounded-xl object-contain"
+          />
+          <p className="text-sm text-white/90">{photoView.name} · zum Schließen tippen</p>
+        </div>
+      )}
 
       {modal.open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">

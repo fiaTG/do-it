@@ -3,6 +3,7 @@ import { apiError, familyApi } from '../api'
 import DashboardStats from '../components/DashboardStats'
 import WeatherWidget from '../components/WeatherWidget'
 import CalendarWidget from '../components/widgets/CalendarWidget'
+import ContactsWidget from '../components/widgets/ContactsWidget'
 import GalleryWidget from '../components/widgets/GalleryWidget'
 import ShoppingWidget from '../components/widgets/ShoppingWidget'
 import TodoWidget from '../components/widgets/TodoWidget'
@@ -16,6 +17,7 @@ const WIDGETS: Record<string, ComponentType<{ onRemove?: () => void }>> = {
   todo: TodoWidget,
   'shopping-list': ShoppingWidget,
   gallery: GalleryWidget,
+  contacts: ContactsWidget,
 }
 
 export default function DashboardPage() {

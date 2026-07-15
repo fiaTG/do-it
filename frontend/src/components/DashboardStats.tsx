@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { eventsApi, imagesApi, shoppingApi, todosApi } from '../api'
+import { contactsApi, eventsApi, imagesApi, shoppingApi, todosApi } from '../api'
 import { APP_ICONS, type LucideIcon } from '../lib/icons'
 
 type Metric = {
@@ -43,6 +43,13 @@ const METRICS: Metric[] = [
     label: 'Bilder',
     to: '/gallery',
     load: async () => (await imagesApi.list()).total,
+  },
+  {
+    slug: 'contacts',
+    icon: APP_ICONS.contacts,
+    label: 'Kontakte',
+    to: '/contacts',
+    load: async () => (await contactsApi.list()).length,
   },
 ]
 
