@@ -2,6 +2,7 @@ import { api, ensureCsrf, isNative, setAuthToken } from './lib/api'
 import type {
   AppItem,
   Contact,
+  GameScores,
   EventItem,
   Family,
   ImageItem,
@@ -161,6 +162,22 @@ function contactForm(payload: ContactPayload): FormData {
   }
   if (payload.photo) form.append('photo', payload.photo)
   return form
+}
+
+export const gamesApi = {
+  async scores(game: string): Promise<GameScores> {
+    const { data } = await api.get<{ data: GameScores }>(`/games/${game}/scores`)
+    return data.data
+  },
+  async submit(
+    game: string,
+    score: number,
+  ): Promise<{ personal_record: boolean; family_record: boolean }> {
+    const { data } = await api.post<{
+      data: { personal_record: boolean; family_record: boolean }
+    }>(`/games/${game}/scores`, { score })
+    return data.data
+  },
 }
 
 export const contactsApi = {

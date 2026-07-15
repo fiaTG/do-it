@@ -26,6 +26,7 @@ const FEATURE_NAV: Record<string, NavItem> = {
   calendar: { to: '/calendar', label: 'Kalender', icon: APP_ICONS.calendar },
   gallery: { to: '/gallery', label: 'Galerie', icon: APP_ICONS.gallery },
   contacts: { to: '/contacts', label: 'Adressbuch', icon: APP_ICONS.contacts },
+  games: { to: '/games', label: 'Fun Area', icon: APP_ICONS.games },
 }
 
 export default function Layout() {

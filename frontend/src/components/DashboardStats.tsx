@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { contactsApi, eventsApi, imagesApi, shoppingApi, todosApi } from '../api'
+import { contactsApi, eventsApi, gamesApi, imagesApi, shoppingApi, todosApi } from '../api'
 import { APP_ICONS, type LucideIcon } from '../lib/icons'
 
 type Metric = {
@@ -50,6 +50,13 @@ const METRICS: Metric[] = [
     label: 'Kontakte',
     to: '/contacts',
     load: async () => (await contactsApi.list()).length,
+  },
+  {
+    slug: 'games',
+    icon: APP_ICONS.games,
+    label: 'Bester Score',
+    to: '/games',
+    load: async () => (await gamesApi.scores('raupe')).my_best ?? 0,
   },
 ]
 

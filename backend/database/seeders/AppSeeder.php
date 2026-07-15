@@ -18,6 +18,7 @@ class AppSeeder extends Seeder
             ['slug' => 'todo', 'name' => 'ToDo-Liste', 'icon' => 'fa-solid fa-list-check'],
             ['slug' => 'calendar', 'name' => 'Kalender', 'icon' => 'fa-solid fa-calendar'],
             ['slug' => 'contacts', 'name' => 'Adressbuch', 'icon' => 'fa-solid fa-address-book'],
+            ['slug' => 'games', 'name' => 'Fun Area', 'icon' => 'fa-solid fa-gamepad'],
         ];
 
         foreach ($apps as $app) {

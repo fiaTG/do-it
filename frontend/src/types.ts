@@ -114,6 +114,16 @@ export interface ImagePage {
   total: number
 }
 
+export interface GameScoreEntry {
+  user_id: number
+  score: number
+}
+
+export interface GameScores {
+  top: GameScoreEntry[]
+  my_best: number | null
+}
+
 export interface Contact {
   id: number
   name: string

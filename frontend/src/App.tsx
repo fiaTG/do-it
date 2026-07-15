@@ -6,6 +6,7 @@ import RequireApp from './components/RequireApp'
 import ContactsPage from './pages/ContactsPage'
 import DashboardPage from './pages/DashboardPage'
 import GalleryPage from './pages/GalleryPage'
+import GamesPage from './pages/GamesPage'
 import LandingPage from './pages/LandingPage'
 import LoginPage from './pages/LoginPage'
 import MembersPage from './pages/MembersPage'
@@ -88,6 +89,14 @@ export default function App() {
               element={
                 <RequireApp slug="gallery">
                   <GalleryPage />
+                </RequireApp>
+              }
+            />
+            <Route
+              path="/games"
+              element={
+                <RequireApp slug="games">
+                  <GamesPage />
                 </RequireApp>
               }
             />

@@ -164,7 +164,7 @@ aber spürbar"):
 | Idee | Umfang | Free/Premium | Anmerkung |
 | ------ | -------- | -------------- | ----------- |
 | ~~Familien-Adressbuch~~ | – | Free (5. Kern-App) | ✔ umgesetzt 2026-07-15 (App-Slug `contacts`) |
-| Fun Area: Mini-Games mit Familien-Highscore | Snake: 1 Runde; weitere Spiele je ~1 Runde | Fun Area + 1 Spiel free, weitere Spiele Premium | Canvas, keine Fremdbibliotheken; scores-Tabelle pro Familie |
+| Fun Area: Mini-Games mit Familien-Highscore | weitere Spiele je ~1 Runde | Fun Area + „Hungrige Raupe" free ✔ (2026-07-16), weitere Spiele Premium (Ballon-Knallerei, Block-Garten als Teaser) | Eigene Namen/Themen statt geschützter Marken (Moorhuhn = Marke, Tetris klagt aggressiv); game_scores je Familie |
 | ~~Wetter-Widget (Dashboard)~~ | – | Free | ✔ umgesetzt 2026-07-15 (Open-Meteo, Familienort auf der Familienseite) |
 | Tankpreise Umgebung | mittel | Premium | Tankerkönig-API (MTS-K, kostenloser Key), Backend-Proxy mit Cache |
 | Wiederkehrende Termine (Mülltonnen wöchentl., TÜV jährl.) | mittel | Free (Kalender-Grundfunktion) | FullCalendar rrule-Plugin |
