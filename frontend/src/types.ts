@@ -113,6 +113,8 @@ export interface ImagePage {
 export interface Invite {
   id: number
   email: string
+  role: FamilyRole
   family: Family | null
+  created_at: string | null
   expires_at: string | null
 }

@@ -34,6 +34,8 @@ class AuthController extends Controller
             'email' => $data['email'],
             'password' => $data['password'], // wird durch 'hashed'-Cast gehasht
             'family_id' => $invite?->family_id,
+            // Rolle kommt aus der Einladung (ADR-0021); ohne Einladung Verwalter.
+            'role' => $invite?->role ?? 'guardian',
         ]);
 
         $invite?->forceFill(['accepted_at' => now()])->save();

@@ -79,8 +79,10 @@ export default function CalendarPage() {
     return member ? memberColor(member) : FALLBACK_COLOR
   }
 
-  // Kinder dürfen nur eigene Termine bearbeiten.
-  const canEdit = (e: EventItem): boolean => isGuardian || e.owner_id === userId
+  // Kinder dürfen nur SELBST angelegte eigene Termine bearbeiten (Owner-Schutz,
+  // ADR-0021) – vom Verwalter für sie angelegte Termine sind nur lesbar.
+  const canEdit = (e: EventItem): boolean =>
+    isGuardian || (e.owner_id === userId && e.created_by === userId)
 
   const fcEvents: EventInput[] = events
     .filter((e) => !hidden.includes(e.owner_id ?? -1))
@@ -320,7 +322,10 @@ export default function CalendarPage() {
               {modal.mode === 'create' ? 'Neuer Termin' : modal.readOnly ? 'Termin' : 'Termin bearbeiten'}
             </h2>
             {modal.readOnly && (
-              <p className="text-xs text-muted">Nur ansehen – dieser Termin gehört einem anderen Mitglied.</p>
+              <p className="text-xs text-muted">
+                Nur ansehen – diesen Termin kannst du nicht bearbeiten (von einem Verwalter angelegt
+                oder er gehört einem anderen Mitglied).
+              </p>
             )}
             <input
               autoFocus

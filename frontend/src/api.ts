@@ -132,9 +132,17 @@ export const familyApi = {
 }
 
 export const inviteApi = {
-  async create(email: string): Promise<Invite> {
-    const { data } = await api.post<{ data: Invite }>('/invites', { email })
+  async create(email: string, role: 'guardian' | 'child' = 'guardian'): Promise<Invite> {
+    const { data } = await api.post<{ data: Invite }>('/invites', { email, role })
     return data.data
+  },
+  /** Offene Einladungen der Familie (nicht eingelöst, nicht abgelaufen). */
+  async list(): Promise<Invite[]> {
+    const { data } = await api.get<{ data: Invite[] }>('/invites')
+    return data.data
+  },
+  async remove(id: number): Promise<void> {
+    await api.delete(`/invites/${id}`)
   },
   async show(token: string): Promise<Invite> {
     const { data } = await api.get<{ data: Invite }>(`/invites/${token}`)

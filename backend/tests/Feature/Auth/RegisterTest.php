@@ -73,3 +73,23 @@ it('joins a family via a valid invite token', function () {
     $response->assertCreated()->assertJsonPath('data.family_id', $family->id);
     expect($invite->fresh()->accepted_at)->not->toBeNull();
 });
+
+it('applies the role chosen in the invite on registration', function () {
+    $family = Family::factory()->create();
+    Invite::create([
+        'family_id' => $family->id,
+        'email' => 'kid@example.com',
+        'role' => 'child',
+        'token' => 'kid-token',
+        'expires_at' => now()->addDay(),
+    ]);
+
+    $this->postJson('/api/v1/auth/register', [
+        'first_name' => 'Kiki',
+        'last_name' => 'Kind',
+        'email' => 'kid@example.com',
+        'password' => 'Sup3r!pass',
+        'password_confirmation' => 'Sup3r!pass',
+        'token' => 'kid-token',
+    ])->assertCreated()->assertJsonPath('data.role', 'child');
+});

@@ -10,6 +10,7 @@ class Invite extends Model
     protected $fillable = [
         'family_id',
         'email',
+        'role',
         'token',
         'expires_at',
         'accepted_at',

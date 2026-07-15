@@ -69,6 +69,8 @@ zu erreichen.
 ## Offene Punkte
 
 - Default-Rolle **eingeladener** Mitglieder ggf. schon bei der Einladung wählbar.
+  → **Entschieden in [ADR-0021](0021-einladungs-rollen-und-owner-schutz.md).**
 - „Owner-Schutz": Darf ein Kind einen vom Elternteil **für es** angelegten Termin
   (owner=Kind) löschen? Aktuell ja – bei Bedarf verschärfen (z. B. nach
-  `created_by`).
+  `created_by`). → **Entschieden (verschärft) in
+  [ADR-0021](0021-einladungs-rollen-und-owner-schutz.md).**

@@ -3,15 +3,19 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class InviteRequest extends FormRequest
 {
     /**
-     * Nur Nutzer, die bereits einer Familie angehören, dürfen einladen.
+     * Nur Verwalter dürfen einladen (ADR-0021) – und legen dabei die Rolle
+     * des Eingeladenen fest. Kinder können keine Mitglieder hinzufügen.
      */
     public function authorize(): bool
     {
-        return $this->user()?->family_id !== null;
+        $user = $this->user();
+
+        return $user?->family_id !== null && $user->isGuardian();
     }
 
     /**
@@ -21,6 +25,7 @@ class InviteRequest extends FormRequest
     {
         return [
             'email' => ['required', 'email', 'max:255'],
+            'role' => ['nullable', Rule::in(['guardian', 'child'])],
         ];
     }
 }

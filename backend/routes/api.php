@@ -74,6 +74,8 @@ Route::prefix('v1')->group(function () {
         Route::get('/family/members', [FamilyController::class, 'members']);
         Route::patch('/family/members/{member}/role', [FamilyController::class, 'updateRole']);
         Route::post('/invites', [InviteController::class, 'store']);
+        Route::get('/invites', [InviteController::class, 'index']);
+        Route::delete('/invites/{invite}', [InviteController::class, 'destroy']);
 
         // Dashboard-Apps (Katalog + eigene Auswahl)
         Route::get('/apps', [UserAppController::class, 'index']);

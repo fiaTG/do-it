@@ -91,6 +91,29 @@ it('lets a child edit their own event', function () {
         ->assertOk()->assertJsonPath('data.title', 'Neu');
 });
 
+it('protects guardian-created events for a child from the child (Owner-Schutz)', function () {
+    $parent = familyMember();
+    $child = User::factory()->create(['family_id' => $parent->family_id, 'role' => 'child']);
+    // Verwalter legt den Termin FÜR das Kind an (owner = Kind, creator = Verwalter).
+    $event = Event::create([
+        'family_id' => $parent->family_id,
+        'user_id' => $parent->id,
+        'owner_id' => $child->id,
+        'title' => 'Zahnarzt',
+        'starts_at' => now()->addDay(),
+        'ends_at' => now()->addDay()->addHour(),
+    ]);
+    Sanctum::actingAs($child);
+
+    // ADR-0021: Kind darf nur SELBST angelegte Termine ändern/löschen.
+    $this->patchJson("/api/v1/events/{$event->id}", ['title' => 'Abgesagt'])->assertForbidden();
+    $this->deleteJson("/api/v1/events/{$event->id}")->assertForbidden();
+
+    // Der Verwalter selbst darf weiterhin.
+    Sanctum::actingAs($parent);
+    $this->patchJson("/api/v1/events/{$event->id}", ['title' => 'Verschoben'])->assertOk();
+});
+
 it('rejects an owner from another family', function () {
     $user = familyMember();
     $stranger = familyMember(); // eigene Familie
