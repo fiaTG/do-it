@@ -77,6 +77,9 @@ export interface EventItem {
   created_by: number | null
   owner_id: number | null
   owner_name: string | null
+  /** Serie (ADR-lose Produktentscheidung): null = einmalig. */
+  recurrence: 'daily' | 'weekly' | 'monthly' | 'yearly' | null
+  recurrence_until: string | null
 }
 
 export interface ImageVariant {

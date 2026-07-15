@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from 'react'
+import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
@@ -9,8 +9,9 @@ import deLocale from '@fullcalendar/core/locales/de'
 import { apiError, eventsApi, familyApi } from '../api'
 import MemberAvatar from '../components/MemberAvatar'
 import PersonDayView from '../components/PersonDayView'
-import { Calendar, Car } from '../lib/icons'
+import { Calendar, Car, RotateCcw } from '../lib/icons'
 import { FALLBACK_COLOR, memberColor } from '../lib/memberColors'
+import { expandEvents } from '../lib/recurrence'
 import { useAuth } from '../store/auth'
 import type { EventItem, User } from '../types'
 
@@ -24,6 +25,8 @@ interface ModalState {
   end: string
   ownerId: number
   carReserved: boolean
+  recurrence: string
+  recurrenceUntil: string
 }
 
 const CLOSED: ModalState = {
@@ -36,6 +39,8 @@ const CLOSED: ModalState = {
   end: '',
   ownerId: 0,
   carReserved: false,
+  recurrence: '',
+  recurrenceUntil: '',
 }
 
 /** Date -> Wert für <input type="datetime-local"> (lokale Zeit, ohne Sekunden). */
@@ -56,6 +61,8 @@ export default function CalendarPage() {
   const [error, setError] = useState('')
   const [view, setView] = useState<'overview' | 'person'>('overview')
   const [personDate, setPersonDate] = useState(() => new Date())
+  // Einmal beim Mount fixiert (react-hooks/purity); Expansionsfenster ±.
+  const [mountedAt] = useState(() => new Date())
 
   async function load() {
     try {
@@ -84,17 +91,34 @@ export default function CalendarPage() {
   const canEdit = (e: EventItem): boolean =>
     isGuardian || (e.owner_id === userId && e.created_by === userId)
 
-  const fcEvents: EventInput[] = events
+  // Serien in Vorkommen auflösen: 1 Jahr zurück, 2 Jahre voraus.
+  const occurrences = useMemo(
+    () =>
+      expandEvents(
+        events,
+        new Date(mountedAt.getFullYear() - 1, 0, 1),
+        new Date(mountedAt.getFullYear() + 2, 0, 1),
+      ),
+    [events, mountedAt],
+  )
+
+  const fcEvents: EventInput[] = occurrences
     .filter((e) => !hidden.includes(e.owner_id ?? -1))
     .map((e) => ({
-      id: String(e.id),
+      id: e.occurrence_key,
       title: e.title,
       start: e.starts_at,
       end: e.ends_at,
       backgroundColor: colorFor(e.owner_id),
       borderColor: colorFor(e.owner_id),
-      editable: canEdit(e), // nur eigene/als Verwalter ziehbar
-      extendedProps: { ownerId: e.owner_id, carReserved: e.car_reserved },
+      // Serien-Vorkommen nicht ziehbar (sonst würde die ganze Serie umziehen).
+      editable: canEdit(e) && !e.recurrence,
+      extendedProps: {
+        eventId: e.id,
+        ownerId: e.owner_id,
+        carReserved: e.car_reserved,
+        recurrence: e.recurrence,
+      },
     }))
 
   // Eigener Event-Inhalt: Mini-Avatar des Owners + Zeit + Titel, damit in der
@@ -129,29 +153,34 @@ export default function CalendarPage() {
   }
 
   function openEditEvent(event: EventItem) {
+    // Bei Serien-Vorkommen immer die SERIE bearbeiten (Original-Zeiten laden).
+    const series = events.find((e) => e.id === event.id) ?? event
     setModal({
       open: true,
       mode: 'edit',
-      readOnly: !canEdit(event), // fremder Termin (Kind) -> nur ansehen
-      id: event.id,
-      title: event.title,
-      start: toLocalInput(new Date(event.starts_at)),
-      end: toLocalInput(new Date(event.ends_at)),
-      ownerId: event.owner_id ?? userId,
-      carReserved: event.car_reserved,
+      readOnly: !canEdit(series), // fremder Termin (Kind) -> nur ansehen
+      id: series.id,
+      title: series.title,
+      start: toLocalInput(new Date(series.starts_at)),
+      end: toLocalInput(new Date(series.ends_at)),
+      ownerId: series.owner_id ?? userId,
+      carReserved: series.car_reserved,
+      recurrence: series.recurrence ?? '',
+      recurrenceUntil: series.recurrence_until ?? '',
     })
   }
 
   function openEditFromCalendar(arg: EventClickArg) {
-    const event = events.find((e) => e.id === Number(arg.event.id))
+    const event = events.find((e) => e.id === Number(arg.event.extendedProps.eventId))
     if (event) openEditEvent(event)
   }
 
-  // Drag&Drop bzw. Resize -> nur die Zeiten persistieren.
+  // Drag&Drop bzw. Resize -> nur die Zeiten persistieren (nur Einzeltermine,
+  // Serien-Vorkommen sind nicht ziehbar; occurrence_key einmaliger Events = id).
   async function persistMove(arg: { event: { id: string; start: Date | null; end: Date | null } }) {
     const { id, start, end } = arg.event
     if (!start) return
-    await eventsApi.update(Number(id), {
+    await eventsApi.update(Number(id.split(':')[0]), {
       starts_at: start.toISOString(),
       ends_at: (end ?? start).toISOString(),
     })
@@ -167,6 +196,8 @@ export default function CalendarPage() {
       ends_at: modal.end,
       car_reserved: modal.carReserved,
       owner_id: modal.ownerId,
+      recurrence: modal.recurrence || null,
+      recurrence_until: modal.recurrence && modal.recurrenceUntil ? modal.recurrenceUntil : null,
     }
     try {
       if (modal.mode === 'create') {
@@ -306,7 +337,7 @@ export default function CalendarPage() {
             <PersonDayView
               date={personDate}
               members={visibleMembers}
-              events={events}
+              events={occurrences}
               colorFor={colorFor}
               onEventClick={openEditEvent}
               onSlotClick={(m, start) => openCreateAt(start, new Date(+start + 3_600_000), m.id)}
@@ -406,6 +437,44 @@ export default function CalendarPage() {
               />
               <Car className="h-4 w-4 text-muted" /> Auto reservieren
             </label>
+
+            {/* Serie: Mülltonnen wöchentlich, TÜV jährlich (Produkt-Backlog). */}
+            <div className="flex gap-2">
+              <label className="flex-1 text-xs text-muted">
+                <span className="flex items-center gap-1">
+                  <RotateCcw className="h-3 w-3" /> Wiederholung
+                </span>
+                <select
+                  disabled={modal.readOnly}
+                  value={modal.recurrence}
+                  onChange={(e) => setModal({ ...modal, recurrence: e.target.value })}
+                  className={`${inputClass} mt-1 w-full`}
+                >
+                  <option value="">Nie</option>
+                  <option value="daily">Täglich</option>
+                  <option value="weekly">Wöchentlich</option>
+                  <option value="monthly">Monatlich</option>
+                  <option value="yearly">Jährlich</option>
+                </select>
+              </label>
+              {modal.recurrence && (
+                <label className="flex-1 text-xs text-muted">
+                  Endet am (optional)
+                  <input
+                    type="date"
+                    disabled={modal.readOnly}
+                    value={modal.recurrenceUntil}
+                    onChange={(e) => setModal({ ...modal, recurrenceUntil: e.target.value })}
+                    className={`${inputClass} mt-1 w-full`}
+                  />
+                </label>
+              )}
+            </div>
+            {modal.mode === 'edit' && modal.recurrence && !modal.readOnly && (
+              <p className="text-xs text-muted">
+                Serientermin – Änderungen gelten für die gesamte Serie.
+              </p>
+            )}
             <div className="flex items-center justify-between pt-2">
               {modal.mode === 'edit' && !modal.readOnly ? (
                 <button

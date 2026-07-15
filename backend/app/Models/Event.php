@@ -14,6 +14,8 @@ class Event extends Model
         'title',
         'starts_at',
         'ends_at',
+        'recurrence',
+        'recurrence_until',
         'category',
         'car_reserved',
     ];
@@ -23,6 +25,7 @@ class Event extends Model
         return [
             'starts_at' => 'datetime',
             'ends_at' => 'datetime',
+            'recurrence_until' => 'date',
             'car_reserved' => 'boolean',
         ];
     }

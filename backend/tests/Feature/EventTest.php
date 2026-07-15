@@ -171,3 +171,36 @@ it('forbids updating another family event', function () {
     $this->patchJson("/api/v1/events/{$event->id}", ['title' => 'Hack'])
         ->assertForbidden();
 });
+
+it('stores a recurring event with an optional end date', function () {
+    Sanctum::actingAs(familyMember());
+
+    $this->postJson('/api/v1/events', [
+        'title' => 'Mülltonnen rausstellen',
+        'starts_at' => '2026-07-20 07:00:00',
+        'ends_at' => '2026-07-20 07:30:00',
+        'recurrence' => 'weekly',
+        'recurrence_until' => '2026-12-31',
+    ])->assertCreated()
+        ->assertJsonPath('data.recurrence', 'weekly')
+        ->assertJsonPath('data.recurrence_until', '2026-12-31');
+});
+
+it('rejects an unknown recurrence and an until-date before the start', function () {
+    Sanctum::actingAs(familyMember());
+
+    $this->postJson('/api/v1/events', [
+        'title' => 'X',
+        'starts_at' => '2026-07-20 07:00:00',
+        'ends_at' => '2026-07-20 08:00:00',
+        'recurrence' => 'hourly',
+    ])->assertStatus(422)->assertJsonValidationErrorFor('recurrence');
+
+    $this->postJson('/api/v1/events', [
+        'title' => 'X',
+        'starts_at' => '2026-07-20 07:00:00',
+        'ends_at' => '2026-07-20 08:00:00',
+        'recurrence' => 'weekly',
+        'recurrence_until' => '2026-07-01',
+    ])->assertStatus(422)->assertJsonValidationErrorFor('recurrence_until');
+});

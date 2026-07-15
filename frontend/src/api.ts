@@ -292,6 +292,8 @@ export const eventsApi = {
     ends_at: string
     car_reserved: boolean
     owner_id: number
+    recurrence: string | null
+    recurrence_until: string | null
   }): Promise<EventItem> {
     const { data } = await api.post<{ data: EventItem }>('/events', payload)
     return data.data
@@ -304,6 +306,8 @@ export const eventsApi = {
       ends_at: string
       car_reserved: boolean
       owner_id: number
+      recurrence: string | null
+      recurrence_until: string | null
     }>,
   ): Promise<EventItem> {
     const { data } = await api.patch<{ data: EventItem }>(`/events/${id}`, payload)

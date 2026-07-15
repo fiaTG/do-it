@@ -25,6 +25,8 @@ class EventResource extends JsonResource
             'car_reserved' => $this->car_reserved,
             'created_by' => $this->user_id,
             // Mitglied, für das der Termin ist (Farbe/Zuordnung im Familienkalender).
+            'recurrence' => $this->recurrence,
+            'recurrence_until' => $this->recurrence_until?->toDateString(),
             'owner_id' => $this->owner_id,
             'owner_name' => $this->owner?->first_name,
         ];

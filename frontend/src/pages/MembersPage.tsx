@@ -4,6 +4,7 @@ import { apiError, eventsApi, familyApi, inviteApi } from '../api'
 import MemberAvatar from '../components/MemberAvatar'
 import { Baby, Cake, Calendar, Crown, Mail, MapPin, PartyPopper, Shield, Users, X } from '../lib/icons'
 import { memberColor } from '../lib/memberColors'
+import { expandEvents, type Occurrence } from '../lib/recurrence'
 import { searchPlaces, type GeocodingResult } from '../lib/weather'
 import { useAuth } from '../store/auth'
 import type { EventItem, FamilyRole, Invite, User } from '../types'
@@ -83,9 +84,9 @@ export default function MembersPage() {
     void load()
   }, [])
 
-  /** Nächster (laufender oder kommender) Termin eines Mitglieds. */
-  function nextEventFor(memberId: number): EventItem | undefined {
-    return events
+  /** Nächster (laufender oder kommender) Termin eines Mitglieds – inkl. Serien. */
+  function nextEventFor(memberId: number): Occurrence | undefined {
+    return expandEvents(events, now, new Date(+now + 90 * MS_PER_DAY))
       .filter((e) => e.owner_id === memberId && +new Date(e.ends_at) >= +now)
       .sort((a, b) => +new Date(a.starts_at) - +new Date(b.starts_at))[0]
   }
