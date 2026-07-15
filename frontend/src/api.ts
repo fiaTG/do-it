@@ -107,8 +107,8 @@ export const subscriptionApi = {
     const { data } = await api.get<{ data: Subscription }>('/subscription')
     return data.data
   },
-  async activate(): Promise<Subscription> {
-    const { data } = await api.post<{ data: Subscription }>('/subscription')
+  async activate(plan: 'monthly' | 'yearly' = 'monthly'): Promise<Subscription> {
+    const { data } = await api.post<{ data: Subscription }>('/subscription', { plan })
     return data.data
   },
   async cancel(): Promise<void> {

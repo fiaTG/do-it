@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { apiError, authApi, subscriptionApi } from '../api'
-import { Check, Crown } from '../lib/icons'
+import { Check, Crown, PartyPopper } from '../lib/icons'
+import { MEMBER_PALETTE } from '../lib/memberColors'
 import { useAuth } from '../store/auth'
 import type { Subscription } from '../types'
 
@@ -11,10 +12,64 @@ const BENEFITS = [
   '100 % werbefrei – heute und immer',
 ]
 
+type Plan = 'monthly' | 'yearly'
+
+const PLANS: { id: Plan; name: string; price: string; note: string }[] = [
+  { id: 'monthly', name: 'Monatlich', price: '2,99 €/Monat', note: 'jederzeit kündbar' },
+  {
+    id: 'yearly',
+    name: 'Jährlich',
+    price: '24,99 €/Jahr',
+    note: 'entspricht 2,08 €/Monat · spart rund 30 %',
+  },
+]
+
+interface ConfettiPiece {
+  left: number
+  delay: number
+  duration: number
+  size: number
+  color: string
+}
+
+/** Konfetti-Regen in den Nidula-Farben – einmalig nach der Aktivierung. */
+function Confetti() {
+  // Im State-Initializer erzeugt (einmalig, Render bleibt pur).
+  const [pieces] = useState<ConfettiPiece[]>(() =>
+    Array.from({ length: 90 }, () => ({
+      left: Math.random() * 100,
+      delay: Math.random() * 0.8,
+      duration: 2.2 + Math.random() * 1.6,
+      size: 6 + Math.random() * 6,
+      color: MEMBER_PALETTE[Math.floor(Math.random() * MEMBER_PALETTE.length)],
+    })),
+  )
+
+  return (
+    <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-50 overflow-hidden">
+      {pieces.map((p, i) => (
+        <span
+          key={i}
+          className="absolute top-0 rounded-[2px]"
+          style={{
+            left: `${p.left}%`,
+            width: p.size,
+            height: p.size * 0.45,
+            background: p.color,
+            animation: `confetti-fall ${p.duration}s ease-in ${p.delay}s forwards`,
+          }}
+        />
+      ))}
+    </div>
+  )
+}
+
 export default function PremiumPage() {
   const setUser = useAuth((s) => s.setUser)
   const [sub, setSub] = useState<Subscription | null>(null)
+  const [plan, setPlan] = useState<Plan>('yearly')
   const [busy, setBusy] = useState(false)
+  const [celebrate, setCelebrate] = useState(false)
   const [error, setError] = useState('')
 
   async function load() {
@@ -38,8 +93,9 @@ export default function PremiumPage() {
     setBusy(true)
     setError('')
     try {
-      setSub(await subscriptionApi.activate())
+      setSub(await subscriptionApi.activate(plan))
       await refreshUser()
+      setCelebrate(true)
     } catch (err) {
       setError(apiError(err))
     } finally {
@@ -78,7 +134,7 @@ export default function PremiumPage() {
               isPremium ? 'bg-primary text-white' : 'bg-surface-2 text-muted'
             }`}
           >
-            {isPremium ? 'Premium' : 'Free'}
+            {isPremium ? (sub?.plan === 'yearly' ? 'Premium (Jahresabo)' : 'Premium (Monatsabo)') : 'Free'}
           </span>
         </div>
 
@@ -108,21 +164,66 @@ export default function PremiumPage() {
               </button>
             </>
           ) : (
-            <button
-              onClick={() => void activate()}
-              disabled={busy}
-              className="rounded-lg bg-primary px-6 py-3 font-semibold text-white hover:bg-primary-hover disabled:opacity-60"
-            >
-              {busy ? 'Wird aktiviert …' : 'Premium aktivieren – 2,99 €/Monat'}
-            </button>
+            <div className="space-y-3">
+              {/* Ehrliche Plan-Wahl (ADR-0022): transparente Preise, keine Fake-Badges. */}
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                {PLANS.map((p) => {
+                  const active = plan === p.id
+                  return (
+                    <button
+                      key={p.id}
+                      type="button"
+                      onClick={() => setPlan(p.id)}
+                      className={`rounded-xl border p-3 text-left transition ${
+                        active
+                          ? 'border-primary bg-primary/5 ring-1 ring-primary'
+                          : 'border-border hover:bg-surface-2'
+                      }`}
+                    >
+                      <span className="block font-semibold text-text">{p.name}</span>
+                      <span className="block text-sm text-text">{p.price}</span>
+                      <span className="block text-xs text-muted">{p.note}</span>
+                    </button>
+                  )
+                })}
+              </div>
+              <button
+                onClick={() => void activate()}
+                disabled={busy}
+                className="w-full rounded-lg bg-primary px-6 py-3 font-semibold text-white hover:bg-primary-hover disabled:opacity-60"
+              >
+                {busy ? 'Wird aktiviert …' : 'Premium aktivieren'}
+              </button>
+            </div>
           )}
         </div>
       </div>
 
       <p className="text-center text-xs text-muted">
         Hinweis: In dieser Entwicklungsversion wird der Kauf simuliert – es erfolgt keine
-        echte Zahlung. Später über App Store / Google Play.
+        echte Zahlung. Später über App Store / Google Play (ADR-0022).
       </p>
+
+      {celebrate && (
+        <>
+          <Confetti />
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+            <div className="w-full max-w-sm space-y-3 rounded-2xl bg-surface p-6 text-center shadow-xl">
+              <PartyPopper className="mx-auto h-10 w-10 text-primary" />
+              <h2 className="text-lg font-bold text-text">Willkommen bei Nidula Premium!</h2>
+              <p className="text-sm text-muted">
+                Danke, dass ihr Nidula unterstützt. Euer Nest hat jetzt unbegrenzten Platz.
+              </p>
+              <button
+                onClick={() => setCelebrate(false)}
+                className="w-full rounded-lg bg-primary py-2 font-semibold text-white hover:bg-primary-hover"
+              >
+                Los geht&apos;s
+              </button>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }

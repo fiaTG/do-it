@@ -18,22 +18,26 @@ class SubscriptionController extends Controller
     }
 
     /**
-     * Premium aktivieren. Aktuell „manueller" Provider als Platzhalter – später
-     * wird hier ein verifizierter Store-Kauf (Apple/Google) bzw. Stripe-Webhook
-     * eingelöst (ADR-0013).
+     * Premium aktivieren (Monats- oder Jahresplan, ADR-0022). Aktuell
+     * „manueller" Provider als Platzhalter – später löst hier der
+     * RevenueCat-Webhook den verifizierten Store-/Stripe-Kauf ein.
      */
     public function store(Request $request): JsonResponse
     {
         $family = $request->user()->family;
         abort_if($family === null, 409, 'Du gehörst noch keiner Familie an.');
 
+        $plan = $request->validate([
+            'plan' => ['nullable', 'in:monthly,yearly'],
+        ])['plan'] ?? 'monthly';
+
         Subscription::updateOrCreate(
             ['family_id' => $family->id],
             [
-                'plan' => 'premium',
+                'plan' => $plan,
                 'status' => 'active',
                 'provider' => 'manual',
-                'expires_at' => now()->addMonth(),
+                'expires_at' => $plan === 'yearly' ? now()->addYear() : now()->addMonth(),
             ],
         );
         $family->unsetRelation('subscription');
@@ -66,7 +70,7 @@ class SubscriptionController extends Controller
 
         return [
             'is_premium' => $premium,
-            'plan' => $premium ? 'premium' : 'free',
+            'plan' => $premium ? ($family->subscription->plan ?? 'monthly') : 'free',
             'expires_at' => $family?->subscription?->expires_at?->toIso8601String(),
         ];
     }

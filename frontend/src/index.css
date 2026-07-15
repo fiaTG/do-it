@@ -167,3 +167,18 @@ h2 {
   --fc-list-event-hover-bg-color: var(--surface-2);
   --fc-highlight-color: color-mix(in oklab, var(--primary) 16%, transparent);
 }
+
+/* Konfetti-Moment nach Premium-Aktivierung (ADR-0022) */
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(-8vh) rotate(0deg);
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(110vh) rotate(720deg);
+    opacity: 0;
+  }
+}

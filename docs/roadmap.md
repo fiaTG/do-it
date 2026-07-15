@@ -151,3 +151,4 @@ Jede Phase ist eigenständig abschließbar. Reihenfolge = empfohlene Bearbeitung
 | [0019](adr/0019-familien-rollen-und-berechtigungen.md) | Familien-Rollen & Berechtigungen (Verwalter/Kind) | Akzeptiert |
 | [0020](adr/0020-galerie-papierkorb.md) | Galerie-Papierkorb (Soft-Delete mit Aufbewahrungsfrist) | Akzeptiert |
 | [0021](adr/0021-einladungs-rollen-und-owner-schutz.md) | Einladungs-Rollen & Owner-Schutz im Kalender | Akzeptiert |
+| [0022](adr/0022-zahlungsabwicklung-und-premium-erlebnis.md) | Zahlungsabwicklung & Premium-Erlebnis (RevenueCat, Jahresabo) | Akzeptiert |
