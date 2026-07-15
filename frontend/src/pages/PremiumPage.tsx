@@ -5,11 +5,13 @@ import { MEMBER_PALETTE } from '../lib/memberColors'
 import { useAuth } from '../store/auth'
 import type { Subscription } from '../types'
 
-const BENEFITS = [
-  'Unbegrenzter Galerie-Speicher',
-  'Synchronisation mit externen Kalendern',
-  'Zusätzliche Premium-Widgets',
-  '100 % werbefrei – heute und immer',
+// Ehrlich bleiben (ADR-0022): nur Verfügbares als verfügbar zeigen,
+// Kommendes klar als "Bald" kennzeichnen.
+const BENEFITS: { label: string; soon?: boolean }[] = [
+  { label: 'Unbegrenzter Galerie-Speicher' },
+  { label: 'Du unterstützt eine werbefreie Familien-App' },
+  { label: 'Synchronisation mit externen Kalendern', soon: true },
+  { label: 'Zusätzliche Premium-Widgets', soon: true },
 ]
 
 type Plan = 'monthly' | 'yearly'
@@ -140,9 +142,14 @@ export default function PremiumPage() {
 
         <ul className="space-y-2">
           {BENEFITS.map((b) => (
-            <li key={b} className="flex items-center gap-2 text-sm text-muted">
-              <Check className={`h-4 w-4 shrink-0 ${isPremium ? 'text-primary' : 'text-muted'}`} />
-              {b}
+            <li key={b.label} className="flex items-center gap-2 text-sm text-muted">
+              <Check className={`h-4 w-4 shrink-0 ${isPremium && !b.soon ? 'text-primary' : 'text-muted'}`} />
+              <span>{b.label}</span>
+              {b.soon && (
+                <span className="shrink-0 rounded-full bg-surface-2 px-2 py-0.5 text-[10px] font-semibold text-muted">
+                  Bald
+                </span>
+              )}
             </li>
           ))}
         </ul>
