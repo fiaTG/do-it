@@ -152,3 +152,20 @@ Jede Phase ist eigenständig abschließbar. Reihenfolge = empfohlene Bearbeitung
 | [0020](adr/0020-galerie-papierkorb.md) | Galerie-Papierkorb (Soft-Delete mit Aufbewahrungsfrist) | Akzeptiert |
 | [0021](adr/0021-einladungs-rollen-und-owner-schutz.md) | Einladungs-Rollen & Owner-Schutz im Kalender | Akzeptiert |
 | [0022](adr/0022-zahlungsabwicklung-und-premium-erlebnis.md) | Zahlungsabwicklung & Premium-Erlebnis (RevenueCat, Jahresabo) | Akzeptiert |
+
+---
+
+## 5. Produkt-Backlog (Ideen, Stand 2026-07-15)
+
+Grundfunktionen (4 Apps + Familien-/Rollenverwaltung) sind komplett. Ideen für
+den Ausbau, bewertet nach dem Premium-Prinzip aus ADR-0022 („Lust statt Zwang,
+aber spürbar"):
+
+| Idee | Umfang | Free/Premium | Anmerkung |
+| ------ | -------- | -------------- | ----------- |
+| Familien-Adressbuch (Arzt, Schule, Verwandte – mit Foto, Tel, Web, Adresse) | 1 Runde | Free (5. Kern-App) | CRUD wie Einkaufsliste, Fotos über bestehende Medien-Pipeline |
+| Fun Area: Mini-Games mit Familien-Highscore | Snake: 1 Runde; weitere Spiele je ~1 Runde | Fun Area + 1 Spiel free, weitere Spiele Premium | Canvas, keine Fremdbibliotheken; scores-Tabelle pro Familie |
+| Wetter-Widget (Dashboard) | klein | Free | Open-Meteo: kostenlos, kein API-Key |
+| Tankpreise Umgebung | mittel | Premium | Tankerkönig-API (MTS-K, kostenloser Key), Backend-Proxy mit Cache |
+| Wiederkehrende Termine (Mülltonnen wöchentl., TÜV jährl.) | mittel | Free (Kalender-Grundfunktion) | FullCalendar rrule-Plugin |
+| iCal-Import/Kalender-Sync (z. B. gemeindliche Abfuhrkalender) | mittel | Premium | löst das „Bald: Kalender-Sync"-Versprechen der PremiumPage ein |
