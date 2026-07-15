@@ -90,7 +90,7 @@ npm run cap:sync          # = npm run build && cap sync
 
 ## App-Icon & Splash-Screen
 
-Quelle ist ein selbst generiertes Anker-Logo (maritime Marke). Die Roh-Assets
+Quelle ist das Nidula-Logo (Nest+Haus+Herz, ADR-0018). Die Roh-Assets
 liegen in `frontend/assets/` (aus `scripts/generate-icons.mjs` per SVG erzeugt),
 daraus baut `@capacitor/assets` die nativen Dichten:
 
@@ -231,8 +231,8 @@ npm run ios:open          # = build:native + cap sync ios + cap open ios
 In Xcode:
 
 1. Target **App** → **Signing & Capabilities** → „Automatically manage signing" →
-   **Apple-ID-Team** wählen (Bundle-ID `app.heimathafen` ggf. eindeutig machen,
-   z. B. `app.heimathafen.fia`).
+   **Apple-ID-Team** wählen (Bundle-ID `app.nidula` ggf. eindeutig machen,
+   z. B. `app.nidula.fia`).
 2. **Echtes iPhone:** per USB anschließen, am iPhone „Diesem Computer vertrauen".
    ⚠️ **Entwicklermodus**: erscheint erst **nachdem** Xcode das Gerät einmal
    kontaktiert hat → dann am iPhone **Einstellungen → Datenschutz & Sicherheit →
@@ -249,7 +249,7 @@ nochmal **▶ Run** – `cap:sync` allein aktualisiert das Gerät **nicht**.
 | Symptom | Ursache → Fix |
 | --- | --- |
 | Web-Seite **weiß**, Titel da | `frontend/.env` fehlt → `cp .env.example .env`, dev neu starten |
-| App startet, **lange schwarz** | PWA-Service-Worker (in capacitor-Build via `vite.config.ts disable` aus); alte App vorm Re-Run löschen: `xcrun simctl uninstall booted app.heimathafen` |
+| App startet, **lange schwarz** | PWA-Service-Worker (in capacitor-Build via `vite.config.ts disable` aus); alte App vorm Re-Run löschen: `xcrun simctl uninstall booted app.nidula` (Installationen von vor dem Rebrand heißen noch `app.heimathafen`) |
 | Login **hängt** ewig (Rädchen) | App ruft falschen Host (`10.0.2.2`/`localhost`) → `.env.capacitor.local` mit korrektem `VITE_API_URL` (GROSS!) + `cap:sync` + Xcode Run; im Web-Inspector die Request-URL prüfen |
 | Login **sofort** fehlgeschlagen | Backend aus (Docker) oder falsche Daten; Health-Check + Container prüfen |
 | `docker compose` „unable to get image / docker.sock" | Docker Desktop läuft nicht → starten, `docker info` muss ohne Fehler laufen |

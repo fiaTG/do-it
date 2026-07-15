@@ -7,8 +7,11 @@ import type { CapacitorConfig } from '@capacitor/cli'
  * Auth läuft nativ über Bearer-Token statt Cookie (siehe src/lib/api.ts).
  */
 const config: CapacitorConfig = {
-  appId: 'app.heimathafen',
-  appName: 'Heimathafen',
+  // Umbenannt von app.heimathafen (Rebrand ADR-0018) – VOR dem ersten
+  // Store-Release gefahrlos; alte Dev-Installationen auf Geräten einmalig
+  // manuell deinstallieren.
+  appId: 'app.nidula',
+  appName: 'Nidula',
   webDir: 'dist',
   server: {
     // Dev: App über http://localhost servieren, damit Aufrufe an die lokale
