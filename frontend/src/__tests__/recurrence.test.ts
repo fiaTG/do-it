@@ -70,6 +70,12 @@ describe('expandEvents', () => {
     expect(result.map((o) => new Date(o.starts_at).getDate())).toEqual([25, 26, 27])
   })
 
+  it('expandiert 14-tägige Serien (gelbe Tonne)', () => {
+    const result = expandEvents([event({ recurrence: 'biweekly' })], from, to)
+    // 20.07., 03.08., 17.08., 31.08.
+    expect(result.map((o) => new Date(o.starts_at).getDate())).toEqual([20, 3, 17, 31])
+  })
+
   it('expandiert jährliche Serien (TÜV-Fall)', () => {
     const result = expandEvents(
       [event({ recurrence: 'yearly' })],

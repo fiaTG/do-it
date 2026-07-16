@@ -453,6 +453,7 @@ export default function CalendarPage() {
                   <option value="">Nie</option>
                   <option value="daily">Täglich</option>
                   <option value="weekly">Wöchentlich</option>
+                  <option value="biweekly">Alle 2 Wochen</option>
                   <option value="monthly">Monatlich</option>
                   <option value="yearly">Jährlich</option>
                 </select>

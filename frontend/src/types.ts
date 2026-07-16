@@ -78,7 +78,7 @@ export interface EventItem {
   owner_id: number | null
   owner_name: string | null
   /** Serie (ADR-lose Produktentscheidung): null = einmalig. */
-  recurrence: 'daily' | 'weekly' | 'monthly' | 'yearly' | null
+  recurrence: 'daily' | 'weekly' | 'biweekly' | 'monthly' | 'yearly' | null
   recurrence_until: string | null
 }
 

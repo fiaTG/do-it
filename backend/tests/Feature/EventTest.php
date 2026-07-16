@@ -186,6 +186,17 @@ it('stores a recurring event with an optional end date', function () {
         ->assertJsonPath('data.recurrence_until', '2026-12-31');
 });
 
+it('stores a biweekly event (gelbe Tonne)', function () {
+    Sanctum::actingAs(familyMember());
+
+    $this->postJson('/api/v1/events', [
+        'title' => 'Gelbe Tonne',
+        'starts_at' => '2026-07-21 07:00:00',
+        'ends_at' => '2026-07-21 07:15:00',
+        'recurrence' => 'biweekly',
+    ])->assertCreated()->assertJsonPath('data.recurrence', 'biweekly');
+});
+
 it('rejects an unknown recurrence and an until-date before the start', function () {
     Sanctum::actingAs(familyMember());
 

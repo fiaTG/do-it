@@ -36,7 +36,7 @@ class EventController extends Controller
             'category' => ['nullable', 'string', 'max:50'],
             'car_reserved' => ['nullable', 'boolean'],
             // Wiederholung (Serie): Vorkommen expandiert das Frontend.
-            'recurrence' => ['nullable', 'in:daily,weekly,monthly,yearly'],
+            'recurrence' => ['nullable', 'in:daily,weekly,biweekly,monthly,yearly'],
             'recurrence_until' => ['nullable', 'date', 'after:starts_at'],
             // Owner muss ein Mitglied derselben Familie sein; Standard = Ersteller.
             'owner_id' => ['nullable', 'integer', $this->memberRule($familyId)],
@@ -72,7 +72,7 @@ class EventController extends Controller
             'ends_at' => ['sometimes', 'date', 'after_or_equal:starts_at'],
             'category' => ['sometimes', 'string', 'max:50'],
             'car_reserved' => ['sometimes', 'boolean'],
-            'recurrence' => ['sometimes', 'nullable', 'in:daily,weekly,monthly,yearly'],
+            'recurrence' => ['sometimes', 'nullable', 'in:daily,weekly,biweekly,monthly,yearly'],
             'recurrence_until' => ['sometimes', 'nullable', 'date'],
             'owner_id' => ['sometimes', 'integer', $this->memberRule($event->family_id)],
         ]);

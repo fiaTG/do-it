@@ -28,6 +28,8 @@ function nthOccurrenceStart(start: Date, recurrence: string, n: number): Date {
     result.setDate(result.getDate() + n)
   } else if (recurrence === 'weekly') {
     result.setDate(result.getDate() + n * 7)
+  } else if (recurrence === 'biweekly') {
+    result.setDate(result.getDate() + n * 14)
   } else if (recurrence === 'monthly') {
     const months = start.getMonth() + n
     const year = start.getFullYear() + Math.floor(months / 12)
