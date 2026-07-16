@@ -85,3 +85,7 @@ npm run build      # erzeugt dist/
   einen `schedule:work`-Prozess.
 - **Vitest ohne `.env`:** Tests laden `frontend/.env.test` (eingecheckt) –
   eine lokale `.env` ist dafür nicht nötig.
+- **Spritpreise (Premium):** braucht `TANKERKOENIG_API_KEY` in `backend/.env`
+  (kostenlos registrieren: <https://creativecommons.tankerkoenig.de>). Der
+  Demo-Key liefert nur Fake-Preise. Kein Key gehört jemals ins Repo! Nach
+  `.env`-Änderung: `docker compose restart laravel.test`.
