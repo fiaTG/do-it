@@ -166,6 +166,6 @@ aber spürbar"):
 | ~~Familien-Adressbuch~~ | – | Free (5. Kern-App) | ✔ umgesetzt 2026-07-15 (App-Slug `contacts`) |
 | Fun Area: Mini-Games mit Familien-Highscore | weitere Spiele je ~1 Runde | Fun Area + „Hungrige Raupe" free ✔ (2026-07-16), weitere Spiele Premium (Ballon-Knallerei, Block-Garten als Teaser) | Eigene Namen/Themen statt geschützter Marken (Moorhuhn = Marke, Tetris klagt aggressiv); game_scores je Familie |
 | ~~Wetter-Widget (Dashboard)~~ | – | Free | ✔ umgesetzt 2026-07-15 (Open-Meteo, Familienort auf der Familienseite) |
-| Tankpreise Umgebung | mittel | Premium | Tankerkönig-API (MTS-K, kostenloser Key), Backend-Proxy mit Cache |
+| ~~Tankpreise Umgebung~~ | – | Premium ✔ | ✔ umgesetzt 2026-07-16: /fuel-stations hinter premium-Middleware, 10-min-Cache + Lock je Region, on-demand only, CC-BY-Quellenangabe in der UI; läuft bis zur Key-Freischaltung mit Demo-Key (Fake-Preise) |
 | ~~Wiederkehrende Termine~~ | – | Free | ✔ umgesetzt 2026-07-16: events.recurrence (daily/weekly/biweekly/monthly/yearly + Enddatum), Expansion clientseitig (lib/recurrence.ts, kein rrule-Plugin nötig); Serien-Vorkommen nicht ziehbar, Bearbeiten = ganze Serie |
 | iCal-Import/Kalender-Sync (z. B. gemeindliche Abfuhrkalender) | mittel | Premium | löst das „Bald: Kalender-Sync"-Versprechen der PremiumPage ein |

@@ -27,6 +27,7 @@ const FEATURE_NAV: Record<string, NavItem> = {
   gallery: { to: '/gallery', label: 'Galerie', icon: APP_ICONS.gallery },
   contacts: { to: '/contacts', label: 'Adressbuch', icon: APP_ICONS.contacts },
   games: { to: '/games', label: 'Fun Area', icon: APP_ICONS.games },
+  fuel: { to: '/fuel', label: 'Spritpreise', icon: APP_ICONS.fuel },
 }
 
 export default function Layout() {

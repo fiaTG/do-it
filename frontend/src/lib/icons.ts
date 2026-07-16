@@ -27,6 +27,7 @@ import {
   CloudSun,
   Crown,
   Download,
+  Fuel,
   Gamepad2,
   Globe,
   Home,
@@ -76,6 +77,7 @@ export {
   CloudSun,
   Crown,
   Download,
+  Fuel,
   Gamepad2,
   Globe,
   Home,
@@ -110,4 +112,5 @@ export const APP_ICONS: Record<string, LucideIcon> = {
   gallery: ImageIcon,
   contacts: BookUser,
   games: Gamepad2,
+  fuel: Fuel,
 }

@@ -22,6 +22,14 @@ return [
         'key' => env('RESEND_API_KEY'),
     ],
 
+    // Tankerkönig-Spritpreis-API (CC BY 4.0, Daten: MTS-K). Persönlichen Key
+    // unter https://creativecommons.tankerkoenig.de registrieren – Key gehört
+    // NUR in die .env, niemals ins Repo (Nutzungsbedingungen).
+    'tankerkoenig' => [
+        'key' => env('TANKERKOENIG_API_KEY'),
+        'base' => env('TANKERKOENIG_BASE', 'https://creativecommons.tankerkoenig.de/json'),
+    ],
+
     'ses' => [
         'key' => env('AWS_ACCESS_KEY_ID'),
         'secret' => env('AWS_SECRET_ACCESS_KEY'),

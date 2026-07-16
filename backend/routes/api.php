@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\FamilyController;
+use App\Http\Controllers\FuelController;
 use App\Http\Controllers\GameScoreController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\InviteController;
@@ -109,6 +110,9 @@ Route::prefix('v1')->group(function () {
             ->only(['index', 'show', 'store', 'destroy']);
         Route::apiResource('contacts', ContactController::class)
             ->only(['index', 'store', 'update', 'destroy']);
+        // Spritpreise (Premium, ADR-0022): erster echter premium-Endpoint.
+        Route::get('/fuel-stations', [FuelController::class, 'index'])->middleware('premium');
+
         // Fun Area: Highscores je Spiel (Slug-Whitelist im Controller).
         Route::get('games/{game}/scores', [GameScoreController::class, 'index']);
         Route::post('games/{game}/scores', [GameScoreController::class, 'store']);

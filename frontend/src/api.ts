@@ -2,6 +2,7 @@ import { api, ensureCsrf, isNative, setAuthToken } from './lib/api'
 import type {
   AppItem,
   Contact,
+  FuelData,
   GameScores,
   EventItem,
   Family,
@@ -162,6 +163,16 @@ function contactForm(payload: ContactPayload): FormData {
   }
   if (payload.photo) form.append('photo', payload.photo)
   return form
+}
+
+export const fuelApi = {
+  /** Spritpreise rund um den Familienort (Premium; on demand, serverseitig gecacht). */
+  async stations(type: 'e5' | 'e10' | 'diesel' | 'all', rad: number): Promise<FuelData> {
+    const { data } = await api.get<{ data: FuelData }>('/fuel-stations', {
+      params: { type, rad },
+    })
+    return data.data
+  },
 }
 
 export const gamesApi = {

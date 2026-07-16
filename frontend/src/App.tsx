@@ -5,6 +5,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import RequireApp from './components/RequireApp'
 import ContactsPage from './pages/ContactsPage'
 import DashboardPage from './pages/DashboardPage'
+import FuelPage from './pages/FuelPage'
 import GalleryPage from './pages/GalleryPage'
 import GamesPage from './pages/GamesPage'
 import LandingPage from './pages/LandingPage'
@@ -89,6 +90,14 @@ export default function App() {
               element={
                 <RequireApp slug="gallery">
                   <GalleryPage />
+                </RequireApp>
+              }
+            />
+            <Route
+              path="/fuel"
+              element={
+                <RequireApp slug="fuel">
+                  <FuelPage />
                 </RequireApp>
               }
             />

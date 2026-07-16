@@ -117,6 +117,26 @@ export interface ImagePage {
   total: number
 }
 
+export interface FuelStation {
+  id: string
+  name: string
+  brand: string
+  street: string
+  houseNumber: string | null
+  postCode: number
+  place: string
+  dist: number
+  isOpen: boolean
+  e5: number | false | null
+  e10: number | false | null
+  diesel: number | false | null
+}
+
+export interface FuelData {
+  stations: FuelStation[]
+  fetched_at: string
+}
+
 export interface GameScoreEntry {
   user_id: number
   score: number

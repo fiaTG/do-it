@@ -19,6 +19,7 @@ class AppSeeder extends Seeder
             ['slug' => 'calendar', 'name' => 'Kalender', 'icon' => 'fa-solid fa-calendar'],
             ['slug' => 'contacts', 'name' => 'Adressbuch', 'icon' => 'fa-solid fa-address-book'],
             ['slug' => 'games', 'name' => 'Fun Area', 'icon' => 'fa-solid fa-gamepad'],
+            ['slug' => 'fuel', 'name' => 'Spritpreise', 'icon' => 'fa-solid fa-gas-pump'],
         ];
 
         foreach ($apps as $app) {
