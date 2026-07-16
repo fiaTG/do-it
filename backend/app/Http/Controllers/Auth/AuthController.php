@@ -31,7 +31,7 @@ class AuthController extends Controller
         // zwei parallele Registrierungen können denselben Token nicht doppelt
         // konsumieren (lockForUpdate in validInviteFor).
         $user = DB::transaction(function () use ($data): User {
-            $invite = $this->validInviteFor($data['token'] ?? null);
+            $invite = $this->validInviteFor($data['token'] ?? null, $data['email']);
 
             $user = User::create([
                 'first_name' => $data['first_name'],
@@ -158,7 +158,7 @@ class AuthController extends Controller
      * Muss innerhalb einer Transaktion laufen (lockForUpdate gegen doppelte
      * Einlösung durch parallele Registrierungen).
      */
-    private function validInviteFor(?string $token): ?Invite
+    private function validInviteFor(?string $token, string $email): ?Invite
     {
         if (! $token) {
             return null;
@@ -169,6 +169,15 @@ class AuthController extends Controller
         if (! $invite || $invite->isAccepted() || $invite->isExpired()) {
             throw ValidationException::withMessages([
                 'token' => 'Diese Einladung ist ungültig oder wurde bereits verwendet.',
+            ]);
+        }
+
+        // Review H-01 (Timos Entscheidung 2026-07-16): Der Link ist an die
+        // eingeladene Adresse gebunden – ein abgefangener/weitergeleiteter
+        // Link nützt Fremden nichts.
+        if (mb_strtolower(trim($invite->email)) !== mb_strtolower(trim($email))) {
+            throw ValidationException::withMessages([
+                'email' => 'Diese Einladung gilt für eine andere E-Mail-Adresse.',
             ]);
         }
 

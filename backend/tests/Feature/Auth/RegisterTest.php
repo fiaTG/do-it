@@ -118,3 +118,33 @@ it('rejects registration with an invalid or used invite token (Review H-01)', fu
     // Kein stiller familienloser Account entstanden.
     expect(User::where('email', 'like', 'x-%')->count())->toBe(0);
 });
+
+it('binds the invite to the invited email address (Review H-01)', function () {
+    $family = Family::factory()->create();
+    Invite::create([
+        'family_id' => $family->id,
+        'email' => 'eingeladen@example.com',
+        'token' => 'bound-token',
+        'expires_at' => now()->addDay(),
+    ]);
+
+    // Fremde Adresse mit gültigem Token -> 422, kein Beitritt.
+    $this->postJson('/api/v1/auth/register', [
+        'first_name' => 'Fremd',
+        'last_name' => 'Ling',
+        'email' => 'angreifer@example.com',
+        'password' => 'Sup3r!pass',
+        'password_confirmation' => 'Sup3r!pass',
+        'token' => 'bound-token',
+    ])->assertStatus(422)->assertJsonValidationErrorFor('email');
+
+    // Eingeladene Adresse (case-insensitiv) -> Beitritt klappt.
+    $this->postJson('/api/v1/auth/register', [
+        'first_name' => 'Ein',
+        'last_name' => 'Geladen',
+        'email' => 'Eingeladen@Example.com',
+        'password' => 'Sup3r!pass',
+        'password_confirmation' => 'Sup3r!pass',
+        'token' => 'bound-token',
+    ])->assertCreated()->assertJsonPath('data.family_id', $family->id);
+});

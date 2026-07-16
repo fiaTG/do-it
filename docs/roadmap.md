@@ -178,8 +178,9 @@ Review-Dokument von Timo eingebracht am 2026-07-16; Härtung umgesetzt auf
 Branch `security/review-hardening` (Basis: Commit `edd26e7`).
 
 **Umgesetzt (2026-07-16):** H-02 EXIF fail-closed (nie mehr Original-Fallback,
-422 + Test) inkl. Dimensions-Limit 8000px; H-01 teilweise (Invite-Einlösung in
-Transaktion mit lockForUpdate, mitgeschickter ungültiger Token → 422); H-03/M-06
+422 + Test) inkl. Dimensions-Limit 8000px; H-01 vollständig (Invite-Einlösung in
+Transaktion mit lockForUpdate, ungültiger Token → 422, Registrierung an die
+eingeladene E-Mail gebunden – Timos Entscheidung); H-03/M-06
 teilweise (Sanctum-Token-Ablauf 90 Tage via SANCTUM_TOKEN_EXPIRATION_MINUTES,
 Passwortwechsel widerruft alle anderen Tokens); C-01 teilweise (Abo-Verwaltung
 nur Verwalter – voller RevenueCat-Webhook-Flow bleibt ADR-0022-Plan); M-01
@@ -190,8 +191,7 @@ einen maskierten Factory-Bug auf); N-03 (VITE_API_URL-Fehlermeldung); N-04
 teilweise (CI permissions: contents: read).
 
 **Bewusst vertagt:** C-01 vollständig (RevenueCat-Webhook = Store-Release,
-ADR-0022); H-01-Rest (E-Mail-Bindung der Einladung = Produktentscheidung,
-offen); H-03-Rest (Keychain/Secure Storage nativ); M-02 (Quota-Race – bei
+ADR-0022); H-03-Rest (Keychain/Secure Storage nativ); M-02 (Quota-Race – bei
 Familien-Skala akzeptiertes Risiko, dokumentiert); M-04 (nativer PDF-Download –
 in die Native-Test-Runde); M-05-Rest (Token-Hashing); N-02 (Komponenten-Schnitt
 – mit der Styling-Runde); N-04-Rest (Action-SHA-Pinning).
