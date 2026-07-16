@@ -5,6 +5,7 @@ import WeatherWidget from '../components/WeatherWidget'
 import CalendarWidget from '../components/widgets/CalendarWidget'
 import ContactsWidget from '../components/widgets/ContactsWidget'
 import GalleryWidget from '../components/widgets/GalleryWidget'
+import FuelWidget from '../components/widgets/FuelWidget'
 import GamesWidget from '../components/widgets/GamesWidget'
 import ShoppingWidget from '../components/widgets/ShoppingWidget'
 import TodoWidget from '../components/widgets/TodoWidget'
@@ -20,6 +21,7 @@ const WIDGETS: Record<string, ComponentType<{ onRemove?: () => void }>> = {
   gallery: GalleryWidget,
   contacts: ContactsWidget,
   games: GamesWidget,
+  fuel: FuelWidget,
 }
 
 export default function DashboardPage() {

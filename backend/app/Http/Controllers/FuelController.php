@@ -28,10 +28,8 @@ class FuelController extends Controller
         );
 
         $data = $request->validate([
-            'type' => ['nullable', 'in:e5,e10,diesel,all'],
             'rad' => ['nullable', 'numeric', 'min:1', 'max:25'],
         ]);
-        $type = $data['type'] ?? 'all';
         $rad = (float) ($data['rad'] ?? 5);
 
         // Ein Cache-Eintrag je Region/Radius/Sorte: egal wie viele Familien in
@@ -39,7 +37,7 @@ class FuelController extends Controller
         // pro Fenster (Timos 10.000-User-Frage).
         $lat = round((float) $family->latitude, 3);
         $lng = round((float) $family->longitude, 3);
-        $cacheKey = "fuel:{$lat}:{$lng}:{$rad}:{$type}";
+        $cacheKey = "fuel:{$lat}:{$lng}:{$rad}";
 
         $payload = Cache::get($cacheKey);
         if ($payload === null) {
@@ -50,7 +48,7 @@ class FuelController extends Controller
                 $lock->block(8);
                 $payload = Cache::get($cacheKey);
                 if ($payload === null) {
-                    $payload = $this->fetch($lat, $lng, $rad, $type);
+                    $payload = $this->fetch($lat, $lng, $rad);
                     Cache::put($cacheKey, $payload, now()->addMinutes(self::CACHE_MINUTES));
                 }
             } finally {
@@ -64,15 +62,16 @@ class FuelController extends Controller
     /**
      * @return array<string, mixed>
      */
-    private function fetch(float $lat, float $lng, float $rad, string $type): array
+    private function fetch(float $lat, float $lng, float $rad): array
     {
+        // Immer type=all: liefert e5/e10/diesel je Station (bei Einzelsorten
+        // hieße das Feld stattdessen "price" – Timos No-Preise-Bug 2026-07-16)
+        // und halbiert nebenbei die Cache-Vielfalt. Sortiert wird im Frontend.
         $response = Http::timeout(8)->get(config('services.tankerkoenig.base').'/list.php', [
             'lat' => $lat,
             'lng' => $lng,
             'rad' => $rad,
-            'type' => $type,
-            // Bei type=all sortiert das API immer nach Entfernung.
-            'sort' => $type === 'all' ? 'dist' : 'price',
+            'type' => 'all',
             'apikey' => config('services.tankerkoenig.key'),
         ]);
 

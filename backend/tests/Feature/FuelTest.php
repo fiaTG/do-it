@@ -47,12 +47,12 @@ it('returns stations for a premium family and caches the upstream call', functio
     fakeTankerkoenig();
     Sanctum::actingAs(premiumFamilyMember());
 
-    $first = $this->getJson('/api/v1/fuel-stations?type=diesel&rad=5')->assertOk();
+    $first = $this->getJson('/api/v1/fuel-stations?rad=5')->assertOk();
     expect($first->json('data.stations.0.name'))->toBe('Test-Tanke');
     expect($first->json('data.fetched_at'))->not->toBeNull();
 
     // Zweiter Abruf derselben Region kommt aus dem Cache -> nur EIN Upstream-Call.
-    $this->getJson('/api/v1/fuel-stations?type=diesel&rad=5')->assertOk();
+    $this->getJson('/api/v1/fuel-stations?rad=5')->assertOk();
     Http::assertSentCount(1);
 });
 
@@ -79,12 +79,18 @@ it('maps upstream failures to a 502 with a german message', function () {
     $this->getJson('/api/v1/fuel-stations')->assertStatus(502);
 });
 
-it('validates fuel type and radius', function () {
+it('validates the radius', function () {
     fakeTankerkoenig();
     Sanctum::actingAs(premiumFamilyMember());
 
-    $this->getJson('/api/v1/fuel-stations?type=super-plus')
-        ->assertStatus(422)->assertJsonValidationErrorFor('type');
     $this->getJson('/api/v1/fuel-stations?rad=99')
         ->assertStatus(422)->assertJsonValidationErrorFor('rad');
+});
+
+it('always requests all fuel types upstream (price field trap)', function () {
+    fakeTankerkoenig();
+    Sanctum::actingAs(premiumFamilyMember());
+
+    $this->getJson('/api/v1/fuel-stations')->assertOk();
+    Http::assertSent(fn ($request) => $request['type'] === 'all');
 });

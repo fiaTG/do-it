@@ -33,13 +33,13 @@ export default function FuelPage() {
     setBusy(true)
     setError('')
     try {
-      setData(await fuelApi.stations(type, rad))
+      setData(await fuelApi.stations(rad))
     } catch (err) {
       setError(apiError(err))
     } finally {
       setBusy(false)
     }
-  }, [type, rad])
+  }, [rad])
 
   // On-Demand gemäß Tankerkönig-Regeln: Laden beim Öffnen der Seite und bei
   // geänderten Filtern (beides Nutzeraktionen) – kein Hintergrund-Polling.
