@@ -30,7 +30,7 @@ function initials(name: string): string {
 
 export default function ContactsPage() {
   const me = useAuth((s) => s.user)
-  const isGuardian = me?.role !== 'child'
+  const isGuardian = me?.role === 'guardian'
   const [contacts, setContacts] = useState<Contact[]>([])
   const [filter, setFilter] = useState<string | null>(null)
   const [modal, setModal] = useState<ModalState>({ open: false, id: null, payload: EMPTY })

@@ -50,15 +50,12 @@ class ImageUpload
 
             return ['path' => $path, 'width' => $width, 'height' => $height, 'taken_at' => $takenAt];
         } catch (\Throwable $e) {
-            // Best effort: Strip fehlgeschlagen -> Original speichern, Warnung loggen.
-            Log::warning('Bild-Metadaten konnten nicht entfernt werden: '.$e->getMessage());
+            // Fail closed (Review H-02, ADR-0015): Wenn der Metadaten-Strip
+            // fehlschlägt, wird NIEMALS das Original (potenziell mit GPS/EXIF)
+            // gespeichert – der Upload wird abgelehnt.
+            Log::warning('Bildverarbeitung fehlgeschlagen, Upload abgelehnt.');
 
-            return [
-                'path' => $file->store($directory, $disk),
-                'width' => null,
-                'height' => null,
-                'taken_at' => $takenAt,
-            ];
+            abort(422, 'Das Bild konnte nicht verarbeitet werden – bitte ein anderes Format (JPEG/PNG/WebP) versuchen.');
         }
     }
 

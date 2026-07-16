@@ -4,6 +4,10 @@ on:
   push:
   pull_request:
 
+# Review N-04: CI braucht nur Lesezugriff aufs Repo.
+permissions:
+  contents: read
+
 jobs:
   backend:
     name: Backend (Laravel)

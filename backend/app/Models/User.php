@@ -22,6 +22,17 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
+    /**
+     * In-Memory-Default analog zum DB-Default: frisch instanziierte Models
+     * (Factory/create ohne refresh) haben sonst role=null – die frühere
+     * fail-open-Prüfung hatte genau das verdeckt (Review N-01).
+     *
+     * @var array<string, mixed>
+     */
+    protected $attributes = [
+        'role' => 'guardian',
+    ];
+
     protected $fillable = [
         'first_name',
         'last_name',
@@ -65,7 +76,9 @@ class User extends Authenticatable
     /** Verwalter (Eltern) dürfen alle Familientermine verwalten, Kinder nur eigene. */
     public function isGuardian(): bool
     {
-        return $this->role !== 'child';
+        // Fail closed (Review N-01): nur exakt 'guardian' hat Verwalterrechte –
+        // unbekannte/beschädigte Werte führen zu weniger, nicht mehr Rechten.
+        return $this->role === 'guardian';
     }
 
     public function isChild(): bool

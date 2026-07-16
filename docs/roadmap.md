@@ -169,3 +169,29 @@ aber spürbar"):
 | ~~Tankpreise Umgebung~~ | – | Premium ✔ | ✔ umgesetzt 2026-07-16: /fuel-stations hinter premium-Middleware, 10-min-Cache + Lock je Region, on-demand only, CC-BY-Quellenangabe in der UI; läuft bis zur Key-Freischaltung mit Demo-Key (Fake-Preise) |
 | ~~Wiederkehrende Termine~~ | – | Free | ✔ umgesetzt 2026-07-16: events.recurrence (daily/weekly/biweekly/monthly/yearly + Enddatum), Expansion clientseitig (lib/recurrence.ts, kein rrule-Plugin nötig); Serien-Vorkommen nicht ziehbar, Bearbeiten = ganze Serie |
 | iCal-Import/Kalender-Sync (z. B. gemeindliche Abfuhrkalender) | mittel | Premium | löst das „Bald: Kalender-Sync"-Versprechen der PremiumPage ein |
+
+---
+
+## 6. Externes Code-Review (ChatGPT, 2026-07-15) – Abarbeitung
+
+Review-Dokument von Timo eingebracht am 2026-07-16; Härtung umgesetzt auf
+Branch `security/review-hardening` (Basis: Commit `edd26e7`).
+
+**Umgesetzt (2026-07-16):** H-02 EXIF fail-closed (nie mehr Original-Fallback,
+422 + Test) inkl. Dimensions-Limit 8000px; H-01 teilweise (Invite-Einlösung in
+Transaktion mit lockForUpdate, mitgeschickter ungültiger Token → 422); H-03/M-06
+teilweise (Sanctum-Token-Ablauf 90 Tage via SANCTUM_TOKEN_EXPIRATION_MINUTES,
+Passwortwechsel widerruft alle anderen Tokens); C-01 teilweise (Abo-Verwaltung
+nur Verwalter – voller RevenueCat-Webhook-Flow bleibt ADR-0022-Plan); M-01
+(Datei-Ersetzung: erst neu, dann alt löschen); M-03 (Letzter-Guardian-Guard,
+strukturell schon garantiert, jetzt zusätzlich abgesichert); M-05 teilweise
+(Invite-Mail über Queue); N-01 (isGuardian/Frontend fail-closed – deckte prompt
+einen maskierten Factory-Bug auf); N-03 (VITE_API_URL-Fehlermeldung); N-04
+teilweise (CI permissions: contents: read).
+
+**Bewusst vertagt:** C-01 vollständig (RevenueCat-Webhook = Store-Release,
+ADR-0022); H-01-Rest (E-Mail-Bindung der Einladung = Produktentscheidung,
+offen); H-03-Rest (Keychain/Secure Storage nativ); M-02 (Quota-Race – bei
+Familien-Skala akzeptiertes Risiko, dokumentiert); M-04 (nativer PDF-Download –
+in die Native-Test-Runde); M-05-Rest (Token-Hashing); N-02 (Komponenten-Schnitt
+– mit der Styling-Runde); N-04-Rest (Action-SHA-Pinning).

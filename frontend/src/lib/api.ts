@@ -2,7 +2,13 @@ import { Capacitor } from '@capacitor/core'
 import { Preferences } from '@capacitor/preferences'
 import axios, { type AxiosRequestConfig } from 'axios'
 
-const API_URL = import.meta.env.VITE_API_URL as string
+const API_URL = import.meta.env.VITE_API_URL as string | undefined
+if (!API_URL) {
+  // Review N-03: klare Meldung statt kryptischem "Invalid URL" beim Import.
+  throw new Error(
+    'VITE_API_URL fehlt. Lokal: `cp .env.example .env` in frontend/ (Tests nutzen .env.test).',
+  )
+}
 const ORIGIN = new URL(API_URL).origin
 
 /**

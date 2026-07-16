@@ -52,7 +52,7 @@ function toLocalInput(date: Date): string {
 export default function CalendarPage() {
   const me = useAuth((s) => s.user)
   const userId = me?.id ?? 0
-  const isGuardian = me?.role !== 'child' // Verwalter dürfen alle Termine verwalten
+  const isGuardian = me?.role === 'guardian' // Verwalter dürfen alle Termine verwalten
 
   const [events, setEvents] = useState<EventItem[]>([])
   const [members, setMembers] = useState<User[]>([])

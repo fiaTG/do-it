@@ -38,3 +38,20 @@ it('forbids changing the role of another family member', function () {
     $this->patchJson("/api/v1/family/members/{$stranger->id}/role", ['role' => 'child'])
         ->assertForbidden();
 });
+
+it('keeps at least one guardian per family (Review M-03)', function () {
+    $a = familyMember(); // Guardian A
+    $b = User::factory()->create(['family_id' => $a->family_id]); // Guardian B
+
+    // Mit zwei Verwaltern ist Herabstufen erlaubt – einer bleibt immer übrig.
+    Sanctum::actingAs($b);
+    $this->patchJson("/api/v1/family/members/{$a->id}/role", ['role' => 'child'])->assertOk();
+    expect(User::where('family_id', $a->family_id)->where('role', 'guardian')->count())->toBe(1);
+
+    // Der verbleibende Verwalter kann sich selbst nicht ändern (422) und
+    // Kinder dürfen gar nicht (403) – zusammen mit dem Letzter-Guardian-Guard
+    // im Controller ist "Familie ohne Verwalter" damit unerreichbar.
+    $this->patchJson("/api/v1/family/members/{$b->id}/role", ['role' => 'child'])->assertStatus(422);
+    Sanctum::actingAs($a->fresh());
+    $this->patchJson("/api/v1/family/members/{$b->id}/role", ['role' => 'child'])->assertForbidden();
+});

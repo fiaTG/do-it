@@ -26,6 +26,8 @@ class SubscriptionController extends Controller
     {
         $family = $request->user()->family;
         abort_if($family === null, 409, 'Du gehörst noch keiner Familie an.');
+        // Review C-01: Familienweiter Vertragszustand ist Verwalter-Sache.
+        abort_unless($request->user()->isGuardian(), 403, 'Nur Verwalter können das Abo verwalten.');
 
         $plan = $request->validate([
             'plan' => ['nullable', 'in:monthly,yearly'],
@@ -51,6 +53,7 @@ class SubscriptionController extends Controller
     public function destroy(Request $request): Response
     {
         $family = $request->user()->family;
+        abort_unless($request->user()->isGuardian(), 403, 'Nur Verwalter können das Abo verwalten.');
 
         if ($family !== null) {
             Subscription::where('family_id', $family->id)->update(['status' => 'canceled']);

@@ -81,6 +81,21 @@ class FamilyController extends Controller
         abort_if((int) $member->id === (int) $actor->id, 422, 'Die eigene Rolle lässt sich nicht ändern.');
 
         $data = $request->validate(['role' => ['required', 'in:guardian,child']]);
+
+        // Review M-03: Eine Familie braucht immer mindestens einen Verwalter –
+        // der letzte Guardian kann nicht herabgestuft werden.
+        if ($data['role'] === 'child' && $member->isGuardian()) {
+            $otherGuardians = User::where('family_id', $member->family_id)
+                ->where('id', '!=', $member->id)
+                ->where('role', 'guardian')
+                ->count();
+            abort_if(
+                $otherGuardians === 0,
+                422,
+                'Der letzte Verwalter einer Familie kann nicht zum Kind gemacht werden.',
+            );
+        }
+
         $member->update(['role' => $data['role']]);
 
         return new UserResource($member);

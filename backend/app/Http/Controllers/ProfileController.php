@@ -37,16 +37,18 @@ class ProfileController extends Controller
      */
     public function avatar(Request $request): UserResource
     {
-        $request->validate(['avatar' => ['required', 'image', 'max:5120']]);
+        $request->validate(['avatar' => ['required', 'image', 'max:5120', 'dimensions:max_width=8000,max_height=8000']]);
 
         $user = $request->user();
 
-        if ($user->avatar_path) {
-            Storage::disk(config('filesystems.media'))->delete($user->avatar_path);
-        }
-
+        // Review M-01: erst das NEUE Bild speichern und verlinken, dann das
+        // alte löschen – schlägt die Verarbeitung fehl, bleibt das alte Bild.
+        $old = $user->avatar_path;
         $path = ImageUpload::storeStripped($request->file('avatar'), "avatars/{$user->id}")['path'];
         $user->update(['avatar_path' => $path]);
+        if ($old) {
+            Storage::disk(config('filesystems.media'))->delete($old);
+        }
 
         return new UserResource($user->fresh()->load('family.subscription'));
     }

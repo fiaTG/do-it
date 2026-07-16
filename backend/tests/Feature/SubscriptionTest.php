@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Subscription;
+use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
@@ -88,4 +89,13 @@ it('allows unlimited gallery uploads on premium', function () {
     $this->post('/api/v1/images', [
         'image' => UploadedFile::fake()->image('a.jpg', 1200, 800),
     ], ['Accept' => 'application/json'])->assertCreated();
+});
+
+it('forbids children from managing the family subscription (Review C-01)', function () {
+    $guardian = familyMember();
+    $child = User::factory()->create(['family_id' => $guardian->family_id, 'role' => 'child']);
+    Sanctum::actingAs($child);
+
+    $this->postJson('/api/v1/subscription', ['plan' => 'monthly'])->assertForbidden();
+    $this->deleteJson('/api/v1/subscription')->assertForbidden();
 });

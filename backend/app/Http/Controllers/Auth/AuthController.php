@@ -13,6 +13,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Laravel\Sanctum\PersonalAccessToken;
 
@@ -26,19 +27,26 @@ class AuthController extends Controller
     {
         $data = $request->validated();
 
-        $invite = $this->validInviteFor($data['token'] ?? null);
+        // Review H-01: Invite-Prüfung, User-Anlage und Einlösung atomar –
+        // zwei parallele Registrierungen können denselben Token nicht doppelt
+        // konsumieren (lockForUpdate in validInviteFor).
+        $user = DB::transaction(function () use ($data): User {
+            $invite = $this->validInviteFor($data['token'] ?? null);
 
-        $user = User::create([
-            'first_name' => $data['first_name'],
-            'last_name' => $data['last_name'],
-            'email' => $data['email'],
-            'password' => $data['password'], // wird durch 'hashed'-Cast gehasht
-            'family_id' => $invite?->family_id,
-            // Rolle kommt aus der Einladung (ADR-0021); ohne Einladung Verwalter.
-            'role' => $invite?->role ?? 'guardian',
-        ]);
+            $user = User::create([
+                'first_name' => $data['first_name'],
+                'last_name' => $data['last_name'],
+                'email' => $data['email'],
+                'password' => $data['password'], // wird durch 'hashed'-Cast gehasht
+                'family_id' => $invite?->family_id,
+                // Rolle kommt aus der Einladung (ADR-0021); ohne Einladung Verwalter.
+                'role' => $invite?->role ?? 'guardian',
+            ]);
 
-        $invite?->forceFill(['accepted_at' => now()])->save();
+            $invite?->forceFill(['accepted_at' => now()])->save();
+
+            return $user;
+        });
 
         // Native Clients: API-Token ausstellen (symmetrisch zu login()).
         if (! empty($data['device_name'])) {
@@ -125,15 +133,30 @@ class AuthController extends Controller
      */
     public function updatePassword(PasswordUpdateRequest $request): Response
     {
-        $request->user()->update([
+        $user = $request->user();
+        $user->update([
             'password' => $request->validated('password'), // 'hashed'-Cast
         ]);
+
+        // Review M-06/H-03: Passwortwechsel widerruft alle ANDEREN API-Tokens
+        // (kompromittierte Geräte fliegen raus); der aktuelle Token/die
+        // aktuelle Web-Session bleibt bestehen.
+        $current = $user->currentAccessToken();
+        $query = $user->tokens();
+        if ($current instanceof PersonalAccessToken) {
+            $query->where('id', '!=', $current->id);
+        }
+        $query->delete();
 
         return response()->noContent();
     }
 
     /**
-     * Liefert die Einladung zum Token, sofern gültig (nicht abgelaufen/eingelöst).
+     * Liefert die Einladung zum Token. Review H-01: Ein MITGESCHICKTER, aber
+     * ungültiger Token (unbekannt/abgelaufen/eingelöst) ist ein harter Fehler
+     * (422) – sonst entstünde stillschweigend ein familienloser Account.
+     * Muss innerhalb einer Transaktion laufen (lockForUpdate gegen doppelte
+     * Einlösung durch parallele Registrierungen).
      */
     private function validInviteFor(?string $token): ?Invite
     {
@@ -141,10 +164,12 @@ class AuthController extends Controller
             return null;
         }
 
-        $invite = Invite::where('token', $token)->first();
+        $invite = Invite::where('token', $token)->lockForUpdate()->first();
 
         if (! $invite || $invite->isAccepted() || $invite->isExpired()) {
-            return null;
+            throw ValidationException::withMessages([
+                'token' => 'Diese Einladung ist ungültig oder wurde bereits verwendet.',
+            ]);
         }
 
         return $invite;

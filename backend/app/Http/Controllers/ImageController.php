@@ -58,7 +58,7 @@ class ImageController extends Controller
 
         $data = $request->validate([
             'title' => ['nullable', 'string', 'max:255'],
-            'image' => ['required', 'image', 'max:5120'], // max. 5 MB
+            'image' => ['required', 'image', 'max:5120', 'dimensions:max_width=8000,max_height=8000'], // max. 5 MB
         ]);
 
         // Entitlement-Gate (ADR-0013): Free-Familien haben ein Galerie-Limit,

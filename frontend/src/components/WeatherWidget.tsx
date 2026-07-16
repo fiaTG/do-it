@@ -12,7 +12,7 @@ import { useAuth } from '../store/auth'
 export default function WeatherWidget() {
   const user = useAuth((s) => s.user)
   const family = user?.family
-  const isGuardian = user?.role !== 'child'
+  const isGuardian = user?.role === 'guardian'
   const [weather, setWeather] = useState<WeatherData | null>(null)
   const [failed, setFailed] = useState(false)
 

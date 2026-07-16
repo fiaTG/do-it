@@ -50,7 +50,9 @@ return [
     |
     */
 
-    'expiration' => null,
+    // Review H-03: Native Tokens laufen ab (90 Tage) statt ewig zu gelten;
+    // der Client landet danach sauber im Login (401-Handling im Auth-Store).
+    'expiration' => (int) env('SANCTUM_TOKEN_EXPIRATION_MINUTES', 129600),
 
     /*
     |--------------------------------------------------------------------------

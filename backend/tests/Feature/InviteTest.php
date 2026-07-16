@@ -17,7 +17,7 @@ it('lets a family member invite someone', function () {
         ->assertJsonPath('data.email', 'new@example.com');
 
     expect(Invite::where('email', 'new@example.com')->exists())->toBeTrue();
-    Mail::assertSent(InvitationMail::class);
+    Mail::assertQueued(InvitationMail::class);
 });
 
 it('renders the invitation mail (markdown components resolve)', function () {

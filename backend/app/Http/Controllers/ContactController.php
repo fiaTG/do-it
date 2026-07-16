@@ -46,15 +46,19 @@ class ContactController extends Controller
 
         $data = $this->validated($request);
 
-        // Neues Foto ersetzt das alte (Datei aufräumen wie beim Avatar).
+        // Review M-01: neues Foto zuerst speichern + verlinken, altes erst
+        // danach löschen – kein Bildverlust bei fehlgeschlagener Verarbeitung.
+        $old = null;
         if ($request->hasFile('photo')) {
-            if ($contact->photo_path) {
-                Storage::disk(config('filesystems.media'))->delete($contact->photo_path);
-            }
+            $old = $contact->photo_path;
             $data['photo_path'] = $this->storePhoto($request, (int) $contact->family_id);
         }
 
         $contact->update($data);
+
+        if ($old) {
+            Storage::disk(config('filesystems.media'))->delete($old);
+        }
 
         return new ContactResource($contact->fresh());
     }
@@ -84,7 +88,7 @@ class ContactController extends Controller
             'website' => ['nullable', 'url:http,https', 'max:255'],
             'address' => ['nullable', 'string', 'max:1000'],
             'notes' => ['nullable', 'string', 'max:2000'],
-            'photo' => ['nullable', 'image', 'max:5120'],
+            'photo' => ['nullable', 'image', 'max:5120', 'dimensions:max_width=8000,max_height=8000'],
         ]);
     }
 

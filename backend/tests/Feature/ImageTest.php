@@ -383,3 +383,30 @@ it('does not let a user fetch an image from another family', function () {
     Sanctum::actingAs(familyMember());
     $this->getJson("/api/v1/images/{$image->id}")->assertForbidden();
 });
+
+it('fails closed: a broken image is rejected and nothing is stored (Review H-02)', function () {
+    Storage::fake('public');
+    Sanctum::actingAs(familyMember());
+
+    // Gültiger GIF-Header + Müll: passiert die image-Validierung (MIME),
+    // scheitert aber beim Dekodieren – früher wurde dann das Original samt
+    // potenzieller Metadaten gespeichert, jetzt wird abgelehnt.
+    $broken = UploadedFile::fake()->createWithContent('kaputt.gif', 'GIF89a'.random_bytes(256));
+
+    $this->post('/api/v1/images', [
+        'image' => $broken,
+    ], ['Accept' => 'application/json'])->assertStatus(422);
+
+    expect(Image::count())->toBe(0);
+    expect(Storage::disk('public')->allFiles())->toBeEmpty();
+});
+
+it('rejects absurdly large image dimensions (decompression bombs)', function () {
+    Storage::fake('public');
+    Sanctum::actingAs(familyMember());
+
+    $this->post('/api/v1/images', [
+        'image' => UploadedFile::fake()->image('riesig.jpg', 9000, 9000),
+    ], ['Accept' => 'application/json'])
+        ->assertStatus(422)->assertJsonValidationErrorFor('image');
+});

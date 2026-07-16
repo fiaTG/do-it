@@ -42,3 +42,21 @@ it('rejects a weak new password', function () {
 it('requires authentication', function () {
     $this->putJson('/api/v1/auth/password', [])->assertUnauthorized();
 });
+
+it('revokes other api tokens on password change but keeps the current one (Review M-06)', function () {
+    $user = familyMember();
+    $keep = $user->createToken('handy-aktuell');
+    $user->createToken('altes-tablet');
+    $user->createToken('geklautes-geraet');
+
+    $this->withHeader('Authorization', 'Bearer '.$keep->plainTextToken)
+        ->putJson('/api/v1/auth/password', [
+            'current_password' => 'password',
+            'password' => 'N3ues!Passwort',
+            'password_confirmation' => 'N3ues!Passwort',
+        ])->assertNoContent();
+
+    // Nur der aktuell benutzte Token überlebt.
+    expect($user->tokens()->count())->toBe(1);
+    expect($user->tokens()->first()->name)->toBe('handy-aktuell');
+});

@@ -51,7 +51,9 @@ class InviteController extends Controller
             'expires_at' => now()->addDays(7),
         ]);
 
-        Mail::to($invite->email)->send(new InvitationMail($invite));
+        // Review M-05: Versand entkoppelt über die Queue (Worker läuft) –
+        // ein lahmer/kaputter Mailserver blockiert den Request nicht mehr.
+        Mail::to($invite->email)->queue(new InvitationMail($invite));
 
         return (new InviteResource($invite->load('family')))
             ->response()

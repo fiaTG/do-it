@@ -51,7 +51,7 @@ function eventLabel(event: EventItem, now: Date): string {
 export default function MembersPage() {
   const me = useAuth((s) => s.user)
   const setUser = useAuth((s) => s.setUser)
-  const isGuardian = me?.role !== 'child'
+  const isGuardian = me?.role === 'guardian'
   const [members, setMembers] = useState<User[]>([])
   const [events, setEvents] = useState<EventItem[]>([])
   const [invites, setInvites] = useState<Invite[]>([])

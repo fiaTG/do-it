@@ -93,3 +93,28 @@ it('applies the role chosen in the invite on registration', function () {
         'token' => 'kid-token',
     ])->assertCreated()->assertJsonPath('data.role', 'child');
 });
+
+it('rejects registration with an invalid or used invite token (Review H-01)', function () {
+    $family = Family::factory()->create();
+    Invite::create([
+        'family_id' => $family->id,
+        'email' => 'used@example.com',
+        'token' => 'used-token',
+        'expires_at' => now()->addDay(),
+        'accepted_at' => now(),
+    ]);
+
+    foreach (['unknown-token', 'used-token'] as $token) {
+        $this->postJson('/api/v1/auth/register', [
+            'first_name' => 'X',
+            'last_name' => 'Y',
+            'email' => "x-{$token}@example.com",
+            'password' => 'Sup3r!pass',
+            'password_confirmation' => 'Sup3r!pass',
+            'token' => $token,
+        ])->assertStatus(422)->assertJsonValidationErrorFor('token');
+    }
+
+    // Kein stiller familienloser Account entstanden.
+    expect(User::where('email', 'like', 'x-%')->count())->toBe(0);
+});
