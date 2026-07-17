@@ -6,6 +6,7 @@
 
 ## 🔴 Jetzt: Web-Release Stufe 1 (ADR-0025)
 
+- [x] 2026-07-17 Registrierungs-Schalter: `NIDULA_REGISTRATION=invite` sperrt Registrierung ohne Einladung (Timos Beta-Bedingung)
 - [ ] Hetzner-Server anlegen (CX22, DE, Ubuntu 24.04, nur SSH-Key) – Timo, Anleitung siehe Session-Chat
 - [ ] Domain festlegen + DNS auf den Server zeigen – Timo
 - [ ] Deploy-Kit bauen: docker-compose.prod + Caddy (Auto-TLS, Security-Header) + Deploy-Runbook

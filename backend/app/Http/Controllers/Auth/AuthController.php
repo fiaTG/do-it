@@ -27,6 +27,15 @@ class AuthController extends Controller
     {
         $data = $request->validated();
 
+        // Geschlossene Beta (ADR-0025 Stufe 1): Ohne gültige Einladung gibt es
+        // keine Registrierung – neue Familien kann dann niemand von außen
+        // anlegen. Schalter: NIDULA_REGISTRATION=invite (Produktion) | open (Dev).
+        abort_if(
+            config('features.registration') === 'invite' && empty($data['token']),
+            403,
+            'Die Registrierung ist zurzeit nur mit persönlicher Einladung möglich.',
+        );
+
         // Review H-01: Invite-Prüfung, User-Anlage und Einlösung atomar –
         // zwei parallele Registrierungen können denselben Token nicht doppelt
         // konsumieren (lockForUpdate in validInviteFor).

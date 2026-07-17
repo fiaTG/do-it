@@ -33,7 +33,13 @@ Enterprise-Theater vor dem ersten echten Nutzer.
 
 **Stufe 1 – Private Beta (nur Timos Familie, invite-only):** darf starten,
 sobald die technische Basis steht (siehe Gates unten). Datenschutz-Papierkram
-im familiären Rahmen noch nicht erforderlich.
+im familiären Rahmen noch nicht erforderlich. **Zugangs-Garantie technisch
+erzwungen (Timos Bedingung 2026-07-17):** `NIDULA_REGISTRATION=invite`
+schaltet die Registrierung komplett auf „nur mit persönlicher, E-Mail-
+gebundener Einladung" – ohne Einladung kann niemand ein Konto oder eine
+Familie anlegen (403). Zusätzlich legt das Deploy-Kit optional einen
+Basic-Auth-„Bauzaun" vor die gesamte Seite, solange die Beta läuft –
+doppelter Zaun gegen noch unbekannte Lücken.
 
 **Stufe 2 – Freundes-Beta (fremde Familien, weiter invite-only):** zusätzlich
 DSGVO-Basispaket: Datenschutzerklärung, Impressum, AV-Vertrag mit Hetzner

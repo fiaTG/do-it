@@ -21,4 +21,9 @@ return [
     // danach entfernt `model:prune` Rows UND Dateien endgültig.
     'trash_retention_days' => 30,
 
+    // Registrierungs-Modus (ADR-0025): 'open' = jeder darf sich registrieren
+    // (Entwicklung), 'invite' = nur mit gültigem, E-Mail-gebundenem
+    // Einladungs-Token (geschlossene Beta / Kill-Switch in Produktion).
+    'registration' => env('NIDULA_REGISTRATION', 'open'),
+
 ];

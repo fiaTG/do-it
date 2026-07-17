@@ -52,6 +52,42 @@ it('rejects a duplicate email', function () {
     ])->assertStatus(422)->assertJsonValidationErrorFor('email');
 });
 
+// Geschlossene Beta (ADR-0025 Stufe 1): NIDULA_REGISTRATION=invite lässt
+// niemanden ohne persönliche Einladung herein.
+it('blocks registration without invite in invite-only mode', function () {
+    config()->set('features.registration', 'invite');
+
+    $this->postJson('/api/v1/auth/register', [
+        'first_name' => 'Fremde',
+        'last_name' => 'Person',
+        'email' => 'fremd@example.com',
+        'password' => 'Sup3r!pass',
+        'password_confirmation' => 'Sup3r!pass',
+    ])->assertForbidden();
+
+    expect(User::where('email', 'fremd@example.com')->exists())->toBeFalse();
+});
+
+it('allows invited registration in invite-only mode', function () {
+    config()->set('features.registration', 'invite');
+    $family = Family::factory()->create();
+    Invite::create([
+        'family_id' => $family->id,
+        'email' => 'beta@example.com',
+        'token' => 'beta-tok',
+        'expires_at' => now()->addDay(),
+    ]);
+
+    $this->postJson('/api/v1/auth/register', [
+        'first_name' => 'Beta',
+        'last_name' => 'Testerin',
+        'email' => 'beta@example.com',
+        'password' => 'Sup3r!pass',
+        'password_confirmation' => 'Sup3r!pass',
+        'token' => 'beta-tok',
+    ])->assertCreated()->assertJsonPath('data.family_id', $family->id);
+});
+
 it('joins a family via a valid invite token', function () {
     $family = Family::factory()->create();
     $invite = Invite::create([
