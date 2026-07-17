@@ -89,3 +89,10 @@ npm run build      # erzeugt dist/
   (kostenlos registrieren: <https://creativecommons.tankerkoenig.de>). Der
   Demo-Key liefert nur Fake-Preise. Kein Key gehört jemals ins Repo! Nach
   `.env`-Änderung: `docker compose restart laravel.test`.
+- **Nach großen Git-Aktionen (Branch-Wechsel, `reset --hard`) sterben die
+  Container-Prozesse leise:** `artisan serve` verliert sein Arbeitsverzeichnis
+  (sucht dann `/index.php` → API antwortet nicht, Container zeigt „Up"!) und
+  unter Docker Desktop/WSL können Bind-Mounts einzelner Dateien veralten
+  (`restart` schlägt mit „mount … no such file or directory" fehl). Lösung:
+  `docker compose up -d --force-recreate laravel.test worker` – ein bloßes
+  `restart` reicht dann NICHT.
