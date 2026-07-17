@@ -21,6 +21,10 @@ class InviteResource extends JsonResource
             'email' => $this->email,
             'role' => $this->role,
             'family' => new FamilyResource($this->whenLoaded('family')),
+            // Teilbarer Registrierungs-Link (gleiche URL wie in der Mail):
+            // nötig, solange in der Beta kein Mail-Versand läuft. Ungefährlich,
+            // weil die Einladung ohnehin an die E-Mail gebunden ist (H-01).
+            'link' => rtrim((string) config('app.frontend_url'), '/').'/register?token='.$this->token,
             'created_at' => $this->created_at?->toIso8601String(),
             'expires_at' => $this->expires_at?->toIso8601String(),
         ];

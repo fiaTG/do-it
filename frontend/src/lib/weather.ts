@@ -71,7 +71,9 @@ export interface GeocodingResult {
 export async function searchPlaces(query: string): Promise<GeocodingResult[]> {
   const url =
     'https://geocoding-api.open-meteo.com/v1/search' +
-    `?name=${encodeURIComponent(query)}&count=5&language=de&format=json`
+    // count=10: kleine Orte (z. B. "Hirschberg") tauchen sonst hinter den
+    // großen Namensvettern nicht auf (Timos Beta-Feedback 2026-07-17).
+    `?name=${encodeURIComponent(query)}&count=10&language=de&format=json`
   const res = await fetch(url)
   if (!res.ok) throw new Error(`Geocoding: HTTP ${res.status}`)
   const data = (await res.json()) as { results?: GeocodingResult[] }

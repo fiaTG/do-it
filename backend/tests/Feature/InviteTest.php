@@ -124,3 +124,12 @@ it('returns 404 for an expired invite', function () {
 
     $this->getJson('/api/v1/invites/old-token')->assertNotFound();
 });
+
+it('exposes a shareable registration link (beta: no mail delivery yet)', function () {
+    Sanctum::actingAs(familyMember());
+
+    $link = $this->postJson('/api/v1/invites', ['email' => 'oma@example.com', 'role' => 'child'])
+        ->assertCreated()->json('data.link');
+
+    expect($link)->toContain('/register?token=');
+});

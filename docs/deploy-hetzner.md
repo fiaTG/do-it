@@ -50,11 +50,19 @@ und neu deployen (SPA muss mit neuer `VITE_API_URL` gebaut werden).
 1. **Bauzaun:** Basic-Auth vor der ganzen Seite (Benutzer `familie`,
    Passwort hat Timo). Entfernen: `basic_auth`-Block im `deploy/Caddyfile`
    löschen + deployen. Vor Native-Apps zwingend entfernen.
-2. **Registrierung:** `NIDULA_REGISTRATION` in `.env.app` – stand nach dem
-   Bootstrap (Timos Erst-Registrierung) auf `invite`: niemand ohne
-   persönliche, E-Mail-gebundene Einladung. Nach Änderung:
-   `docker compose -f docker-compose.prod.yml exec -T app php artisan config:cache`
-   und `restart app worker scheduler`.
+2. **Registrierung:** `NIDULA_REGISTRATION` in `.env.app` – steht seit dem
+   Bootstrap (Timos Erst-Registrierung, 2026-07-17) auf `invite`: niemand ohne
+   persönliche, E-Mail-gebundene Einladung (live verifiziert: 403).
+   Einladungs-Links stehen zum Kopieren in der Familien-Seite (Mail-Versand
+   ist noch aus).
+
+**WICHTIG bei .env-Änderungen:** `docker compose restart` lädt env_file
+NICHT neu (real passiert beim Bootstrap)! Immer so:
+
+```bash
+docker compose -f docker-compose.prod.yml up -d --force-recreate app worker scheduler
+docker compose -f docker-compose.prod.yml exec -T app php artisan config:cache
+```
 
 ## Nützliche Kommandos (auf dem Server, in /opt/nidula/deploy)
 

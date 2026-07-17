@@ -196,6 +196,8 @@ export interface Invite {
   email: string
   role: FamilyRole
   family: Family | null
+  /** Teilbarer Registrierungs-Link (Beta: Mail-Versand ist noch aus). */
+  link: string
   created_at: string | null
   expires_at: string | null
 }

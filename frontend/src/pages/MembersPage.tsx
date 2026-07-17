@@ -2,7 +2,7 @@ import { useEffect, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { apiError, eventsApi, familyApi, inviteApi } from '../api'
 import MemberAvatar from '../components/MemberAvatar'
-import { Baby, Cake, Calendar, Crown, Mail, MapPin, PartyPopper, Shield, Users, X } from '../lib/icons'
+import { Baby, Cake, Calendar, Check, Copy, Crown, Mail, MapPin, PartyPopper, Shield, Users, X } from '../lib/icons'
 import { memberColor } from '../lib/memberColors'
 import { expandEvents, type Occurrence } from '../lib/recurrence'
 import { searchPlaces, type GeocodingResult } from '../lib/weather'
@@ -56,6 +56,7 @@ export default function MembersPage() {
   const [events, setEvents] = useState<EventItem[]>([])
   const [invites, setInvites] = useState<Invite[]>([])
   const [inviteRole, setInviteRole] = useState<FamilyRole>('guardian')
+  const [copiedInvite, setCopiedInvite] = useState<number | null>(null)
   // Einmal beim Mount fixiert – Render bleibt pur (react-hooks/purity).
   const [now] = useState(() => new Date())
   const [email, setEmail] = useState('')
@@ -270,6 +271,10 @@ export default function MembersPage() {
         {invites.length > 0 && (
           <div className="mt-4 border-t border-border pt-3">
             <p className="mb-2 text-xs font-semibold text-muted">Offene Einladungen</p>
+            <p className="mb-2 text-xs text-muted">
+              Link kopieren und persönlich verschicken (z. B. WhatsApp) – die Einladung
+              funktioniert nur mit der eingeladenen E-Mail-Adresse.
+            </p>
             <ul className="space-y-1.5">
               {invites.map((inv) => (
                 <li key={inv.id} className="flex items-center gap-2 text-sm">
@@ -283,6 +288,20 @@ export default function MembersPage() {
                       bis {new Date(inv.expires_at).toLocaleDateString('de-DE')}
                     </span>
                   )}
+                  <button
+                    onClick={() => {
+                      void navigator.clipboard.writeText(inv.link).then(() => setCopiedInvite(inv.id))
+                    }}
+                    aria-label={`Einladungs-Link für ${inv.email} kopieren`}
+                    title="Einladungs-Link kopieren"
+                    className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-muted hover:bg-surface-2 hover:text-primary"
+                  >
+                    {copiedInvite === inv.id ? (
+                      <Check className="h-3.5 w-3.5 text-primary" />
+                    ) : (
+                      <Copy className="h-3.5 w-3.5" />
+                    )}
+                  </button>
                   {isGuardian && (
                     <button
                       onClick={() => void revoke(inv)}
