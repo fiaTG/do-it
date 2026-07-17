@@ -32,3 +32,6 @@ ios/
 *.njsproj
 *.sln
 *.sw?
+
+# Vite-Cache (entsteht bei build/dev)
+.vite/
