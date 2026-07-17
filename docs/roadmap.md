@@ -169,6 +169,7 @@ aber spürbar"):
 | ~~Tankpreise Umgebung~~ | – | Premium ✔ | ✔ umgesetzt 2026-07-16: /fuel-stations hinter premium-Middleware, 10-min-Cache + Lock je Region, on-demand only, CC-BY-Quellenangabe in der UI; läuft bis zur Key-Freischaltung mit Demo-Key (Fake-Preise) |
 | ~~Wiederkehrende Termine~~ | – | Free | ✔ umgesetzt 2026-07-16: events.recurrence (daily/weekly/biweekly/monthly/yearly + Enddatum), Expansion clientseitig (lib/recurrence.ts, kein rrule-Plugin nötig); Serien-Vorkommen nicht ziehbar, Bearbeiten = ganze Serie |
 | ~~iCal-Import/Kalender-Sync~~ | – | Premium ✔ | ✔ umgesetzt 2026-07-17 (ADR-0023): Kalender-Abos per URL/webcal oder .ics-Datei als schreibgeschützte Ebene, sabre/vobject-Expansion serverseitig, SSRF-geprüfter Fetcher, Refresh on-demand (6-h-Frische) – löst das „Bald: Kalender-Sync"-Versprechen ein |
+| Feed-Katalog/Abo-Assistent | mittel | Premium | Timos Test-Feedback 2026-07-17: URL/Datei selbst besorgen ist für Endnutzer eine Hürde. Ideen: eingebauter Katalog (Feiertage je Bundesland ein Klick), Abfallkalender-Suche (viele Entsorger wie AVR bieten ICS-Generatoren), kuratierte Quellen-Liste mit Anleitung |
 
 ---
 
