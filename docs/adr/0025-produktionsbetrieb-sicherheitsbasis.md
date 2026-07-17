@@ -53,7 +53,8 @@ Monitoring mit Alarmierung, Kill-Switch für Registrierung/Uploads.
 
 ### Infrastruktur (konkretisiert ADR-0014)
 
-- **Ein Hetzner CX22** (Falkenstein/Nürnberg = DE) mit Docker Compose:
+- **Ein Hetzner CX23** (Nachfolger des CX22 aus ADR-0014, gleiche Eckdaten;
+  Falkenstein/Nürnberg = DE) mit Docker Compose:
   Caddy (Reverse Proxy, Auto-TLS), App-Container, Worker, MySQL, Redis.
   **DB/Redis bekommen KEINE Port-Mappings nach außen** – nur das interne
   Docker-Netz. Öffentlich erreichbar: nur 80/443 (Caddy) und SSH.
@@ -113,7 +114,7 @@ Monitoring mit Alarmierung, Kill-Switch für Registrierung/Uploads.
   ehrlichen, dokumentierten Stufen mit dem Nutzerkreis.
 - Ein Server, ein Compose-File: wenig Betriebsaufwand, klarer Upgrade-Pfad
   (Objekt-Storage getrennt → Serverwechsel bleibt einfach, ADR-0014).
-- Ohne CDN trägt der CX22 die Asset-Auslieferung selbst – für Familien-Beta
+- Ohne CDN trägt der CX23 die Asset-Auslieferung selbst – für Familien-Beta
   unkritisch, wird bei Last neu bewertet.
 - Vor Stufe 2 entsteht Papierkram (Datenschutzerklärung & Co.) – eingeplant
   in docs/aufgaben.md.
