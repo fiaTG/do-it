@@ -138,8 +138,7 @@ markierten ⚠️-Stellen sind die Punkte, die wirklich Zeit gekostet haben.
 ```bash
 cd ~
 git clone https://github.com/fiaTG/do-it.git
-cd do-it
-git checkout modernize/phase-0-foundation
+cd do-it   # main ist seit 2026-07-17 der (einzige) Projekt-Branch
 ```
 
 ### 2. Backend starten

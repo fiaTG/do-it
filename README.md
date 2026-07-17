@@ -14,7 +14,7 @@ Board". Hintergrund: [`docs/adr/0018-cross-platform-design-und-brand.md`](docs/a
 > Fahrplan: [`docs/roadmap.md`](docs/roadmap.md) und die ADRs unter
 > [`docs/adr/`](docs/adr/).
 
-![CI](https://github.com/fiaTG/do-it/actions/workflows/ci.yml/badge.svg?branch=modernize%2Fphase-0-foundation)
+![CI](https://github.com/fiaTG/do-it/actions/workflows/ci.yml/badge.svg?branch=main)
 
 ## Architektur
 
