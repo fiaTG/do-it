@@ -17,15 +17,17 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => [
+    'allowed_origins' => array_values(array_filter([
         env('FRONTEND_URL', 'http://localhost:5173'),
         // Native Hüllen (Capacitor WebView-Origins, ADR-0012). Token-Auth,
         // keine Cookies – aber die Origin muss für XHR/Upload erlaubt sein.
-        // Android nutzt im Dev das http-Schema, iOS capacitor://.
-        'http://localhost',
+        // iOS nutzt capacitor://, Android-Release https://.
         'https://localhost',
         'capacitor://localhost',
-    ],
+        // Klartext-HTTP nur außerhalb Produktion (Android-Dev-Emulator,
+        // ADR-0025: keine unverschlüsselten Origins in Prod).
+        env('APP_ENV') === 'production' ? null : 'http://localhost',
+    ])),
 
     'allowed_origins_patterns' => [],
 

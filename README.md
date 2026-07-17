@@ -67,5 +67,6 @@ GitHub Actions ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
 
 ## Dokumentation
 
+- [`docs/aufgaben.md`](docs/aufgaben.md) – Aufgaben-Board (kurz & aktuell)
 - [`docs/roadmap.md`](docs/roadmap.md) – Modernisierungs-Fahrplan & Befunde
 - [`docs/adr/`](docs/adr/) – Architecture Decision Records

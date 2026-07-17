@@ -36,7 +36,8 @@ Route::prefix('v1')->group(function () {
     });
 
     // --- Authentifizierung (öffentlich) --------------------------------------
-    Route::post('/auth/register', [AuthController::class, 'register']);
+    Route::post('/auth/register', [AuthController::class, 'register'])
+        ->middleware('throttle:register'); // Massen-Registrierung (ADR-0025)
     Route::post('/auth/login', [AuthController::class, 'login'])
         ->middleware('throttle:auth'); // Brute-Force-Schutz (S4)
 
@@ -76,7 +77,8 @@ Route::prefix('v1')->group(function () {
 
         // Profil
         Route::put('/profile', [ProfileController::class, 'update']);
-        Route::post('/profile/avatar', [ProfileController::class, 'avatar']);
+        Route::post('/profile/avatar', [ProfileController::class, 'avatar'])
+            ->middleware('throttle:uploads'); // Bildverarbeitung ist teuer (ADR-0025)
 
         // Abo / Premium (ADR-0013)
         Route::get('/subscription', [SubscriptionController::class, 'show']);
@@ -88,7 +90,8 @@ Route::prefix('v1')->group(function () {
         Route::get('/family/members', [FamilyController::class, 'members']);
         Route::patch('/family/members/{member}/role', [FamilyController::class, 'updateRole']);
         Route::patch('/family/location', [FamilyController::class, 'updateLocation']);
-        Route::post('/invites', [InviteController::class, 'store']);
+        Route::post('/invites', [InviteController::class, 'store'])
+            ->middleware('throttle:invites'); // Mail-Spam-Schutz (ADR-0025)
         Route::get('/invites', [InviteController::class, 'index']);
         Route::delete('/invites/{invite}', [InviteController::class, 'destroy']);
 
@@ -115,8 +118,11 @@ Route::prefix('v1')->group(function () {
         Route::get('images/trash', [ImageController::class, 'trash']);
         Route::post('images/restore', [ImageController::class, 'restore']);
         Route::post('images/purge', [ImageController::class, 'purge']);
+        // Upload separat, damit NUR er das Upload-Limit trägt (ADR-0025).
+        Route::post('images', [ImageController::class, 'store'])
+            ->middleware('throttle:uploads');
         Route::apiResource('images', ImageController::class)
-            ->only(['index', 'show', 'store', 'destroy']);
+            ->only(['index', 'show', 'destroy']);
         Route::apiResource('contacts', ContactController::class)
             ->only(['index', 'store', 'update', 'destroy']);
         // Spritpreise (Premium, ADR-0022): erster echter premium-Endpoint.

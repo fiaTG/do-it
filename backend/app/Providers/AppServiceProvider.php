@@ -34,5 +34,25 @@ class AppServiceProvider extends ServiceProvider
 
             return Limit::perMinute(6)->by($key);
         });
+
+        // Massen-Registrierung bremsen (ADR-0025): pro IP, großzügig genug
+        // für eine Familie am selben Anschluss.
+        RateLimiter::for('register', function (Request $request) {
+            return Limit::perMinute(5)->by($request->ip());
+        });
+
+        // Einladungen verschicken Mails -> Spam-Vektor (ADR-0025): je Nutzer.
+        RateLimiter::for('invites', function (Request $request) {
+            return [
+                Limit::perMinute(5)->by('invites-m:'.$request->user()?->id),
+                Limit::perHour(20)->by('invites-h:'.$request->user()?->id),
+            ];
+        });
+
+        // Uploads sind teuer (Bildverarbeitung im Worker, ADR-0025): je Nutzer,
+        // mit Luft für Galerie-Batch-Uploads (sequenzielle Einzel-Requests).
+        RateLimiter::for('uploads', function (Request $request) {
+            return Limit::perMinute(60)->by('uploads:'.$request->user()?->id);
+        });
     }
 }
