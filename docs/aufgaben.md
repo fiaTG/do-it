@@ -6,15 +6,16 @@
 
 ## 🔴 Jetzt: Web-Release Stufe 1 (ADR-0025)
 
+- [ ] **Timo: auf <https://167-233-64-98.sslip.io> registrieren (hinter Bauzaun), dann Registrierung auf `invite` stellen** – Bootstrap, siehe deploy-hetzner.md
+- [ ] Domain festlegen + DNS auf 167.233.64.98 zeigen – Timo
+- [ ] MFA im Hetzner-Konto aktivieren – Timo
+- [ ] Hetzner-Firewall (Cloud-Ebene) zusätzlich zur ufw anlegen (22/80/443)
+- [ ] Hetzner Object Storage (privater Bucket) anlegen + anbinden – bis dahin Fotos im Server-Volume (privat via signierte URLs)
+- [ ] Mail-Versand klären (SMTP-Anbieter) – bis dahin MAIL_MAILER=log, Invites per Link
 - [x] 2026-07-17 Registrierungs-Schalter: `NIDULA_REGISTRATION=invite` sperrt Registrierung ohne Einladung (Timos Beta-Bedingung)
-- [ ] Hetzner-Server anlegen (CX23, DE, Ubuntu 24.04, nur SSH-Key) – Timo, Anleitung siehe Session-Chat
-- [ ] Domain festlegen + DNS auf den Server zeigen – Timo
-- [ ] Deploy-Kit bauen: docker-compose.prod + Caddy (Auto-TLS, Security-Header) + Deploy-Runbook
-- [ ] Server härten: ufw, SSH-Config, MFA im Hetzner-Konto, Hetzner-Firewall
-- [ ] Hetzner Object Storage (privater Bucket) anlegen + anbinden
-- [ ] Mail-Versand klären (SMTP-Anbieter) – bis dahin bleiben Invite-Mails Beta-intern
-- [ ] Scheduler (cron `schedule:run`) fürs Papierkorb-Purge einrichten
-- [ ] Erster Deploy + Smoke-Test, dann Familien-Beta
+- [x] 2026-07-17 Server nidula-prod (CX23, Falkenstein) gehärtet: nur SSH-Key, kein Root-Login, ufw, fail2ban, Auto-Updates
+- [x] 2026-07-17 Deploy-Kit + Runbook (deploy/, docs/deploy-hetzner.md); Scheduler-Container ersetzt cron
+- [x] 2026-07-17 **ERSTER DEPLOY LIVE**: <https://167-233-64-98.sslip.io> (HTTPS, Security-Header, Bauzaun, Smoke-Test grün)
 
 ## 🟡 Demnächst: Stufe 2 (fremde Familien)
 
