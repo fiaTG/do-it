@@ -376,6 +376,27 @@ export const calendarFeedsApi = {
   },
 }
 
+/** Kalender-Freigabe (ADR-0024, Premium): geheime .ics-Abo-URL der Familie. */
+export interface CalendarExportState {
+  enabled: boolean
+  url: string | null
+}
+
+export const calendarExportApi = {
+  async show(): Promise<CalendarExportState> {
+    const { data } = await api.get<{ data: CalendarExportState }>('/calendar-export')
+    return data.data
+  },
+  /** Aktivieren bzw. neue Adresse erzeugen – alte URL wird sofort ungültig. */
+  async rotate(): Promise<CalendarExportState> {
+    const { data } = await api.post<{ data: CalendarExportState }>('/calendar-export/rotate')
+    return data.data
+  },
+  async disable(): Promise<void> {
+    await api.delete('/calendar-export')
+  },
+}
+
 export const imagesApi = {
   /** Seitenweise (60/Seite), sortiert nach Aufnahme- (Fallback: Upload-)Datum. */
   async list(page = 1): Promise<ImagePage> {

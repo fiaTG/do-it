@@ -13,7 +13,10 @@ class Family extends Model
     /** @use HasFactory<FamilyFactory> */
     use HasFactory;
 
-    protected $fillable = ['name', 'location_name', 'latitude', 'longitude'];
+    protected $fillable = ['name', 'location_name', 'latitude', 'longitude', 'calendar_token'];
+
+    /** Das Kalender-Token ist ein Geheimnis – nie in Resources/JSON serialisieren. */
+    protected $hidden = ['calendar_token'];
 
     public function users(): HasMany
     {

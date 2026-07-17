@@ -9,9 +9,10 @@ import deLocale from '@fullcalendar/core/locales/de'
 import { Link } from 'react-router-dom'
 import { apiError, calendarFeedsApi, eventsApi, familyApi } from '../api'
 import CalendarFeedManager from '../components/CalendarFeedManager'
+import CalendarShareDialog from '../components/CalendarShareDialog'
 import MemberAvatar from '../components/MemberAvatar'
 import PersonDayView from '../components/PersonDayView'
-import { Calendar, Car, Crown, Globe, MapPin, RotateCcw } from '../lib/icons'
+import { Calendar, Car, Crown, Globe, MapPin, RotateCcw, Share2 } from '../lib/icons'
 import { FALLBACK_COLOR, memberColor } from '../lib/memberColors'
 import { expandEvents } from '../lib/recurrence'
 import { useAuth } from '../store/auth'
@@ -82,6 +83,7 @@ export default function CalendarPage() {
   const [feedEvents, setFeedEvents] = useState<FeedEvent[]>([])
   const [hiddenFeeds, setHiddenFeeds] = useState<number[]>([])
   const [manageFeeds, setManageFeeds] = useState(false)
+  const [shareOpen, setShareOpen] = useState(false)
   const [feedInfo, setFeedInfo] = useState<FeedEvent | null>(null)
   const [modal, setModal] = useState<ModalState>(CLOSED)
   const [error, setError] = useState('')
@@ -376,23 +378,36 @@ export default function CalendarPage() {
           )
         })}
         <span className="text-muted">· antippen zum Ein-/Ausblenden</span>
-        {isGuardian &&
-          (isPremium ? (
+        {isPremium ? (
+          <span className="ml-auto flex items-center gap-1.5">
+            {/* Kalender teilen: alle Mitglieder (jedes Handy soll abonnieren) */}
             <button
               type="button"
-              onClick={() => setManageFeeds(true)}
-              className="ml-auto flex items-center gap-1.5 rounded-full border border-border px-2.5 py-1 text-muted hover:bg-surface-2"
+              onClick={() => setShareOpen(true)}
+              className="flex items-center gap-1.5 rounded-full border border-border px-2.5 py-1 text-muted hover:bg-surface-2"
             >
-              <Globe className="h-3.5 w-3.5" /> Kalender-Abos
+              <Share2 className="h-3.5 w-3.5" /> Teilen
             </button>
-          ) : (
+            {isGuardian && (
+              <button
+                type="button"
+                onClick={() => setManageFeeds(true)}
+                className="flex items-center gap-1.5 rounded-full border border-border px-2.5 py-1 text-muted hover:bg-surface-2"
+              >
+                <Globe className="h-3.5 w-3.5" /> Kalender-Abos
+              </button>
+            )}
+          </span>
+        ) : (
+          isGuardian && (
             <Link
               to="/premium"
               className="ml-auto flex items-center gap-1.5 rounded-full border border-border px-2.5 py-1 text-muted hover:bg-surface-2"
             >
-              <Crown className="h-3.5 w-3.5 text-primary" /> Kalender-Abos (Premium)
+              <Crown className="h-3.5 w-3.5 text-primary" /> Kalender-Abos & Teilen (Premium)
             </Link>
-          ))}
+          )
+        )}
       </div>
 
       <div className="rounded-2xl bg-surface p-4 shadow">
@@ -473,6 +488,8 @@ export default function CalendarPage() {
           onChanged={loadFeeds}
         />
       )}
+
+      {shareOpen && <CalendarShareDialog onClose={() => setShareOpen(false)} />}
 
       {/* Info-Fenster für Abo-Termine (nur lesbar) */}
       {feedInfo && (

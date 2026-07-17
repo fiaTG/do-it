@@ -10,6 +10,7 @@ import type { Subscription } from '../types'
 const BENEFITS: { label: string; soon?: boolean }[] = [
   { label: 'Unbegrenzter Galerie-Speicher' },
   { label: 'Kalender-Abos: Schule, Verein & Abfallkalender im Familienkalender (iCal)' },
+  { label: 'Kalender-Freigabe: Nidula-Termine in Google/Apple/Outlook' },
   { label: 'Spritpreise rund um euren Familienort' },
   { label: 'Du unterstützt eine werbefreie Familien-App' },
   { label: 'Weitere Familienspiele in der Fun Area', soon: true },

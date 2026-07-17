@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\CalendarExportController;
 use App\Http\Controllers\CalendarFeedController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\EventController;
@@ -41,6 +42,13 @@ Route::prefix('v1')->group(function () {
 
     // Öffentliche Einladungs-Vorschau (für die Registrierungsseite).
     Route::get('/invites/{token}', [InviteController::class, 'show']);
+
+    // Kalender-Freigabe (ADR-0024): öffentlicher .ics-Feed für Kalender-Apps.
+    // Das 64-Hex-Token ist die Zugangskontrolle; gedrosselt gegen Raten.
+    Route::get('/calendar-export/{token}', [CalendarExportController::class, 'ics'])
+        ->where('token', '[a-f0-9]{64}')
+        ->middleware('throttle:30,1')
+        ->name('calendar.export');
 
     // Medien-Proxy (ADR-0015): nur über gültige Signatur erreichbar, kein Cookie
     // nötig (funktioniert für <img>). Speicher bleibt privat.
@@ -121,6 +129,11 @@ Route::prefix('v1')->group(function () {
             Route::post('calendar-feeds', [CalendarFeedController::class, 'store']);
             Route::post('calendar-feeds/{feed}/refresh', [CalendarFeedController::class, 'refresh']);
             Route::delete('calendar-feeds/{feed}', [CalendarFeedController::class, 'destroy']);
+
+            // Kalender-Freigabe (Premium, ADR-0024): Status/URL, rotieren, beenden.
+            Route::get('calendar-export', [CalendarExportController::class, 'show']);
+            Route::post('calendar-export/rotate', [CalendarExportController::class, 'rotate']);
+            Route::delete('calendar-export', [CalendarExportController::class, 'disable']);
         });
 
         // Fun Area: Highscores je Spiel (Slug-Whitelist im Controller).
