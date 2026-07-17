@@ -26,7 +26,11 @@ COPY deploy/php.prod.ini /usr/local/etc/php/conf.d/zz-nidula.ini
 
 WORKDIR /var/www/html
 COPY --from=vendor --chown=www-data:www-data /app ./
-RUN chown -R www-data:www-data storage bootstrap/cache
+# Storage-Gerüst hier anlegen: der Deploy-rsync überträgt backend/storage
+# absichtlich NICHT (enthält lokal Dev-Medien) – Laravel braucht die Ordner aber.
+RUN mkdir -p storage/framework/cache/data storage/framework/sessions \
+        storage/framework/views storage/app/public storage/logs bootstrap/cache \
+    && chown -R www-data:www-data storage bootstrap/cache
 
 USER www-data
 EXPOSE 9000
