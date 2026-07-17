@@ -9,9 +9,10 @@ import type { Subscription } from '../types'
 // Kommendes klar als "Bald" kennzeichnen.
 const BENEFITS: { label: string; soon?: boolean }[] = [
   { label: 'Unbegrenzter Galerie-Speicher' },
+  { label: 'Kalender-Abos: Schule, Verein & Abfallkalender im Familienkalender (iCal)' },
+  { label: 'Spritpreise rund um euren Familienort' },
   { label: 'Du unterstützt eine werbefreie Familien-App' },
-  { label: 'Synchronisation mit externen Kalendern', soon: true },
-  { label: 'Zusätzliche Premium-Widgets', soon: true },
+  { label: 'Weitere Familienspiele in der Fun Area', soon: true },
 ]
 
 type Plan = 'monthly' | 'yearly'

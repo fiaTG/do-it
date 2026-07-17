@@ -161,6 +161,36 @@ export interface Contact {
   created_at: string | null
 }
 
+/** Kalender-Abo (ADR-0023, Premium): externer iCal-Kalender als Lese-Ebene. */
+export interface CalendarFeed {
+  id: number
+  name: string
+  /** Layer-Farbe (Hex) für alle Termine dieses Abos. */
+  color: string
+  url: string | null
+  /** true = URL-Abo (wird aktualisiert), false = einmaliger Datei-Import. */
+  is_subscription: boolean
+  last_synced_at: string | null
+  /** Letzter Sync-Fehler (deutsch) – null, wenn alles ok. */
+  last_error: string | null
+  created_by: number | null
+  created_at: string | null
+}
+
+/** Einzelnes, serverseitig expandiertes Vorkommen aus einem Kalender-Abo. */
+export interface FeedEvent {
+  id: string
+  feed_id: number
+  uid: string
+  title: string
+  /** Ganztägig: reines Datum (YYYY-MM-DD), sonst ISO mit Zeit (UTC). */
+  starts_at: string
+  /** Ende exklusiv bei Ganztagsterminen (RFC 5545 = FullCalendar). */
+  ends_at: string
+  all_day: boolean
+  location: string | null
+}
+
 export interface Invite {
   id: number
   email: string

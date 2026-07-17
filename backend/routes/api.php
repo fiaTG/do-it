@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\CalendarFeedController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\FamilyController;
@@ -112,6 +113,15 @@ Route::prefix('v1')->group(function () {
             ->only(['index', 'store', 'update', 'destroy']);
         // Spritpreise (Premium, ADR-0022): erster echter premium-Endpoint.
         Route::get('/fuel-stations', [FuelController::class, 'index'])->middleware('premium');
+
+        // Kalender-Abos (Premium, ADR-0023) – Literal-Route "events" VOR {feed}.
+        Route::middleware('premium')->group(function () {
+            Route::get('calendar-feeds/events', [CalendarFeedController::class, 'events']);
+            Route::get('calendar-feeds', [CalendarFeedController::class, 'index']);
+            Route::post('calendar-feeds', [CalendarFeedController::class, 'store']);
+            Route::post('calendar-feeds/{feed}/refresh', [CalendarFeedController::class, 'refresh']);
+            Route::delete('calendar-feeds/{feed}', [CalendarFeedController::class, 'destroy']);
+        });
 
         // Fun Area: Highscores je Spiel (Slug-Whitelist im Controller).
         Route::get('games/{game}/scores', [GameScoreController::class, 'index']);

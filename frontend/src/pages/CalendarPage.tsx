@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type FormEvent } from 'react'
+import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
@@ -6,14 +6,16 @@ import listPlugin from '@fullcalendar/list'
 import interactionPlugin from '@fullcalendar/interaction'
 import type { EventClickArg, EventContentArg, EventInput } from '@fullcalendar/core'
 import deLocale from '@fullcalendar/core/locales/de'
-import { apiError, eventsApi, familyApi } from '../api'
+import { Link } from 'react-router-dom'
+import { apiError, calendarFeedsApi, eventsApi, familyApi } from '../api'
+import CalendarFeedManager from '../components/CalendarFeedManager'
 import MemberAvatar from '../components/MemberAvatar'
 import PersonDayView from '../components/PersonDayView'
-import { Calendar, Car, RotateCcw } from '../lib/icons'
+import { Calendar, Car, Crown, Globe, MapPin, RotateCcw } from '../lib/icons'
 import { FALLBACK_COLOR, memberColor } from '../lib/memberColors'
 import { expandEvents } from '../lib/recurrence'
 import { useAuth } from '../store/auth'
-import type { EventItem, User } from '../types'
+import type { CalendarFeed, EventItem, FeedEvent, User } from '../types'
 
 interface ModalState {
   open: boolean
@@ -49,20 +51,53 @@ function toLocalInput(date: Date): string {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`
 }
 
+/** Zeitangabe eines Abo-Termins fürs Info-Fenster (ganztägig: Ende exklusiv). */
+function formatFeedWhen(e: FeedEvent): string {
+  const dayFmt: Intl.DateTimeFormatOptions = { weekday: 'short', day: 'numeric', month: 'long' }
+  if (e.all_day) {
+    const start = new Date(`${e.starts_at}T00:00:00`)
+    const lastDay = new Date(+new Date(`${e.ends_at}T00:00:00`) - 86_400_000)
+    const range =
+      +lastDay <= +start
+        ? start.toLocaleDateString('de-DE', dayFmt)
+        : `${start.toLocaleDateString('de-DE', dayFmt)} – ${lastDay.toLocaleDateString('de-DE', dayFmt)}`
+    return `${range} · ganztägig`
+  }
+  const start = new Date(e.starts_at)
+  const end = new Date(e.ends_at)
+  const time: Intl.DateTimeFormatOptions = { hour: '2-digit', minute: '2-digit' }
+  return `${start.toLocaleDateString('de-DE', dayFmt)}, ${start.toLocaleTimeString('de-DE', time)} – ${end.toLocaleTimeString('de-DE', time)} Uhr`
+}
+
 export default function CalendarPage() {
   const me = useAuth((s) => s.user)
   const userId = me?.id ?? 0
   const isGuardian = me?.role === 'guardian' // Verwalter dürfen alle Termine verwalten
+  const isPremium = me?.family?.is_premium ?? false
 
   const [events, setEvents] = useState<EventItem[]>([])
   const [members, setMembers] = useState<User[]>([])
   const [hidden, setHidden] = useState<number[]>([]) // ausgeblendete Personen
+  const [feeds, setFeeds] = useState<CalendarFeed[]>([]) // Kalender-Abos (Premium)
+  const [feedEvents, setFeedEvents] = useState<FeedEvent[]>([])
+  const [hiddenFeeds, setHiddenFeeds] = useState<number[]>([])
+  const [manageFeeds, setManageFeeds] = useState(false)
+  const [feedInfo, setFeedInfo] = useState<FeedEvent | null>(null)
   const [modal, setModal] = useState<ModalState>(CLOSED)
   const [error, setError] = useState('')
   const [view, setView] = useState<'overview' | 'person'>('overview')
   const [personDate, setPersonDate] = useState(() => new Date())
   // Einmal beim Mount fixiert (react-hooks/purity); Expansionsfenster ±.
   const [mountedAt] = useState(() => new Date())
+
+  // Gleiches Fenster für eigene Serien UND Abo-Termine: 1 Jahr zurück, 2 voraus.
+  const [windowFrom, windowTo] = useMemo(
+    () => [
+      new Date(mountedAt.getFullYear() - 1, 0, 1),
+      new Date(mountedAt.getFullYear() + 2, 0, 1),
+    ],
+    [mountedAt],
+  )
 
   async function load() {
     try {
@@ -74,9 +109,27 @@ export default function CalendarPage() {
     }
   }
 
+  // Abos sind Zusatz (Premium): Fehler hier lassen den Kalender selbst in Ruhe.
+  const loadFeeds = useCallback(async () => {
+    try {
+      const [fs, fe] = await Promise.all([
+        calendarFeedsApi.list(),
+        calendarFeedsApi.events(windowFrom, windowTo),
+      ])
+      setFeeds(fs)
+      setFeedEvents(fe)
+    } catch {
+      /* Kalender bleibt ohne Abo-Ebene nutzbar */
+    }
+  }, [windowFrom, windowTo])
+
   useEffect(() => {
     void load()
   }, [])
+
+  useEffect(() => {
+    if (isPremium) void loadFeeds()
+  }, [isPremium, loadFeeds])
 
   // Farbe je Mitglied: selbst gewählt (users.color) oder stabiler ID-Fallback.
   const memberById = (id: number | null): User | undefined =>
@@ -93,14 +146,11 @@ export default function CalendarPage() {
 
   // Serien in Vorkommen auflösen: 1 Jahr zurück, 2 Jahre voraus.
   const occurrences = useMemo(
-    () =>
-      expandEvents(
-        events,
-        new Date(mountedAt.getFullYear() - 1, 0, 1),
-        new Date(mountedAt.getFullYear() + 2, 0, 1),
-      ),
-    [events, mountedAt],
+    () => expandEvents(events, windowFrom, windowTo),
+    [events, windowFrom, windowTo],
   )
+
+  const feedById = (id: number): CalendarFeed | undefined => feeds.find((f) => f.id === id)
 
   const fcEvents: EventInput[] = occurrences
     .filter((e) => !hidden.includes(e.owner_id ?? -1))
@@ -121,9 +171,35 @@ export default function CalendarPage() {
       },
     }))
 
+  // Abo-Termine (ADR-0023): eigene Lese-Ebene in der Feed-Farbe, nie ziehbar.
+  const fcFeedEvents: EventInput[] = feedEvents
+    .filter((e) => !hiddenFeeds.includes(e.feed_id))
+    .map((e) => ({
+      id: e.id,
+      title: e.title,
+      start: e.starts_at,
+      end: e.ends_at,
+      allDay: e.all_day,
+      backgroundColor: feedById(e.feed_id)?.color ?? FALLBACK_COLOR,
+      borderColor: feedById(e.feed_id)?.color ?? FALLBACK_COLOR,
+      editable: false,
+      extendedProps: { feedEvent: e },
+    }))
+
   // Eigener Event-Inhalt: Mini-Avatar des Owners + Zeit + Titel, damit in der
   // Übersicht sofort erkennbar ist, WESSEN Termin es ist (nicht nur die Farbe).
   function renderEventContent(arg: EventContentArg) {
+    // Abo-Termine: Globus statt Personen-Avatar (gehören keinem Mitglied).
+    const feedEvent = arg.event.extendedProps.feedEvent as FeedEvent | undefined
+    if (feedEvent) {
+      return (
+        <span className="flex min-w-0 items-center gap-1 px-0.5">
+          <Globe className="h-3 w-3 shrink-0 opacity-80" />
+          {arg.timeText && <span className="shrink-0 text-[10px] opacity-80">{arg.timeText}</span>}
+          <span className="truncate text-[11px] font-semibold">{arg.event.title}</span>
+        </span>
+      )
+    }
     const owner = memberById(arg.event.extendedProps.ownerId as number | null)
     const carReserved = arg.event.extendedProps.carReserved as boolean
     return (
@@ -171,8 +247,17 @@ export default function CalendarPage() {
   }
 
   function openEditFromCalendar(arg: EventClickArg) {
+    const feedEvent = arg.event.extendedProps.feedEvent as FeedEvent | undefined
+    if (feedEvent) {
+      setFeedInfo(feedEvent) // Abo-Termine sind nur lesbar
+      return
+    }
     const event = events.find((e) => e.id === Number(arg.event.extendedProps.eventId))
     if (event) openEditEvent(event)
+  }
+
+  function toggleHiddenFeed(id: number) {
+    setHiddenFeeds((h) => (h.includes(id) ? h.filter((x) => x !== id) : [...h, id]))
   }
 
   // Drag&Drop bzw. Resize -> nur die Zeiten persistieren (nur Einzeltermine,
@@ -272,7 +357,42 @@ export default function CalendarPage() {
             </button>
           )
         })}
+        {/* Kalender-Abos (Premium): Feed-Chips zum Ein-/Ausblenden + Verwaltung */}
+        {feeds.map((f) => {
+          const off = hiddenFeeds.includes(f.id)
+          return (
+            <button
+              key={`feed-${f.id}`}
+              type="button"
+              onClick={() => toggleHiddenFeed(f.id)}
+              className={`flex items-center gap-1.5 rounded-full py-1 pl-2 pr-2.5 transition ${
+                off ? 'opacity-40 grayscale' : 'hover:bg-surface-2'
+              }`}
+            >
+              <span className="h-2.5 w-2.5 rounded-full" style={{ background: f.color }} />
+              <Globe className="h-3 w-3 text-muted" />
+              <span className={off ? 'text-muted line-through' : 'text-text'}>{f.name}</span>
+            </button>
+          )
+        })}
         <span className="text-muted">· antippen zum Ein-/Ausblenden</span>
+        {isGuardian &&
+          (isPremium ? (
+            <button
+              type="button"
+              onClick={() => setManageFeeds(true)}
+              className="ml-auto flex items-center gap-1.5 rounded-full border border-border px-2.5 py-1 text-muted hover:bg-surface-2"
+            >
+              <Globe className="h-3.5 w-3.5" /> Kalender-Abos
+            </button>
+          ) : (
+            <Link
+              to="/premium"
+              className="ml-auto flex items-center gap-1.5 rounded-full border border-border px-2.5 py-1 text-muted hover:bg-surface-2"
+            >
+              <Crown className="h-3.5 w-3.5 text-primary" /> Kalender-Abos (Premium)
+            </Link>
+          ))}
       </div>
 
       <div className="rounded-2xl bg-surface p-4 shadow">
@@ -296,7 +416,7 @@ export default function CalendarPage() {
             selectable
             editable
             select={(arg) => openCreateAt(arg.start, arg.end, userId)}
-            events={fcEvents}
+            events={[...fcEvents, ...fcFeedEvents]}
             eventContent={renderEventContent}
             eventClick={openEditFromCalendar}
             eventDrop={persistMove}
@@ -345,6 +465,49 @@ export default function CalendarPage() {
           </>
         )}
       </div>
+
+      {manageFeeds && (
+        <CalendarFeedManager
+          feeds={feeds}
+          onClose={() => setManageFeeds(false)}
+          onChanged={loadFeeds}
+        />
+      )}
+
+      {/* Info-Fenster für Abo-Termine (nur lesbar) */}
+      {feedInfo && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="w-full max-w-sm space-y-3 rounded-2xl bg-surface p-6 shadow-xl">
+            <div className="flex items-center gap-2 text-xs text-muted">
+              <span
+                className="h-2.5 w-2.5 rounded-full"
+                style={{ background: feedById(feedInfo.feed_id)?.color ?? FALLBACK_COLOR }}
+              />
+              <Globe className="h-3.5 w-3.5" />
+              {feedById(feedInfo.feed_id)?.name ?? 'Kalender-Abo'}
+            </div>
+            <h2 className="text-lg font-semibold text-text">{feedInfo.title}</h2>
+            <p className="text-sm text-muted">{formatFeedWhen(feedInfo)}</p>
+            {feedInfo.location && (
+              <p className="flex items-center gap-1.5 text-sm text-muted">
+                <MapPin className="h-4 w-4 shrink-0" /> {feedInfo.location}
+              </p>
+            )}
+            <p className="text-xs text-muted">
+              Aus einem abonnierten Kalender – hier nur lesbar. Änderungen macht die Quelle.
+            </p>
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={() => setFeedInfo(null)}
+                className="rounded-lg px-4 py-2 text-sm text-muted hover:bg-surface-2"
+              >
+                Schließen
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {modal.open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">

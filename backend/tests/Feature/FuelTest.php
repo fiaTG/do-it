@@ -1,28 +1,9 @@
 <?php
 
-use App\Models\Family;
-use App\Models\Subscription;
-use App\Models\User;
 use Illuminate\Support\Facades\Http;
 use Laravel\Sanctum\Sanctum;
 
-function premiumFamilyMember(bool $withLocation = true): User
-{
-    $family = Family::factory()->create($withLocation ? [
-        'location_name' => 'Heidelberg',
-        'latitude' => 49.40768,
-        'longitude' => 8.69079,
-    ] : []);
-    Subscription::create([
-        'family_id' => $family->id,
-        'plan' => 'monthly',
-        'status' => 'active',
-        'provider' => 'manual',
-        'expires_at' => now()->addMonth(),
-    ]);
-
-    return User::factory()->create(['family_id' => $family->id]);
-}
+// premiumFamilyMember() steht in tests/Pest.php (auch von CalendarFeedTest genutzt).
 
 function fakeTankerkoenig(): void
 {

@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Family;
+use App\Models\Subscription;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -14,6 +15,28 @@ uses(TestCase::class)->in('Unit');
 function familyMember(?Family $family = null): User
 {
     $family ??= Family::factory()->create();
+
+    return User::factory()->create(['family_id' => $family->id]);
+}
+
+/**
+ * Erzeugt einen Nutzer in einer Familie mit aktivem Premium-Abo
+ * (für Tests der premium-Middleware-Endpunkte).
+ */
+function premiumFamilyMember(bool $withLocation = true): User
+{
+    $family = Family::factory()->create($withLocation ? [
+        'location_name' => 'Heidelberg',
+        'latitude' => 49.40768,
+        'longitude' => 8.69079,
+    ] : []);
+    Subscription::create([
+        'family_id' => $family->id,
+        'plan' => 'monthly',
+        'status' => 'active',
+        'provider' => 'manual',
+        'expires_at' => now()->addMonth(),
+    ]);
 
     return User::factory()->create(['family_id' => $family->id]);
 }

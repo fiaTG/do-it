@@ -1,7 +1,9 @@
 import { api, ensureCsrf, isNative, setAuthToken } from './lib/api'
 import type {
   AppItem,
+  CalendarFeed,
   Contact,
+  FeedEvent,
   FuelData,
   GameScores,
   EventItem,
@@ -325,6 +327,52 @@ export const eventsApi = {
   },
   async remove(id: number): Promise<void> {
     await api.delete(`/events/${id}`)
+  },
+}
+
+export interface CalendarFeedPayload {
+  name: string
+  color: string
+  /** Entweder url (Abo) ODER file (einmaliger Import). */
+  url?: string
+  file?: File | null
+}
+
+export const calendarFeedsApi = {
+  async list(): Promise<CalendarFeed[]> {
+    const { data } = await api.get<{ data: CalendarFeed[] }>('/calendar-feeds')
+    return data.data
+  },
+  async create(payload: CalendarFeedPayload): Promise<CalendarFeed> {
+    if (payload.file) {
+      const form = new FormData()
+      form.append('name', payload.name)
+      form.append('color', payload.color)
+      form.append('file', payload.file)
+      const { data } = await api.post<{ data: CalendarFeed }>('/calendar-feeds', form)
+      return data.data
+    }
+    const { data } = await api.post<{ data: CalendarFeed }>('/calendar-feeds', {
+      name: payload.name,
+      color: payload.color,
+      url: payload.url,
+    })
+    return data.data
+  },
+  /** Manuell neu laden (nur URL-Abos). */
+  async refresh(id: number): Promise<CalendarFeed> {
+    const { data } = await api.post<{ data: CalendarFeed }>(`/calendar-feeds/${id}/refresh`)
+    return data.data
+  },
+  async remove(id: number): Promise<void> {
+    await api.delete(`/calendar-feeds/${id}`)
+  },
+  /** Serverseitig expandierte Abo-Termine im Zeitfenster (Premium). */
+  async events(from: Date, to: Date): Promise<FeedEvent[]> {
+    const { data } = await api.get<{ data: { events: FeedEvent[] } }>('/calendar-feeds/events', {
+      params: { from: from.toISOString(), to: to.toISOString() },
+    })
+    return data.data.events
   },
 }
 
