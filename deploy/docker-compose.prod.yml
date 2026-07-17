@@ -1,0 +1,98 @@
+# Nidula-Produktion (ADR-0025): 1 Server, Caddy vorn (Auto-TLS + Header +
+# Bauzaun), dahinter php-fpm/Worker/Scheduler aus EINEM Image. MySQL und
+# Redis haben KEINE ports:-Einträge -> nur im internen Docker-Netz erreichbar.
+#
+# Erwartet auf dem Server (nicht im Repo!):
+#   deploy/.env       -> NIDULA_DOMAIN, NIDULA_FENCE_*, DB-Passwörter (chmod 600)
+#   deploy/.env.app   -> Laravel-.env nach Vorlage backend/.env.production.example
+#   frontend/dist/    -> lokal gebautes SPA (rsync via deploy.sh)
+
+name: nidula
+
+services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      NIDULA_DOMAIN: ${NIDULA_DOMAIN}
+      NIDULA_FENCE_USER: ${NIDULA_FENCE_USER}
+      NIDULA_FENCE_HASH: ${NIDULA_FENCE_HASH}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ../frontend/dist:/srv/spa:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - app
+
+  app:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    image: nidula-app
+    restart: unless-stopped
+    env_file: .env.app
+    volumes:
+      - media:/var/www/html/storage/app
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  worker:
+    image: nidula-app
+    restart: unless-stopped
+    command: ["php", "artisan", "queue:work", "--tries=3", "--max-time=3600"]
+    env_file: .env.app
+    volumes:
+      - media:/var/www/html/storage/app
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  scheduler:
+    image: nidula-app
+    restart: unless-stopped
+    # Ersetzt cron (ADR-0020: Papierkorb-Purge läuft täglich via model:prune).
+    command: ["php", "artisan", "schedule:work"]
+    env_file: .env.app
+    volumes:
+      - media:/var/www/html/storage/app
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  mysql:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: nidula
+      MYSQL_USER: nidula
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - dbdata:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "nidula", "-p${DB_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redisdata:/data
+
+volumes:
+  caddy_data:
+  caddy_config:
+  dbdata:
+  redisdata:
+  media:

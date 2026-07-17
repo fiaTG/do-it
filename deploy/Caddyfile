@@ -1,0 +1,46 @@
+# Nidula-Produktion (ADR-0025): Auto-HTTPS (Let's Encrypt), Security-Header,
+# Basic-Auth-"Bauzaun" für die geschlossene Beta, SPA + API vom selben Origin.
+
+{$NIDULA_DOMAIN} {
+	encode zstd gzip
+
+	header {
+		# HSTS moderat starten (ADR-0025: schrittweise), kein preload.
+		Strict-Transport-Security "max-age=15552000"
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+		Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+		X-Frame-Options DENY
+		# connect-src: eigene API + Open-Meteo (Wetter-Widget läuft im Browser).
+		Content-Security-Policy "default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' https://api.open-meteo.com https://geocoding-api.open-meteo.com; font-src 'self' data:; worker-src 'self'; manifest-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+		-Server
+	}
+
+	# Bauzaun (ADR-0025 Stufe 1): EIN gemeinsames Vorschalt-Passwort für die
+	# Familie. Vor Stufe 2/3 diesen Block entfernen (bricht sonst native Apps).
+	basic_auth {
+		{$NIDULA_FENCE_USER} {$NIDULA_FENCE_HASH}
+	}
+
+	# API + Sanctum-CSRF -> Laravel (php-fpm im app-Container). Der rewrite
+	# auf /index.php ist Absicht: Caddy prüft sonst Dateien im EIGENEN Root.
+	handle /api/* {
+		rewrite * /index.php
+		php_fastcgi app:9000 {
+			root /var/www/html/public
+		}
+	}
+	handle /sanctum/* {
+		rewrite * /index.php
+		php_fastcgi app:9000 {
+			root /var/www/html/public
+		}
+	}
+
+	# Alles andere: React-SPA (statisch, mit History-Fallback).
+	handle {
+		root * /srv/spa
+		try_files {path} /index.html
+		file_server
+	}
+}
