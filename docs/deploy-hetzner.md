@@ -27,10 +27,21 @@ Internet ──443──> Caddy (Auto-TLS, Security-Header, Basic-Auth-Bauzaun)
 - Nutzer `nidula` (sudo + docker), SSH nur mit Key `~/.ssh/nidula_hetzner`.
 - `PermitRootLogin no`, `PasswordAuthentication no`
   (`/etc/ssh/sshd_config.d/90-nidula.conf`) – Root-Login verifiziert tot.
-- ufw: deny incoming, erlaubt nur OpenSSH/80/443. fail2ban aktiv (sshd-Jail).
+- ufw: deny incoming, erlaubt nur OpenSSH/80/443. fail2ban aktiv (sshd-Jail;
+  bannt real – 6 IPs am ersten Tag).
 - unattended-upgrades installiert (automatische Security-Updates).
-- Hetzner-Backups aktiv (täglich, 7 Stände). TODO Stufe 2: zusätzlicher
-  verschlüsselter DB-Dump nach extern + Restore-Probe (docs/aufgaben.md).
+
+## Backups (Stand 2026-07-18)
+
+1. **Hetzner-Vollbackup** (täglich, 7 Stände, inkl. media-Volume/Fotos).
+2. **DB-Dump täglich 03:30** via systemd-Timer `nidula-backup.timer` →
+   `deploy/backup-db.sh` → `/opt/nidula-backups/` (14 Stände, chmod 600,
+   konsistent per --single-transaction). Status: `systemctl list-timers
+   nidula-backup.timer`, Log: `journalctl -u nidula-backup`.
+3. **Restore-Probe am 2026-07-18 bestanden** (Dump → Wegwerf-DB, 23/23
+   Tabellen). Probe-Ablauf: Dump in `restore_probe`-DB einspielen, Tabellen
+   zählen, DB droppen. Vor Stufe 2 wiederholen + Dump zusätzlich NACH EXTERN
+   kopieren (3-2-1 komplett; steht in docs/aufgaben.md).
 
 ## Deployen (vom Entwicklungsrechner)
 

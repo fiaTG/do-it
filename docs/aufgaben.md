@@ -21,9 +21,10 @@
 
 ## 🟡 Demnächst: Stufe 2 (fremde Familien)
 
-- [ ] Backups: verschlüsselter DB-Dump nach extern + **Restore einmal komplett proben**
+- [ ] Backups extern: DB-Dump zusätzlich verschlüsselt nach außerhalb des Servers kopieren (3-2-1 komplett)
 - [ ] DSGVO-Basispaket: Datenschutzerklärung, Impressum, AVV Hetzner, Löschkonzept, DSFA-Prüfung dokumentieren
 - [ ] Monitoring/Uptime-Alarm (einfach starten, z. B. Healthcheck-Ping)
+- [x] 2026-07-18 DB-Dump täglich 03:30 (systemd-Timer, 14 Stände) + **Restore-Probe bestanden** (23/23 Tabellen)
 
 ## 🟢 Später (Backlog)
 
