@@ -4,6 +4,7 @@ import { useApps } from '../store/apps'
 import { useAuth } from '../store/auth'
 import {
   APP_ICONS,
+  CircleHelp,
   Crown,
   Home,
   LogOut,
@@ -57,6 +58,7 @@ export default function Layout() {
     { to: '/members', label: 'Familie', icon: Users },
     { to: '/profile', label: 'Profil', icon: User },
     { to: '/premium', label: 'Premium', icon: Crown },
+    { to: '/help', label: 'Hilfe', icon: CircleHelp },
   ]
 
   async function handleLogout() {

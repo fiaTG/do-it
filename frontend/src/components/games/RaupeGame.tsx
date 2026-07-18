@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { ChevronLeft, ChevronRight, PartyPopper } from '../../lib/icons'
+import { PartyPopper } from '../../lib/icons'
 
 // „Hungrige Raupe" – Snake-Mechanik (frei) im eigenen Nidula-Naturthema:
 // eine Raupe frisst Blätter. Eigener Name + eigene Grafik, keine fremden Marken.
@@ -245,7 +245,9 @@ export default function RaupeGame({ onGameOver }: Props) {
         Blätter gefressen: <span className="text-primary">{score}</span>
       </p>
 
-      <div className="relative w-full max-w-[420px]">
+      {/* Beta-Feedback 2026-07-18: Steuerkreuz entfernt (Wischen ist intuitiv),
+          dafür größeres Spielfeld – auf dem Handy zählt jeder Pixel. */}
+      <div className="relative w-full max-w-[540px]">
         <canvas
           ref={canvasRef}
           width={SIZE}
@@ -274,7 +276,7 @@ export default function RaupeGame({ onGameOver }: Props) {
               </>
             ) : (
               <p className="text-sm">
-                Steuere die Raupe mit Pfeiltasten/WASD, Wischen oder den Knöpfen – friss
+                Steuere die Raupe per Wischen (am Handy) oder Pfeiltasten/WASD – friss
                 Blätter, aber beiß dir nicht in den Schwanz!
               </p>
             )}
@@ -288,26 +290,6 @@ export default function RaupeGame({ onGameOver }: Props) {
         )}
       </div>
 
-      {/* Steuerkreuz für Mobile */}
-      <div className="grid grid-cols-3 gap-1 sm:hidden" aria-hidden="true">
-        <span />
-        <button onClick={() => turn({ x: 0, y: -1 })} className="rounded-lg bg-surface-2 p-3">
-          <ChevronLeft className="h-5 w-5 rotate-90" />
-        </button>
-        <span />
-        <button onClick={() => turn({ x: -1, y: 0 })} className="rounded-lg bg-surface-2 p-3">
-          <ChevronLeft className="h-5 w-5" />
-        </button>
-        <span />
-        <button onClick={() => turn({ x: 1, y: 0 })} className="rounded-lg bg-surface-2 p-3">
-          <ChevronRight className="h-5 w-5" />
-        </button>
-        <span />
-        <button onClick={() => turn({ x: 0, y: 1 })} className="rounded-lg bg-surface-2 p-3">
-          <ChevronRight className="h-5 w-5 rotate-90" />
-        </button>
-        <span />
-      </div>
     </div>
   )
 }

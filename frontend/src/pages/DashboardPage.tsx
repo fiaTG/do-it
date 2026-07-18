@@ -85,13 +85,26 @@ export default function DashboardPage() {
     day: 'numeric',
     month: 'long',
   })
+  // Tageszeit-Begrüßung statt pauschalem "Moin" (Beta-Feedback 2026-07-18:
+  // abends unpassend). Grenzen: 5–11 Morgen, 11–18 Tag, 18–23 Abend, sonst Nacht.
+  const hour = new Date().getHours()
+  const greeting =
+    hour >= 5 && hour < 11
+      ? 'Guten Morgen'
+      : hour >= 11 && hour < 18
+        ? 'Hallo'
+        : hour >= 18 && hour < 23
+          ? 'Guten Abend'
+          : 'Noch wach'
 
   return (
     <div className="space-y-8">
       {/* Begrüßungs-Header */}
       <header className="overflow-hidden rounded-2xl bg-gradient-to-br from-primary to-forest-dark p-6 text-white shadow-card">
         <p className="text-sm text-white/70 capitalize">{today}</p>
-        <h1 className="mt-1 text-2xl font-bold">Moin, {user?.first_name}! 👋</h1>
+        <h1 className="mt-1 text-2xl font-bold">
+          {greeting}, {user?.first_name}! 👋
+        </h1>
         <p className="mt-1 text-white/80">
           {user?.family ? `Willkommen in eurem Nest, Familie ${user.family.name}.` : 'Willkommen in eurem Nest.'}
         </p>

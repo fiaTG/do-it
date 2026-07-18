@@ -197,3 +197,34 @@ ADR-0022); H-03-Rest (Keychain/Secure Storage nativ); M-02 (Quota-Race – bei
 Familien-Skala akzeptiertes Risiko, dokumentiert); M-04 (nativer PDF-Download –
 in die Native-Test-Runde); M-05-Rest (Token-Hashing); N-02 (Komponenten-Schnitt
 – mit der Styling-Runde); N-04-Rest (Action-SHA-Pinning).
+
+## 7. Familien-Beta: Feedback Runde 1 (2026-07-18) – Triage
+
+Erste echte Nutzung durch die Familie. Bewertung nach Sofort-Fix (klein,
+direkt umgesetzt), Backlog (größer, bewusst geplant) und Klärungsbedarf.
+
+**Sofort umgesetzt (2026-07-18):**
+
+- Begrüßung tageszeitabhängig statt pauschal „Moin" (abends unpassend)
+- Termin-Dialog: gewählte Person deutlich markiert (Ring + Häkchen)
+- Kalender mobil: Listen-Ansicht als Handy-Standard, schnellere
+  Touch-Reaktion, Monatsansicht mit „+ x weitere" statt Überlauf
+- Raupe mobil: Steuerkreuz entfernt (Wischen reicht), größeres Spielfeld
+- Einkaufsliste: 17 statt 3 Läden im Katalog (Edeka, Kaufland, dm …)
+- Hilfe-Seite (/help): Kurzanleitung je App + Support-Antwort für die Beta
+- docs/projekt-briefing.md: Kurzzusammenfassung fürs ChatGPT-Sparring
+
+**Backlog (bewertet, nicht vergessen):**
+
+| Idee | Einschätzung |
+| ------ | -------------- |
+| ToDo-Belohnungssystem (Punkte/Streaks/Avatar-Belohnungen) | Stark – verzahnt ToDos mit der Fun Area; braucht eigenes Konzept-ADR (Motivation ja, Dark Patterns nein); Kandidat fürs nächste große Feature |
+| Angebote der Märkte in der Einkaufsliste | Spannend, aber rechtlich/technisch heikel (Prospektdaten sind lizenzpflichtig, kein freies API) – Recherche nötig, NICHT einfach scrapen |
+| Eigene Läden je Familie anlegen | Guter Zwischenschritt, klein–mittel |
+| Dashboard-Gestaltungsraum (Begrüßung/Look personalisieren) | In den globalen Styling-Run aufnehmen |
+| Support-Formular in der App + E-Mail-Support | Ab Stufe 2 (braucht SMTP); bis dahin kurzer Dienstweg (siehe /help) |
+
+**Klärungsbedarf (Screenshots kamen nicht an):** Kalender-Monatsansicht
+„unsauber", Galerie „seltsame Balken" – Bilder nachreichen, dann fixen.
+
+**Positiv:** „Tag nach Person" funktioniert gut zu zweit; Grundfluss okay.

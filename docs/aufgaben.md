@@ -28,6 +28,10 @@
 
 ## 🟢 Später (Backlog)
 
+- [ ] ToDo-Belohnungssystem (Punkte/Streaks, Verzahnung mit Fun Area) – Beta-Feedback, Kandidat fürs nächste große Feature (Konzept-ADR nötig)
+- [ ] Einkaufsliste: eigene Läden je Familie anlegen
+- [ ] Einkaufsliste: Angebote der Märkte – erst Rechte-/API-Recherche (Prospektdaten lizenzpflichtig!)
+- [ ] Support-Formular in der App + E-Mail-Support (ab Stufe 2, braucht SMTP)
 - [ ] Ballon-Knallerei (erstes Premium-Spiel) + Block-Garten
 - [ ] Feed-Katalog/Abo-Assistent (Feiertage per Klick, Abfallkalender-Suche)
 - [ ] Globaler Styling-Run über alle Seiten
@@ -37,6 +41,8 @@
 - [ ] Offene Produktentscheidung: Fun Area komplett Premium? (Timo, zurückgestellt 2026-07-17)
 
 ## ✅ Erledigt (Auszug)
+
+- [x] 2026-07-18 Beta-Feedback Runde 1 (Sofort-Teil): zeitabhängige Begrüßung, Owner-Auswahl deutlich markiert, Kalender mobil (Liste als Standard, Touch schneller, „+ x weitere"), Raupe ohne Steuerkreuz + größer, 17 Läden, Hilfe-Seite /help, ChatGPT-Briefing (docs/projekt-briefing.md) – Details roadmap.md Abschnitt 7
 
 - [x] 2026-07-17 Sicherheitsbasis Code: Rate Limits (Register/Invites/Uploads), CORS prod-sicher, guzzle-Update, `.env.production.example` (ADR-0025)
 - [x] 2026-07-17 Kalender-Freigabe: Familienkalender als iCal-Abo fürs Handy (ADR-0024)

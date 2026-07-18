@@ -8,6 +8,7 @@ import DashboardPage from './pages/DashboardPage'
 import FuelPage from './pages/FuelPage'
 import GalleryPage from './pages/GalleryPage'
 import GamesPage from './pages/GamesPage'
+import HelpPage from './pages/HelpPage'
 import LandingPage from './pages/LandingPage'
 import LoginPage from './pages/LoginPage'
 import MembersPage from './pages/MembersPage'
@@ -120,6 +121,7 @@ export default function App() {
             <Route path="/members" element={<MembersPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/premium" element={<PremiumPage />} />
+            <Route path="/help" element={<HelpPage />} />
             {/* Einstellungen sind ins Profil gewandert – alte Links umleiten. */}
             <Route path="/settings" element={<Navigate to="/profile" replace />} />
           </Route>

@@ -12,7 +12,7 @@ import CalendarFeedManager from '../components/CalendarFeedManager'
 import CalendarShareDialog from '../components/CalendarShareDialog'
 import MemberAvatar from '../components/MemberAvatar'
 import PersonDayView from '../components/PersonDayView'
-import { Calendar, Car, Crown, Globe, MapPin, RotateCcw, Share2 } from '../lib/icons'
+import { Calendar, Car, Check, Crown, Globe, MapPin, RotateCcw, Share2 } from '../lib/icons'
 import { FALLBACK_COLOR, memberColor } from '../lib/memberColors'
 import { expandEvents } from '../lib/recurrence'
 import { useAuth } from '../store/auth'
@@ -91,6 +91,9 @@ export default function CalendarPage() {
   const [personDate, setPersonDate] = useState(() => new Date())
   // Einmal beim Mount fixiert (react-hooks/purity); Expansionsfenster ±.
   const [mountedAt] = useState(() => new Date())
+  // Handy-Erkennung einmalig: kleine Screens starten in der Listen-Ansicht
+  // (Beta-Feedback: Wochen-Raster ist auf dem Handy hakelig und eng).
+  const [isMobile] = useState(() => window.matchMedia('(max-width: 639px)').matches)
 
   // Gleiches Fenster für eigene Serien UND Abo-Termine: 1 Jahr zurück, 2 voraus.
   const [windowFrom, windowTo] = useMemo(
@@ -414,7 +417,7 @@ export default function CalendarPage() {
         {view === 'overview' ? (
           <FullCalendar
             plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
-            initialView="timeGridWeek"
+            initialView={isMobile ? 'listWeek' : 'timeGridWeek'}
             headerToolbar={{
               left: 'prev,next today',
               center: 'title',
@@ -428,6 +431,13 @@ export default function CalendarPage() {
             slotMinTime="06:00:00"
             slotMaxTime="23:00:00"
             slotEventOverlap={false}
+            // Touch: schnelleres Antippen/Ziehen (Standard 1000 ms fühlt sich tot an)
+            longPressDelay={150}
+            eventLongPressDelay={150}
+            selectLongPressDelay={300}
+            // Monatsansicht: max. 3 Termine je Tag, Rest als "+ x weitere"
+            dayMaxEvents={3}
+            moreLinkText={(n) => `+ ${n} weitere`}
             selectable
             editable
             select={(arg) => openCreateAt(arg.start, arg.end, userId)}
@@ -591,16 +601,19 @@ export default function CalendarPage() {
                         key={m.id}
                         type="button"
                         onClick={() => setModal({ ...modal, ownerId: m.id })}
-                        className={`flex items-center gap-1.5 rounded-full border py-1 pl-1 pr-2.5 text-sm transition ${
+                        // Deutliches Selected (Beta-Feedback): Ring + Häkchen,
+                        // nicht nur Farbwechsel – auf dem Handy sonst zu subtil.
+                        className={`flex items-center gap-1.5 rounded-full border py-1 pl-1 pr-2.5 text-sm font-semibold transition ${
                           active
-                            ? 'border-transparent text-white'
-                            : 'border-border text-text hover:bg-surface-2'
+                            ? 'border-transparent text-white ring-2 ring-primary ring-offset-2 ring-offset-surface'
+                            : 'border-border text-text opacity-70 hover:bg-surface-2 hover:opacity-100'
                         }`}
                         style={active ? { background: memberColor(m) } : undefined}
                       >
                         <MemberAvatar member={m} size="sm" />
                         {m.first_name}
                         {m.id === userId ? ' (ich)' : ''}
+                        {active && <Check className="h-4 w-4 shrink-0" />}
                       </button>
                     )
                   })}
