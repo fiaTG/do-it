@@ -108,6 +108,9 @@ Route::prefix('v1')->group(function () {
         Route::get('shopping-items/pdf', [ShoppingItemController::class, 'pdf']);
         Route::apiResource('shopping-items', ShoppingItemController::class)
             ->only(['index', 'store', 'update', 'destroy']);
+        // Nest-Blätter (ADR-0026): Punktestände VOR der Resource ({todo} würde
+        // das "points"-Segment schlucken).
+        Route::get('todos/points', [TodoController::class, 'points']);
         Route::apiResource('todos', TodoController::class)
             ->only(['index', 'store', 'update', 'destroy']);
         Route::apiResource('events', EventController::class)

@@ -166,6 +166,43 @@ h2 {
   --fc-today-bg-color: color-mix(in oklab, var(--primary) 12%, transparent);
   --fc-list-event-hover-bg-color: var(--surface-2);
   --fc-highlight-color: color-mix(in oklab, var(--primary) 16%, transparent);
+  /* Buttons in Markenfarben statt FC-Standardblau (Beta-Feedback 2026-07-18) */
+  --fc-button-bg-color: var(--surface-2);
+  --fc-button-border-color: var(--border);
+  --fc-button-text-color: var(--text-muted);
+  --fc-button-hover-bg-color: color-mix(in oklab, var(--primary) 14%, var(--surface-2));
+  --fc-button-hover-border-color: var(--border);
+  --fc-button-active-bg-color: var(--primary);
+  --fc-button-active-border-color: var(--primary);
+}
+
+/* Kalender-Kopf kompakt: Der Marken-Serifen-Titel (h2-Regel oben) machte den
+   FC-Titel am Handy riesig, Buttons überlappten und liefen rechts raus. */
+.fc .fc-toolbar.fc-header-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  margin-bottom: 0.75rem;
+}
+.fc h2.fc-toolbar-title {
+  font-family: var(--font-sans);
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.fc .fc-button {
+  text-transform: none;
+  font-size: 0.85rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 0.5rem;
+}
+.fc .fc-button:focus,
+.fc .fc-button-primary:focus {
+  box-shadow: none;
+}
+.fc .fc-button-primary:not(:disabled).fc-button-active {
+  color: #fff;
 }
 
 /* Konfetti-Moment nach Premium-Aktivierung (ADR-0022) */

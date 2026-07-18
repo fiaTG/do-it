@@ -79,6 +79,12 @@ function BlurThumb({
         height={img.height ?? undefined}
         style={img.width && img.height ? { aspectRatio: `${img.width} / ${img.height}` } : undefined}
         onClick={onClick}
+        // Beta-Feedback "beige Balken" (iOS): bei Bildern aus dem Browser-Cache
+        // feuert onLoad nicht mehr, das Bild blieb ewig hinter dem Blur-
+        // Platzhalter (opacity-0). Der ref-Check fängt den Fall ab.
+        ref={(el) => {
+          if (el?.complete && el.naturalWidth > 0) setLoaded(true)
+        }}
         onLoad={() => setLoaded(true)}
         onError={onError}
         className={`relative w-full cursor-pointer object-cover transition-opacity duration-300 ${

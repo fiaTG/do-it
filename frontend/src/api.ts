@@ -15,6 +15,7 @@ import type {
   ShoppingItem,
   Subscription,
   Todo,
+  TodoPoints,
   User,
 } from './types'
 
@@ -278,6 +279,11 @@ export const shoppingApi = {
 export const todosApi = {
   async list(): Promise<Todo[]> {
     const { data } = await api.get<{ data: Todo[] }>('/todos')
+    return data.data
+  },
+  /** Nest-Blätter-Stände (ADR-0026): Woche + Gesamt je Mitglied. */
+  async points(): Promise<TodoPoints> {
+    const { data } = await api.get<{ data: TodoPoints }>('/todos/points')
     return data.data
   },
   async create(title: string): Promise<Todo> {

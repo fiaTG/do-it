@@ -45,3 +45,61 @@ it('forbids deleting another family todo', function () {
 
     $this->deleteJson("/api/v1/todos/{$todo->id}")->assertForbidden();
 });
+
+// --- Nest-Blätter (ADR-0026) -------------------------------------------------
+
+it('awards a leaf to whoever completes a todo and removes it on uncheck', function () {
+    $family = Family::factory()->create();
+    $creator = familyMember($family);
+    $doer = familyMember($family);
+    $todo = Todo::create(['family_id' => $family->id, 'user_id' => $creator->id, 'title' => 'Spülen']);
+
+    Sanctum::actingAs($doer);
+    $this->patchJson("/api/v1/todos/{$todo->id}", ['is_done' => true])
+        ->assertOk()->assertJsonPath('data.completed_by', $doer->id);
+    expect(App\Models\TodoPoint::where('user_id', $doer->id)->sum('points'))->toBe(1);
+
+    $this->patchJson("/api/v1/todos/{$todo->id}", ['is_done' => false])->assertOk();
+    expect(App\Models\TodoPoint::count())->toBe(0);
+});
+
+it('keeps leaves when a completed todo is deleted', function () {
+    $user = familyMember();
+    Sanctum::actingAs($user);
+    $todo = Todo::create(['family_id' => $user->family_id, 'user_id' => $user->id, 'title' => 'Weg damit']);
+
+    $this->patchJson("/api/v1/todos/{$todo->id}", ['is_done' => true])->assertOk();
+    $this->deleteJson("/api/v1/todos/{$todo->id}")->assertNoContent();
+
+    expect(App\Models\TodoPoint::where('user_id', $user->id)->sum('points'))->toBe(1);
+});
+
+it('aggregates weekly and total leaves per family member', function () {
+    $family = Family::factory()->create();
+    $user = familyMember($family);
+    // Alter Punkt (letzte Woche) + frischer Punkt (diese Woche)
+    App\Models\TodoPoint::create(['family_id' => $family->id, 'user_id' => $user->id]);
+    App\Models\TodoPoint::query()->update(['created_at' => now()->subWeeks(2)]);
+    App\Models\TodoPoint::create(['family_id' => $family->id, 'user_id' => $user->id]);
+    // Punkt einer FREMDEN Familie darf nicht auftauchen
+    $stranger = familyMember();
+    App\Models\TodoPoint::create(['family_id' => $stranger->family_id, 'user_id' => $stranger->id]);
+
+    Sanctum::actingAs($user);
+    $data = $this->getJson('/api/v1/todos/points')->assertOk()->json('data');
+
+    expect($data['totals'][(string) $user->id])->toBe(2);
+    expect($data['week'][(string) $user->id])->toBe(1);
+    expect($data['totals'])->not->toHaveKey((string) $stranger->id);
+});
+
+it('checking off twice does not double-award', function () {
+    $user = familyMember();
+    Sanctum::actingAs($user);
+    $todo = Todo::create(['family_id' => $user->family_id, 'user_id' => $user->id, 'title' => 'X']);
+
+    $this->patchJson("/api/v1/todos/{$todo->id}", ['is_done' => true])->assertOk();
+    $this->patchJson("/api/v1/todos/{$todo->id}", ['is_done' => true])->assertOk();
+
+    expect(App\Models\TodoPoint::count())->toBe(1);
+});

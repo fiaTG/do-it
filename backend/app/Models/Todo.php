@@ -12,12 +12,15 @@ class Todo extends Model
         'user_id',
         'title',
         'is_done',
+        'completed_by',
+        'completed_at',
     ];
 
     protected function casts(): array
     {
         return [
             'is_done' => 'boolean',
+            'completed_at' => 'datetime',
         ];
     }
 

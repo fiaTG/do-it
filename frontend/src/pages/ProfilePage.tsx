@@ -1,13 +1,31 @@
-import { useRef, useState, type ChangeEvent, type FormEvent } from 'react'
-import { apiError, authApi, profileApi } from '../api'
+import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react'
+import { apiError, authApi, profileApi, todosApi } from '../api'
 import { Check, KeyRound, User } from '../lib/icons'
 import { MEMBER_PALETTE, memberColor } from '../lib/memberColors'
 import { useAuth } from '../store/auth'
+
+// Nest-Blätter-Meilensteine (ADR-0026): reine Freude, kein Druck.
+const LEAF_BADGES = [
+  { at: 10, name: 'Erstes Grün', emoji: '🌱' },
+  { at: 50, name: 'Fleißige Raupe', emoji: '🐛' },
+  { at: 100, name: 'Blätterdach', emoji: '🌿' },
+  { at: 250, name: 'Nest-Profi', emoji: '🏡' },
+  { at: 500, name: 'Familien-Legende', emoji: '🌳' },
+]
 
 export default function ProfilePage() {
   const user = useAuth((s) => s.user)
   const setUser = useAuth((s) => s.setUser)
   const fileInput = useRef<HTMLInputElement>(null)
+  const [leafTotal, setLeafTotal] = useState<number | null>(null)
+
+  useEffect(() => {
+    if (!user?.family_id) return
+    todosApi
+      .points()
+      .then((p) => setLeafTotal(p.totals[String(user.id)] ?? 0))
+      .catch(() => {}) // Abzeichen sind Beiwerk – Profil bleibt ohne nutzbar
+  }, [user?.family_id, user?.id])
 
   const [firstName, setFirstName] = useState(user?.first_name ?? '')
   const [lastName, setLastName] = useState(user?.last_name ?? '')
@@ -114,6 +132,35 @@ export default function ProfilePage() {
           <input ref={fileInput} type="file" accept="image/*" hidden onChange={uploadAvatar} />
         </div>
       </div>
+
+      {/* Nest-Blätter-Abzeichen (ADR-0026) */}
+      {leafTotal !== null && (
+        <div className="rounded-2xl bg-surface p-5 shadow">
+          <p className="text-sm font-semibold text-text">
+            Deine Nest-Blätter: {leafTotal} 🍃
+            <span className="ml-1 font-normal text-muted">– gesammelt durch erledigte ToDos</span>
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {LEAF_BADGES.map((b) => {
+              const earned = leafTotal >= b.at
+              return (
+                <span
+                  key={b.at}
+                  title={earned ? `${b.name} – geschafft!` : `${b.name} ab ${b.at} 🍃`}
+                  className={`flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-semibold ${
+                    earned
+                      ? 'border-primary bg-primary/10 text-primary'
+                      : 'border-border text-muted opacity-60'
+                  }`}
+                >
+                  <span aria-hidden="true">{b.emoji}</span> {b.name}
+                  {!earned && <span className="font-normal">· ab {b.at}</span>}
+                </span>
+              )
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Felder */}
       <form onSubmit={save} className="space-y-4 rounded-2xl bg-surface p-6 shadow">

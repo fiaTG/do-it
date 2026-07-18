@@ -46,6 +46,12 @@ const BENEFITS: { icon: LucideIcon; title: string; text: string; soon?: boolean 
     text: 'Ballon-Knallerei & Block-Garten erscheinen zuerst für Premium.',
     soon: true,
   },
+  {
+    icon: Check,
+    title: 'Belohnungs-Regal für ToDos',
+    text: 'Eigene Familien-Belohnungen, einlösbar mit Nest-Blättern (🍃).',
+    soon: true,
+  },
 ]
 
 type Plan = 'monthly' | 'yearly'

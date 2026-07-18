@@ -28,7 +28,7 @@
 
 ## 🟢 Später (Backlog)
 
-- [ ] ToDo-Belohnungssystem (Punkte/Streaks, Verzahnung mit Fun Area) – Beta-Feedback, Kandidat fürs nächste große Feature (Konzept-ADR nötig)
+- [ ] Belohnungs-Regal (Nest-Blätter-Ausbau, Premium): Verwalter legen echte Familien-Belohnungen mit Blatt-Preisen an, Kinder lösen ein (ADR-0026 Stufe 2)
 - [ ] Einkaufsliste: eigene Läden je Familie anlegen
 - [ ] Einkaufsliste: Angebote der Märkte – erst Rechte-/API-Recherche (Prospektdaten lizenzpflichtig!)
 - [ ] Support-Formular in der App + E-Mail-Support (ab Stufe 2, braucht SMTP)
@@ -41,6 +41,9 @@
 - [ ] Offene Produktentscheidung: Fun Area komplett Premium? (Timo, zurückgestellt 2026-07-17)
 
 ## ✅ Erledigt (Auszug)
+
+- [x] 2026-07-18 **„Nest-Blätter" MVP (ADR-0026)**: 1 🍃 je erledigtem ToDo (Ledger überlebt Löschen), Wochen-Champion auf der ToDo-Seite, Meilenstein-Abzeichen im Profil, Erlediger-Avatar in der Liste
+- [x] 2026-07-18 Screenshot-Fixes: Kalender-Kopf mobil (kompakter Titel, Marken-Buttons, weniger Ansichten) + Galerie-Balken (verlorene onLoad-Events bei Cache-Bildern)
 
 - [x] 2026-07-18 Beta-Feedback Runde 1 (Sofort-Teil): zeitabhängige Begrüßung, Owner-Auswahl deutlich markiert, Kalender mobil (Liste als Standard, Touch schneller, „+ x weitere"), Raupe ohne Steuerkreuz + größer, 17 Läden, Hilfe-Seite /help, ChatGPT-Briefing (docs/projekt-briefing.md) – Details roadmap.md Abschnitt 7
 

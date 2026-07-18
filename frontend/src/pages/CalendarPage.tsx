@@ -418,11 +418,18 @@ export default function CalendarPage() {
           <FullCalendar
             plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
             initialView={isMobile ? 'listWeek' : 'timeGridWeek'}
-            headerToolbar={{
-              left: 'prev,next today',
-              center: 'title',
-              right: 'listWeek,timeGridDay,timeGridWeek,dayGridMonth',
-            }}
+            // Handy: weniger Ansichten (Wochen-Raster ist dort unbrauchbar),
+            // kurzer Titel ohne Jahr – sonst läuft der Kopf über (Beta-Feedback).
+            headerToolbar={
+              isMobile
+                ? { left: 'prev,next today', center: 'title', right: 'listWeek,dayGridMonth' }
+                : {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'listWeek,timeGridDay,timeGridWeek,dayGridMonth',
+                  }
+            }
+            titleFormat={isMobile ? { day: 'numeric', month: 'short' } : undefined}
             buttonText={{ today: 'Heute', month: 'Monat', week: 'Woche', day: 'Tag', list: 'Liste' }}
             locale={deLocale}
             firstDay={1}

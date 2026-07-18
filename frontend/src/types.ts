@@ -64,7 +64,15 @@ export interface Todo {
   title: string
   is_done: boolean
   created_by: number | null
+  /** Nest-Blätter (ADR-0026): wer hat abgehakt. */
+  completed_by?: number | null
   created_at: string
+}
+
+/** Nest-Blätter-Stände: user_id -> Punkte (Woche ab Montag bzw. gesamt). */
+export interface TodoPoints {
+  week: Record<string, number>
+  totals: Record<string, number>
 }
 
 export interface EventItem {
