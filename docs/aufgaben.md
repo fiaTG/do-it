@@ -9,7 +9,7 @@
 - [ ] **Timo: auf <https://167-233-64-98.sslip.io> registrieren (hinter Bauzaun), dann Registrierung auf `invite` stellen** – Bootstrap, siehe deploy-hetzner.md
 - [ ] Domain festlegen + DNS auf 167.233.64.98 zeigen – Timo
 - [ ] MFA im Hetzner-Konto aktivieren – Timo
-- [ ] Hetzner-Firewall (Cloud-Ebene) zusätzlich zur ufw anlegen (22/80/443)
+- [x] 2026-07-18 Hetzner-Cloud-Firewall aktiv (22/80/443 + ICMP; von außen verifiziert: 3306/6379/8080 dicht)
 - [ ] Hetzner Object Storage (privater Bucket) anlegen + anbinden – bis dahin Fotos im Server-Volume (privat via signierte URLs)
 - [ ] Mail-Versand klären (SMTP-Anbieter) – bis dahin MAIL_MAILER=log, Invites per Link
 - [x] 2026-07-17 Registrierungs-Schalter: `NIDULA_REGISTRATION=invite` sperrt Registrierung ohne Einladung (Timos Beta-Bedingung)
