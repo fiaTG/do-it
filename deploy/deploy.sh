@@ -32,9 +32,12 @@ rsync -az --delete \
   "$REPO_DIR/" "$NIDULA_SSH:$TARGET_DIR/"
 
 echo "==> 3/4 Image bauen + Container hochziehen"
+# restart caddy: compose erkennt Änderungen an der bind-gemounteten Caddyfile
+# nicht, und 'caddy reload' per exec griff real nicht zuverlässig (2026-07-18).
 "${SSH[@]}" "cd $TARGET_DIR/deploy \
   && docker compose -f docker-compose.prod.yml build --pull app \
-  && docker compose -f docker-compose.prod.yml up -d --remove-orphans"
+  && docker compose -f docker-compose.prod.yml up -d --remove-orphans \
+  && docker compose -f docker-compose.prod.yml restart caddy"
 
 echo "==> 4/4 Migrationen + Katalog-Seed + Caches"
 # CatalogSeeder = App-Katalog + Läden (idempotent, KEINE Demo-Daten). Muss
