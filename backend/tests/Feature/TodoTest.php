@@ -2,6 +2,7 @@
 
 use App\Models\Family;
 use App\Models\Todo;
+use App\Models\TodoPoint;
 use Laravel\Sanctum\Sanctum;
 
 it('creates a todo for the family', function () {
@@ -57,10 +58,10 @@ it('awards a leaf to whoever completes a todo and removes it on uncheck', functi
     Sanctum::actingAs($doer);
     $this->patchJson("/api/v1/todos/{$todo->id}", ['is_done' => true])
         ->assertOk()->assertJsonPath('data.completed_by', $doer->id);
-    expect(App\Models\TodoPoint::where('user_id', $doer->id)->sum('points'))->toBe(1);
+    expect((int) TodoPoint::where('user_id', $doer->id)->sum('points'))->toBe(1);
 
     $this->patchJson("/api/v1/todos/{$todo->id}", ['is_done' => false])->assertOk();
-    expect(App\Models\TodoPoint::count())->toBe(0);
+    expect(TodoPoint::count())->toBe(0);
 });
 
 it('keeps leaves when a completed todo is deleted', function () {
@@ -71,19 +72,19 @@ it('keeps leaves when a completed todo is deleted', function () {
     $this->patchJson("/api/v1/todos/{$todo->id}", ['is_done' => true])->assertOk();
     $this->deleteJson("/api/v1/todos/{$todo->id}")->assertNoContent();
 
-    expect(App\Models\TodoPoint::where('user_id', $user->id)->sum('points'))->toBe(1);
+    expect((int) TodoPoint::where('user_id', $user->id)->sum('points'))->toBe(1);
 });
 
 it('aggregates weekly and total leaves per family member', function () {
     $family = Family::factory()->create();
     $user = familyMember($family);
     // Alter Punkt (letzte Woche) + frischer Punkt (diese Woche)
-    App\Models\TodoPoint::create(['family_id' => $family->id, 'user_id' => $user->id]);
-    App\Models\TodoPoint::query()->update(['created_at' => now()->subWeeks(2)]);
-    App\Models\TodoPoint::create(['family_id' => $family->id, 'user_id' => $user->id]);
+    TodoPoint::create(['family_id' => $family->id, 'user_id' => $user->id]);
+    TodoPoint::query()->update(['created_at' => now()->subWeeks(2)]);
+    TodoPoint::create(['family_id' => $family->id, 'user_id' => $user->id]);
     // Punkt einer FREMDEN Familie darf nicht auftauchen
     $stranger = familyMember();
-    App\Models\TodoPoint::create(['family_id' => $stranger->family_id, 'user_id' => $stranger->id]);
+    TodoPoint::create(['family_id' => $stranger->family_id, 'user_id' => $stranger->id]);
 
     Sanctum::actingAs($user);
     $data = $this->getJson('/api/v1/todos/points')->assertOk()->json('data');
@@ -101,5 +102,5 @@ it('checking off twice does not double-award', function () {
     $this->patchJson("/api/v1/todos/{$todo->id}", ['is_done' => true])->assertOk();
     $this->patchJson("/api/v1/todos/{$todo->id}", ['is_done' => true])->assertOk();
 
-    expect(App\Models\TodoPoint::count())->toBe(1);
+    expect(TodoPoint::count())->toBe(1);
 });
