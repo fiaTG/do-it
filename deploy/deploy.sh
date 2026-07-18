@@ -36,9 +36,12 @@ echo "==> 3/4 Image bauen + Container hochziehen"
   && docker compose -f docker-compose.prod.yml build --pull app \
   && docker compose -f docker-compose.prod.yml up -d --remove-orphans"
 
-echo "==> 4/4 Migrationen + Caches"
+echo "==> 4/4 Migrationen + Katalog-Seed + Caches"
+# CatalogSeeder = App-Katalog + Läden (idempotent, KEINE Demo-Daten). Muss
+# laufen, sonst gibt es keine auswählbaren Apps/Shops (Prod-Bug 2026-07-17).
 "${SSH[@]}" "cd $TARGET_DIR/deploy \
   && docker compose -f docker-compose.prod.yml exec -T app php artisan migrate --force \
+  && docker compose -f docker-compose.prod.yml exec -T app php artisan db:seed --class=CatalogSeeder --force \
   && docker compose -f docker-compose.prod.yml exec -T app php artisan config:cache \
   && docker compose -f docker-compose.prod.yml exec -T app php artisan route:cache"
 

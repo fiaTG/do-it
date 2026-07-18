@@ -45,11 +45,20 @@ Bei Domain-Wechsel zusätzlich einmalig auf dem Server `deploy/.env`
 `docker compose -f docker-compose.prod.yml up -d --force-recreate caddy app worker scheduler`
 und neu deployen (SPA muss mit neuer `VITE_API_URL` gebaut werden).
 
+## Katalog-Daten (Pflicht!)
+
+`deploy.sh` führt nach der Migration `db:seed --class=CatalogSeeder --force`
+aus – das ist der **App-Katalog + die Läden** (idempotent, KEINE Demo-Daten).
+Ohne diesen Schritt gibt es keine auswählbaren Apps/Shops (real passiert beim
+ersten Deploy 2026-07-17). Der `DemoSeeder` (Testfamilie) läuft in Prod NIE.
+
 ## Beta-Zugangsschutz (ADR-0025 Stufe 1)
 
-1. **Bauzaun:** Basic-Auth vor der ganzen Seite (Benutzer `familie`,
-   Passwort hat Timo). Entfernen: `basic_auth`-Block im `deploy/Caddyfile`
-   löschen + deployen. Vor Native-Apps zwingend entfernen.
+1. **Bauzaun:** Basic-Auth vor der Web-Oberfläche (Benutzer `familie`,
+   Passwort hat Timo) – bewusst NICHT vor `/api` und `/sanctum` (sonst
+   Doppel-Dialog + Passwort-Manager-Verwirrung; die API ist per Sanctum +
+   invite-only ohnehin geschützt). Entfernen: `@fenced`/`basic_auth`-Block im
+   `deploy/Caddyfile` löschen + deployen. Vor Native-Apps zwingend entfernen.
 2. **Registrierung:** `NIDULA_REGISTRATION` in `.env.app` – steht seit dem
    Bootstrap (Timos Erst-Registrierung, 2026-07-17) auf `invite`: niemand ohne
    persönliche, E-Mail-gebundene Einladung (live verifiziert: 403).

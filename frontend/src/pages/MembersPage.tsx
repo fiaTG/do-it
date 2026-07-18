@@ -65,6 +65,9 @@ export default function MembersPage() {
   const [placeQuery, setPlaceQuery] = useState('')
   const [placeResults, setPlaceResults] = useState<GeocodingResult[]>([])
   const [placeSearching, setPlaceSearching] = useState(false)
+  // Ortssuche nur auf Wunsch zeigen, wenn schon ein Ort gesetzt ist – sonst
+  // wirkt das offene Feld wie ein "zweiter Ort" (Timos Beta-Feedback).
+  const [editingLocation, setEditingLocation] = useState(false)
 
   async function load() {
     try {
@@ -144,6 +147,7 @@ export default function MembersPage() {
       if (me) setUser({ ...me, family: updated })
       setPlaceResults([])
       setPlaceQuery('')
+      setEditingLocation(false)
       setMessage(`Familienort auf ${updated.location_name} gesetzt – das Dashboard zeigt jetzt euer Wetter.`)
     } catch (err) {
       setError(apiError(err))
@@ -195,8 +199,19 @@ export default function MembersPage() {
           ) : (
             <span>Noch kein Familienort – fürs Wetter auf dem Dashboard.</span>
           )}
+          {/* Genau EIN Familienort. Ist er gesetzt, versteckt sich die Suche
+              hinter "ändern" – sonst wirkt sie wie ein zweiter Ort. */}
+          {isGuardian && me?.family?.location_name && !editingLocation && (
+            <button
+              type="button"
+              onClick={() => setEditingLocation(true)}
+              className="text-xs font-semibold text-primary hover:underline"
+            >
+              ändern
+            </button>
+          )}
         </div>
-        {isGuardian && (
+        {isGuardian && (!me?.family?.location_name || editingLocation) && (
           <form onSubmit={searchPlace} className="mt-2 space-y-2">
             <div className="flex gap-2">
               <input
@@ -211,6 +226,19 @@ export default function MembersPage() {
               >
                 {placeSearching ? 'Sucht …' : 'Suchen'}
               </button>
+              {me?.family?.location_name && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEditingLocation(false)
+                    setPlaceResults([])
+                    setPlaceQuery('')
+                  }}
+                  className="rounded-lg px-3 py-2 text-sm text-muted hover:text-text"
+                >
+                  Abbrechen
+                </button>
+              )}
             </div>
             {placeResults.length > 0 && (
               <ul className="space-y-1">

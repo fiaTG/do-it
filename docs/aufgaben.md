@@ -16,6 +16,8 @@
 - [x] 2026-07-17 Server nidula-prod (CX23, Falkenstein) gehärtet: nur SSH-Key, kein Root-Login, ufw, fail2ban, Auto-Updates
 - [x] 2026-07-17 Deploy-Kit + Runbook (deploy/, docs/deploy-hetzner.md); Scheduler-Container ersetzt cron
 - [x] 2026-07-17 **ERSTER DEPLOY LIVE**: <https://167-233-64-98.sslip.io> (HTTPS, Security-Header, Bauzaun, Smoke-Test grün)
+- [x] 2026-07-17 Registrierung nach Timos Bootstrap auf `invite` gestellt (live 403 verifiziert)
+- [x] 2026-07-17 Beta-Bugfixes: App-Katalog geseedet (CatalogSeeder + in Deploy-Pipeline), Bauzaun nur vor Web-UI (kein Doppel-Dialog), Orts-UI als „ändern", Ortssuche count=10, Einladungs-Link kopierbar
 
 ## 🟡 Demnächst: Stufe 2 (fremde Familien)
 

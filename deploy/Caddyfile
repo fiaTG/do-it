@@ -17,8 +17,14 @@
 	}
 
 	# Bauzaun (ADR-0025 Stufe 1): EIN gemeinsames Vorschalt-Passwort für die
-	# Familie. Vor Stufe 2/3 diesen Block entfernen (bricht sonst native Apps).
-	basic_auth {
+	# Familie – aber NUR vor der Web-Oberfläche, NICHT vor /api und /sanctum.
+	# Grund: Läge Basic Auth auch über den XHR-/Login-Requests, käme der
+	# Passwort-Dialog doppelt (HTML + erster API-Call) und der Passwort-Manager
+	# würde den echten App-Login nicht sauber speichern. Die API ist ohnehin
+	# durch Sanctum-Login + invite-only + Rate-Limits geschützt.
+	# Vor Stufe 2/3 diesen Block entfernen (bricht sonst native Apps).
+	@fenced not path /api/* /sanctum/*
+	basic_auth @fenced {
 		{$NIDULA_FENCE_USER} {$NIDULA_FENCE_HASH}
 	}
 
