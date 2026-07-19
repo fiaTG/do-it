@@ -65,6 +65,7 @@ const TOPICS: { title: string; emoji: string; lines: string[] }[] = [
     emoji: '🎮',
     lines: [
       '„Hungrige Raupe": am Handy wischen, am PC Pfeiltasten/WASD. Die Familien-Bestenliste zählt automatisch mit.',
+      '„Ballon-Knallerei" (Premium): Ballons antippen, bevor sie entwischen – kleine bringen mehr Punkte, goldene Laterne +5, Wespe meiden. 60 Sekunden pro Runde.',
       'Spritpreise (Premium) zeigt aktuelle Preise rund um euren Familienort (Daten: Tankerkönig.de).',
     ],
   },

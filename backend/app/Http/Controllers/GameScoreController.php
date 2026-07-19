@@ -14,7 +14,9 @@ class GameScoreController extends Controller
      * Marken (Mechanik ist frei, Name/Grafik nicht – siehe Produkt-Backlog).
      * Künftige Premium-Spiele bekommen hier ihren Slug + premium-Middleware.
      */
-    public const GAMES = ['raupe'];
+    // 'ballons' = Ballon-Knallerei (erstes Premium-Spiel; das Gate liegt in
+    // der UI – Scores speichern schadet nie, falls Premium ausläuft).
+    public const GAMES = ['raupe', 'ballons'];
 
     use InteractsWithFamily;
 

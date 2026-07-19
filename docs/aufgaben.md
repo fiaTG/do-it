@@ -32,7 +32,7 @@
 - [ ] Einkaufsliste: eigene Läden je Familie anlegen
 - [ ] Einkaufsliste: Angebote der Märkte – erst Rechte-/API-Recherche (Prospektdaten lizenzpflichtig!)
 - [ ] Support-Formular in der App + E-Mail-Support (ab Stufe 2, braucht SMTP)
-- [ ] Ballon-Knallerei (erstes Premium-Spiel) + Block-Garten
+- [ ] Block-Garten (zweites Premium-Spiel)
 - [ ] Feed-Katalog/Abo-Assistent (Feiertage per Klick, Abfallkalender-Suche)
 - [ ] Globaler Styling-Run über alle Seiten
 - [ ] Native Runde: Keychain/Keystore für Tokens, PDF-Download nativ, iOS-Swipe-Back
@@ -41,6 +41,8 @@
 - [ ] Offene Produktentscheidung: Fun Area komplett Premium? (Timo, zurückgestellt 2026-07-17)
 
 ## ✅ Erledigt (Auszug)
+
+- [x] 2026-07-18 **Ballon-Knallerei** live: erstes Premium-Spiel (60-s-Runden, goldene Laterne, Wespe), eigene Familien-Bestenliste, Fun Area bleibt frei
 
 - [x] 2026-07-18 **„Nest-Blätter" MVP (ADR-0026)**: 1 🍃 je erledigtem ToDo (Ledger überlebt Löschen), Wochen-Champion auf der ToDo-Seite, Meilenstein-Abzeichen im Profil, Erlediger-Avatar in der Liste
 - [x] 2026-07-18 Screenshot-Fixes: Kalender-Kopf mobil (kompakter Titel, Marken-Buttons, weniger Ansichten) + Galerie-Balken (verlorene onLoad-Events bei Cache-Bildern)
