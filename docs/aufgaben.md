@@ -6,7 +6,6 @@
 
 ## 🔴 Jetzt: Web-Release Stufe 1 (ADR-0025)
 
-- [ ] **Timo: auf <https://167-233-64-98.sslip.io> registrieren (hinter Bauzaun), dann Registrierung auf `invite` stellen** – Bootstrap, siehe deploy-hetzner.md
 - [ ] Domain festlegen + DNS auf 167.233.64.98 zeigen – Timo
 - [x] 2026-07-18 MFA im Hetzner-Konto aktiv (Authenticator-App)
 - [x] 2026-07-18 Hetzner-Cloud-Firewall aktiv (22/80/443 + ICMP; von außen verifiziert: 3306/6379/8080 dicht)
