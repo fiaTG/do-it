@@ -128,7 +128,7 @@ it('paginates the gallery and reports the free-tier quota', function () {
     expect($response->json('data'))->toHaveCount(60);
     expect($response->json('meta.total'))->toBe(65);
     expect($response->json('meta.last_page'))->toBe(2);
-    expect($response->json('meta.limit'))->toBe(30); // Free-Familie, kein Abo
+    expect($response->json('meta.limit'))->toBe(100); // Free-Familie, kein Abo
 
     $secondPage = $this->getJson('/api/v1/images?page=2')->assertOk();
     expect($secondPage->json('data'))->toHaveCount(5);
@@ -409,4 +409,20 @@ it('rejects absurdly large image dimensions (decompression bombs)', function () 
         'image' => UploadedFile::fake()->image('riesig.jpg', 9000, 9000),
     ], ['Accept' => 'application/json'])
         ->assertStatus(422)->assertJsonValidationErrorFor('image');
+});
+
+it('enforces the premium fair-use cap on uploads', function () {
+    // Timos Entscheidung 2026-07-18: auch Premium hat eine (großzügige)
+    // Fair-Use-Grenze, bis der Object Storage angebunden ist.
+    config(['features.premium_limits.gallery_images' => 1]);
+    Storage::fake('public');
+    Sanctum::actingAs(premiumFamilyMember());
+
+    $this->post('/api/v1/images', [
+        'image' => UploadedFile::fake()->image('a.jpg', 800, 600),
+    ], ['Accept' => 'application/json'])->assertCreated();
+
+    $this->post('/api/v1/images', [
+        'image' => UploadedFile::fake()->image('b.jpg', 800, 600),
+    ], ['Accept' => 'application/json'])->assertForbidden();
 });

@@ -14,8 +14,21 @@ return [
     */
 
     'free_limits' => [
-        'gallery_images' => 30,
+        // Timos Beta-Entscheidung 2026-07-18: 100 statt 30 – echtes
+        // Familien-Erleben möglich, Premium bleibt für Foto-Familien spürbar.
+        'gallery_images' => 100,
     ],
+
+    // Fair-Use-Obergrenze für PREMIUM (Timo 2026-07-18): schützt die
+    // Server-Platte (40 GB), bis der Object Storage angebunden ist – danach
+    // anheben. Ehrlich kommuniziert (PremiumPage/Hilfe), kein "unbegrenzt".
+    'premium_limits' => [
+        'gallery_images' => 2500,
+    ],
+
+    // Max. Mitglieder je Familie inkl. offener Einladungen (Timo 2026-07-18):
+    // deckt Kernfamilie + Großeltern; schützt UI-Annahmen und den Server.
+    'family_max_members' => 8,
 
     // Papierkorb (ADR-0020): so lange bleiben gelöschte Bilder wiederherstellbar,
     // danach entfernt `model:prune` Rows UND Dateien endgültig.

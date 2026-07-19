@@ -22,8 +22,9 @@ import type { Subscription } from '../types'
 const BENEFITS: { icon: LucideIcon; title: string; text: string; soon?: boolean }[] = [
   {
     icon: ImageIcon,
-    title: 'Unbegrenzter Galerie-Speicher',
-    text: 'Alle Familienfotos ohne Limit – inklusive 30 Tage Papierkorb.',
+    // Ehrlich statt "unbegrenzt" (Timo 2026-07-18): Fair-Use-Grenze benennen.
+    title: 'Riesiger Galerie-Speicher',
+    text: '2.500 statt 100 Fotos (Fair Use) – inklusive 30 Tage Papierkorb.',
   },
   {
     icon: Globe,
@@ -315,7 +316,7 @@ export default function PremiumPage() {
               <PartyPopper className="mx-auto h-10 w-10 text-primary" />
               <h2 className="text-lg font-bold text-text">Willkommen bei Nidula Premium!</h2>
               <p className="text-sm text-muted">
-                Danke, dass ihr Nidula unterstützt. Euer Nest hat jetzt unbegrenzten Platz.
+                Danke, dass ihr Nidula unterstützt. Euer Nest hat jetzt richtig viel Platz.
               </p>
               <button
                 onClick={() => setCelebrate(false)}

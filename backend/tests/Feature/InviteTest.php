@@ -133,3 +133,16 @@ it('exposes a shareable registration link (beta: no mail delivery yet)', functio
 
     expect($link)->toContain('/register?token=');
 });
+
+it('caps a family at the configured member limit including open invites', function () {
+    // Timos Entscheidung 2026-07-18: max. 8 je Familie – hier klein gestellt.
+    config(['features.family_max_members' => 2]);
+    $guardian = familyMember();
+    Sanctum::actingAs($guardian);
+
+    // 1 Mitglied + 1 offene Einladung = 2 -> Grenze erreicht.
+    $this->postJson('/api/v1/invites', ['email' => 'oma2@example.com', 'role' => 'guardian'])
+        ->assertCreated();
+    $this->postJson('/api/v1/invites', ['email' => 'zuviel@example.com', 'role' => 'child'])
+        ->assertStatus(422);
+});

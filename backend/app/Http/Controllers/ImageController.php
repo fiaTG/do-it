@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Concerns\InteractsWithFamily;
 use App\Http\Resources\ImageResource;
 use App\Jobs\GenerateThumbnail;
+use App\Models\Family;
 use App\Models\Image;
 use App\Support\ImageUpload;
 use Illuminate\Database\Eloquent\Collection;
@@ -34,9 +35,7 @@ class ImageController extends Controller
 
         return ImageResource::collection($images)->additional([
             'meta' => [
-                'limit' => $family !== null && ! $family->isPremium()
-                    ? (int) config('features.free_limits.gallery_images')
-                    : null,
+                'limit' => $this->galleryLimit($family),
             ],
         ]);
     }
@@ -61,17 +60,18 @@ class ImageController extends Controller
             'image' => ['required', 'image', 'max:5120', 'dimensions:max_width=8000,max_height=8000'], // max. 5 MB
         ]);
 
-        // Entitlement-Gate (ADR-0013): Free-Familien haben ein Galerie-Limit,
-        // Premium ist unbegrenzt. Papierkorb-Bilder zählen nicht mit (ADR-0020).
+        // Entitlement-Gate (ADR-0013): Free hat ein Galerie-Limit, Premium eine
+        // großzügige Fair-Use-Grenze (Timo 2026-07-18, schützt die Platte bis
+        // zum Object Storage). Papierkorb-Bilder zählen nicht mit (ADR-0020).
         $family = $request->user()->family;
-        if ($family !== null && ! $family->isPremium()) {
-            $limit = (int) config('features.free_limits.gallery_images');
-            abort_if(
-                Image::where('family_id', $familyId)->count() >= $limit,
-                403,
-                "Galerie-Limit ($limit Bilder) erreicht. Mit Premium ist der Speicher unbegrenzt.",
-            );
-        }
+        $limit = $this->galleryLimit($family);
+        abort_if(
+            Image::where('family_id', $familyId)->count() >= $limit,
+            403,
+            $family?->isPremium()
+                ? "Fair-Use-Grenze der Galerie ($limit Fotos) erreicht – bitte Platz schaffen; die Grenze wächst mit dem nächsten Speicher-Ausbau."
+                : "Galerie-Limit ($limit Bilder) erreicht. Mit Premium wird der Speicher deutlich größer.",
+        );
 
         $meta = ImageUpload::storeStripped($request->file('image'), "gallery/{$familyId}");
 
@@ -129,21 +129,21 @@ class ImageController extends Controller
     }
 
     /**
-     * Wiederherstellen aus dem Papierkorb. Prüft für Free-Familien das
-     * Galerie-Limit, sonst ließe es sich über den Papierkorb umgehen (ADR-0020).
+     * Wiederherstellen aus dem Papierkorb. Prüft das jeweilige Galerie-Limit
+     * (Free bzw. Premium-Fair-Use), sonst ließe es sich über den Papierkorb
+     * umgehen (ADR-0020).
      */
     public function restore(Request $request): Response
     {
         $familyId = $this->familyId($request);
         $images = $this->trashableImages($request, onlyTrashed: true);
 
-        $family = $request->user()->family;
-        if ($images->isNotEmpty() && $family !== null && ! $family->isPremium()) {
-            $limit = (int) config('features.free_limits.gallery_images');
+        if ($images->isNotEmpty()) {
+            $limit = $this->galleryLimit($request->user()->family);
             abort_if(
                 Image::where('family_id', $familyId)->count() + $images->count() > $limit,
                 403,
-                "Galerie-Limit ($limit Bilder) erreicht. Bitte Platz schaffen oder Premium aktivieren.",
+                "Galerie-Limit ($limit Bilder) erreicht. Bitte Platz schaffen.",
             );
         }
 
@@ -173,6 +173,17 @@ class ImageController extends Controller
      *
      * @return Collection<int, Image>
      */
+    /**
+     * Galerie-Limit je Plan (ADR-0013): Free-Limit bzw. Premium-Fair-Use
+     * (Zahlen: Timos Beta-Entscheidung 2026-07-18, config/features.php).
+     */
+    private function galleryLimit(?Family $family): int
+    {
+        return $family?->isPremium()
+            ? (int) config('features.premium_limits.gallery_images')
+            : (int) config('features.free_limits.gallery_images');
+    }
+
     private function trashableImages(Request $request, bool $onlyTrashed = false)
     {
         $data = $request->validate([

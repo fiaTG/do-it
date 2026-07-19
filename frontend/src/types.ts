@@ -119,7 +119,7 @@ export interface ImagePage {
   images: ImageItem[]
   currentPage: number
   lastPage: number
-  /** Free-Tier-Limit der Galerie, `null` = Premium/unbegrenzt. */
+  /** Galerie-Limit des aktuellen Plans (Free 100 bzw. Premium-Fair-Use 2500). */
   limit: number | null
   /** Gesamtzahl aller Bilder der Familie (nicht nur diese Seite). */
   total: number

@@ -7,6 +7,7 @@ use App\Http\Requests\InviteRequest;
 use App\Http\Resources\InviteResource;
 use App\Mail\InvitationMail;
 use App\Models\Invite;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -42,6 +43,21 @@ class InviteController extends Controller
     public function store(InviteRequest $request): JsonResponse
     {
         $user = $request->user();
+
+        // Familien-Obergrenze (Timo 2026-07-18): Mitglieder + offene, nicht
+        // abgelaufene Einladungen zählen zusammen – deckt Kernfamilie plus
+        // Großeltern und schützt UI-Annahmen und Server.
+        $max = (int) config('features.family_max_members');
+        $occupied = User::where('family_id', $user->family_id)->count()
+            + Invite::where('family_id', $user->family_id)
+                ->whereNull('accepted_at')
+                ->where('expires_at', '>', now())
+                ->count();
+        abort_if(
+            $occupied >= $max,
+            422,
+            "Eine Familie kann höchstens {$max} Mitglieder haben (offene Einladungen zählen mit).",
+        );
 
         $invite = Invite::create([
             'family_id' => $user->family_id,

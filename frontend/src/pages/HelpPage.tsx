@@ -14,7 +14,7 @@ const TOPICS: { title: string; emoji: string; lines: string[] }[] = [
     lines: [
       'Auf dem Dashboard wählst du über „App hinzufügen", welche Bereiche DU nutzen willst – jedes Familienmitglied stellt sich sein eigenes Dashboard zusammen.',
       'Die Kacheln (Widgets) zeigen dir das Wichtigste jeder App auf einen Blick; Antippen öffnet die App.',
-      'Tipp fürs Handy: Im Browser-Menü „Zum Startbildschirm hinzufügen" wählen – dann startet Nidula wie eine echte App.',
+      'Tipp fürs Handy: Solange es Nidula noch nicht als Store-App gibt, wähle im Browser-Menü „Zum Startbildschirm hinzufügen" – Nidula startet dann wie eine echte App.',
     ],
   },
   {
@@ -49,7 +49,7 @@ const TOPICS: { title: string; emoji: string; lines: string[] }[] = [
     lines: [
       'Fotos einzeln oder als Stapel hochladen (auch per Ziehen & Ablegen). Ortsdaten (GPS) werden beim Hochladen automatisch entfernt.',
       'Gelöschte Bilder liegen 30 Tage im Papierkorb und lassen sich wiederherstellen.',
-      'Free: 30 Bilder je Familie – Premium hebt das Limit auf.',
+      'Free: 100 Bilder je Familie – Premium erweitert auf 2.500 (Fair Use).',
     ],
   },
   {
@@ -72,16 +72,17 @@ const TOPICS: { title: string; emoji: string; lines: string[] }[] = [
     title: 'Familie, Rollen & Einladungen',
     emoji: '👨‍👩‍👧',
     lines: [
-      'Verwalter dürfen alles; Kinder-Konten haben eingeschränkte Rechte (z. B. nur eigene Termine).',
+      'Verwalter dürfen alles; Kinder-Konten haben eingeschränkte Rechte: Termine nur für sich selbst (und nur selbst angelegte ändern), im Adressbuch sehen und anlegen sie Kontakte, ändern/löschen aber nur eigene.',
       'Einladen (nur Verwalter): Familienseite → E-Mail eintragen → Rolle wählen → bei „Offene Einladungen" den Link kopieren und persönlich verschicken.',
       'Wichtig: Die Einladung funktioniert nur mit genau der eingeladenen E-Mail-Adresse.',
+      'Eine Familie kann bis zu 8 Mitglieder haben (offene Einladungen zählen mit).',
     ],
   },
   {
     title: 'Premium',
     emoji: '👑',
     lines: [
-      'Ein Abo gilt für die GANZE Familie: unbegrenzte Galerie, Kalender-Abos, Kalender-Freigabe, Spritpreise.',
+      'Ein Abo gilt für die GANZE Familie: große Galerie (2.500 Fotos), Kalender-Abos, Kalender-Freigabe, Spritpreise.',
       'Die Kernfunktionen bleiben für immer gratis – Premium finanziert die werbefreie Weiterentwicklung.',
     ],
   },

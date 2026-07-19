@@ -14,6 +14,7 @@ import {
   Upload,
   X,
 } from '../lib/icons'
+import { useAuth } from '../store/auth'
 import type { ImageItem } from '../types'
 
 interface ImageGroup {
@@ -116,6 +117,7 @@ function groupImages(images: ImageItem[]): ImageGroup[] {
 }
 
 export default function GalleryPage() {
+  const isPremium = useAuth((s) => s.user?.family?.is_premium ?? false)
   const [images, setImages] = useState<ImageItem[]>([])
   const [limit, setLimit] = useState<number | null>(null)
   const [total, setTotal] = useState(0)
@@ -471,11 +473,21 @@ export default function GalleryPage() {
 
       {quotaReached ? (
         <p className="rounded-2xl bg-surface p-4 text-sm text-muted shadow">
-          Galerie-Limit erreicht.{' '}
-          <Link to="/premium" className="font-semibold text-primary hover:underline">
-            Mit Premium unbegrenzt speichern
-          </Link>
-          .
+          {isPremium ? (
+            // Fair-Use-Grenze (Timo 2026-07-18): ehrlich erklären statt Upsell.
+            <>
+              Fair-Use-Grenze der Galerie erreicht – bitte Platz schaffen. Die Grenze
+              wächst mit dem nächsten Speicher-Ausbau.
+            </>
+          ) : (
+            <>
+              Galerie-Limit erreicht.{' '}
+              <Link to="/premium" className="font-semibold text-primary hover:underline">
+                Mit Premium wird der Speicher deutlich größer
+              </Link>
+              .
+            </>
+          )}
         </p>
       ) : (
         <div className="space-y-3 rounded-2xl bg-surface p-4 shadow">

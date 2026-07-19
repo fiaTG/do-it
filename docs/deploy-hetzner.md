@@ -84,6 +84,25 @@ docker compose -f docker-compose.prod.yml up -d --force-recreate app worker sche
 docker compose -f docker-compose.prod.yml exec -T app php artisan config:cache
 ```
 
+## Selbst nachschauen: Wer klopft an? (Timos Frage 2026-07-18)
+
+Alles vom Entwicklungsrechner (WSL) aus – der SSH-Schlüssel liegt dort:
+
+```bash
+# Gebannte Angreifer-IPs (SSH-Bruteforce; Grundrauschen ist NORMAL):
+ssh -i ~/.ssh/nidula_hetzner nidula@167.233.64.98 "sudo fail2ban-client status sshd"
+
+# Wer versucht sich gerade einzuloggen (letzte abgewiesene Versuche):
+ssh -i ~/.ssh/nidula_hetzner nidula@167.233.64.98 "sudo journalctl -u ssh --since -1h | grep -i 'invalid\|failed' | tail -20"
+
+# Platz/Last im Blick (wichtig wegen 40-GB-Platte + Foto-Uploads):
+ssh -i ~/.ssh/nidula_hetzner nidula@167.233.64.98 "df -h / && uptime"
+```
+
+Einordnung: Bots scannen rund um die Uhr das gesamte Internet. Gebannte IPs
+heißen „die Abwehr arbeitet", nicht „wir werden gezielt angegriffen". Kritisch
+wäre: Login-Versuche mit ECHTEN Nutzernamen, volle Platte, Dauerlast.
+
 ## Nützliche Kommandos (auf dem Server, in /opt/nidula/deploy)
 
 ```bash
