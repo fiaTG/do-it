@@ -29,6 +29,8 @@
 
 ## 🟢 Später (Backlog)
 
+- [ ] Blütenbeet verständlicher machen (Timos Beta-Feedback 2026-07-20: Balance stimmt, aber Einstieg unklar) – Optionen: „So geht's"-Overlay beim 1. Start, dauerhaft sichtbare Regel-Legende, klare Zielzeile + Warum-Erklärung beim Anvisieren
+
 - [ ] Belohnungs-Regal (Nest-Blätter-Ausbau, Premium): Verwalter legen echte Familien-Belohnungen mit Blatt-Preisen an, Kinder lösen ein (ADR-0026 Stufe 2)
 - [ ] Einkaufsliste: eigene Läden je Familie anlegen
 - [ ] Einkaufsliste: Angebote der Märkte – erst Rechte-/API-Recherche (Prospektdaten lizenzpflichtig!)
