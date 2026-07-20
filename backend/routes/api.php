@@ -8,6 +8,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\FamilyController;
 use App\Http\Controllers\FuelController;
 use App\Http\Controllers\GameScoreController;
+use App\Http\Controllers\HealthController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\InviteController;
 use App\Http\Controllers\MediaController;
@@ -26,14 +27,11 @@ use Illuminate\Support\Facades\Route;
 | Versionierte API gemäß ADR-0011. Alle Endpunkte liegen unter /api/v1.
 */
 Route::prefix('v1')->group(function () {
-    // Health-Check: beweist, dass die API erreichbar ist.
-    Route::get('/health', function () {
-        return response()->json([
-            'status' => 'ok',
-            'service' => config('app.name'),
-            'time' => now()->toIso8601String(),
-        ]);
-    });
+    // Health (ADR-0027): Liveness = Prozess antwortet; Readiness = DB + Cache
+    // erreichbar (503 wenn nicht). Readiness gedrosselt, da es Abhängigkeiten
+    // anfasst. Beide liegen unter /api → außerhalb des Caddy-Bauzauns.
+    Route::get('/health', [HealthController::class, 'live']);
+    Route::get('/health/ready', [HealthController::class, 'ready'])->middleware('throttle:30,1');
 
     // --- Authentifizierung (öffentlich) --------------------------------------
     Route::post('/auth/register', [AuthController::class, 'register'])

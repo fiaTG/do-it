@@ -103,6 +103,62 @@ Einordnung: Bots scannen rund um die Uhr das gesamte Internet. Gebannte IPs
 heißen „die Abwehr arbeitet", nicht „wir werden gezielt angegriffen". Kritisch
 wäre: Login-Versuche mit ECHTEN Nutzernamen, volle Platte, Dauerlast.
 
+## Monitoring & Alerting (ADR-0027)
+
+**Health-Endpunkte** (beide öffentlich unter `/api`, kein Bauzaun):
+
+- `GET /api/v1/health` – Liveness (Prozess antwortet). Trivial.
+- `GET /api/v1/health/ready` – Readiness: prüft DB + Cache/Redis, `200
+  {"status":"ready"}` bzw. `503 {"status":"degraded"}`. **Der externe Monitor
+  zeigt hierauf**, damit auch DB-/Redis-Ausfälle Alarm auslösen.
+
+**Backup-Heartbeat verdrahten** (wenn der Wächter-Dienst steht):
+
+1. Sicherstellen, dass `curl` da ist: `ssh … "command -v curl"` (Ubuntu-Server
+   hat es i. d. R.; sonst `sudo apt-get install -y curl`).
+2. Beim Dienst einen Heartbeat-/Cron-Monitor mit Fenster „täglich + Karenz"
+   anlegen, dessen Ping-URL kopieren.
+3. In `deploy/.env` auf dem Server als `NIDULA_BACKUP_HEARTBEAT_URL=…`
+   eintragen (server-only, NIE ins Repo). Ohne Eintrag ist der Heartbeat ein
+   No-op.
+4. Testen: `ssh … "/opt/nidula/deploy/backup-db.sh"` → beim Dienst muss ein
+   Ping ankommen. Danach einen ausbleibenden Heartbeat testen (Alarm prüfen).
+
+**Wichtig:** Nach dem Deploy ist das Monitoring nur *vorbereitet*. Wirksam erst,
+wenn Uptime-Monitor + Heartbeat verbunden und ein Test-Alarm ausgelöst wurde.
+Offen bleibt der Platten-Alarm (Log-Rotation begrenzt nur Logs, s. ADR-0027).
+
+## Incident-Runbook (kurz, für Einzelbetrieb)
+
+Bei einem Alarm – ruhig, der Reihe nach:
+
+1. **Verifizieren:** Ist es echt? `curl -sS https://…/api/v1/health/ready` und
+   `curl -sSI https://…/` (Bauzaun-401 ist normal). Kurzer Ausfall kann ein
+   Deploy oder Neustart sein.
+2. **Lage prüfen:** `docker compose … ps` (Container up/healthy?),
+   `docker compose … logs --since 15m app worker` (Fehler?), `df -h /` (Platte
+   voll?), `journalctl -u nidula-backup --since -1d` (Backup ok?).
+3. **Container-Neustart** (kleinste Maßnahme), wenn ein einzelner Dienst hängt:
+   `docker compose … restart <service>` bzw. `up -d --force-recreate <service>`.
+4. **Rollback**, wenn ein frischer Deploy die Ursache ist: auf dem Server
+   `git -C /opt/nidula log --oneline -5`, gewünschten Stand auschecken und
+   `./deploy/deploy.sh` vom Entwicklungsrechner mit dem vorherigen Commit – oder
+   das `nidula-app`-Image auf den letzten funktionierenden Stand zurücksetzen.
+5. **Platte voll:** alte Backups/Logs prüfen (`/opt/nidula-backups`,
+   `docker system df`), `docker system prune` (Vorsicht), Log-Rotation greift
+   künftig automatisch.
+6. **Isolieren** bei Verdacht auf Kompromittierung: Registrierung/Uploads über
+   den Kill-Switch stoppen (`NIDULA_REGISTRATION=invite` steht schon; Uploads
+   notfalls per Route/Firewall), ggf. Server aus dem Netz nehmen
+   (Hetzner-Firewall auf nur eigene Admin-IP).
+7. **Secrets rotieren** nach einem Vorfall: DB-Passwörter, `APP_KEY`,
+   Bauzaun-Passwort, Kalender-Freigabe-Tokens (in der App rotierbar),
+   ggf. SSH-Key. Reihenfolge + Auswirkungen vorher überlegen.
+8. **Restore** aus Backup: siehe Backup-Abschnitt oben (Dump → DB), Medien aus
+   Hetzner-Vollbackup. Restore vorher IMMER in einer Wegwerf-DB proben.
+9. **Meldepflicht** (ab Stufe 2, echte Fremd-Daten): Datenschutzverletzung nach
+   Art. 33 DSGVO ggf. binnen 72 h melden – im Zweifel dokumentieren + prüfen.
+
 ## Nützliche Kommandos (auf dem Server, in /opt/nidula/deploy)
 
 ```bash

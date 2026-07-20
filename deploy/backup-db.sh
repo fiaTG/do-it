@@ -26,3 +26,16 @@ chmod 600 "$FILE"
 ls -1t "$BACKUP_DIR"/nidula-*.sql.gz | tail -n +15 | xargs -r rm --
 
 echo "Backup ok: $FILE ($(du -h "$FILE" | cut -f1))"
+
+# Backup-Heartbeat (ADR-0027, Totmann-Schalter): NUR nach Erfolg ein Lebens-
+# zeichen senden. Ein kaputter Dump erreicht diese Zeile nie (set -e + exit 1
+# oben) -> ausbleibender Heartbeat = Alarm beim externen Wächter. URL steht in
+# deploy/.env (server-only, gitignored); fehlt sie, passiert nichts. Retries
+# gegen Fehlalarm durch einen einzelnen DNS-/Verbindungsfehler; scheitert das
+# Senden endgültig, bleibt das Backup trotzdem erfolgreich (nur Warnung, ohne
+# die geheime URL).
+HEARTBEAT_URL=$(grep '^NIDULA_BACKUP_HEARTBEAT_URL=' .env 2>/dev/null | cut -d= -f2- || true)
+if [ -n "${HEARTBEAT_URL:-}" ]; then
+  curl -fsS -m 10 --retry 3 --retry-delay 2 "$HEARTBEAT_URL" >/dev/null 2>&1 \
+    || echo "Warnung: Backup ok, aber Heartbeat-Senden fehlgeschlagen." >&2
+fi

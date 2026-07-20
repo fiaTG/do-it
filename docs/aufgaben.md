@@ -22,7 +22,9 @@
 
 - [ ] Backups extern: DB-Dump zusätzlich verschlüsselt nach außerhalb des Servers kopieren (3-2-1 komplett)
 - [ ] DSGVO-Basispaket: Datenschutzerklärung, Impressum, AVV Hetzner, Löschkonzept, DSFA-Prüfung dokumentieren
-- [ ] Monitoring/Uptime-Alarm (einfach starten, z. B. Healthcheck-Ping)
+- [ ] **Monitoring WIRKSAM schalten (Timo):** Wächter-Dienst-Konto + Uptime-Monitor auf `/api/v1/health/ready` + Backup-Heartbeat-URL in `deploy/.env` + Test-Alarm auslösen (ADR-0027, Runbook)
+- [ ] Platten-Alarm (Log-Rotation erkennt keine volle Platte durch DB/Bilder/Backups → nächste Monitoring-Aufgabe, ADR-0027 Stufe 2)
+- [x] 2026-07-20 Monitoring Stufe-1-**Code** (ADR-0027): Readiness-Endpoint (DB+Redis, 503), Backup-Heartbeat (Totmann-Schalter), Docker-Log-Rotation, Incident-Runbook
 - [x] 2026-07-18 DB-Dump täglich 03:30 (systemd-Timer, 14 Stände) + **Restore-Probe bestanden** (23/23 Tabellen)
 
 ## 🟢 Später (Backlog)

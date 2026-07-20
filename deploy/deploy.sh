@@ -31,10 +31,13 @@ rsync -az --delete \
   -e "ssh -i $NIDULA_SSH_KEY" \
   "$REPO_DIR/" "$NIDULA_SSH:$TARGET_DIR/"
 
-echo "==> 3/4 Image bauen + Container hochziehen"
+echo "==> 3/4 Compose prüfen, Image bauen + Container hochziehen"
+# config -q validiert die Compose-Datei zuerst (ADR-0027): da lokal kein Docker
+# läuft, fängt das YAML-Fehler ab, BEVOR laufende Container angefasst werden.
 # restart caddy: compose erkennt Änderungen an der bind-gemounteten Caddyfile
 # nicht, und 'caddy reload' per exec griff real nicht zuverlässig (2026-07-18).
 "${SSH[@]}" "cd $TARGET_DIR/deploy \
+  && docker compose -f docker-compose.prod.yml config -q \
   && docker compose -f docker-compose.prod.yml build --pull app \
   && docker compose -f docker-compose.prod.yml up -d --remove-orphans \
   && docker compose -f docker-compose.prod.yml restart caddy"

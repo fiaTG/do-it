@@ -9,10 +9,19 @@
 
 name: nidula
 
+# Log-Rotation (ADR-0027): begrenzt jeden Container auf 3×10 MB, damit die
+# Docker-json-Logs nicht unbemerkt die Serverplatte füllen.
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
 services:
   caddy:
     image: caddy:2-alpine
     restart: unless-stopped
+    logging: *default-logging
     ports:
       - "80:80"
       - "443:443"
@@ -34,6 +43,7 @@ services:
       dockerfile: deploy/Dockerfile
     image: nidula-app
     restart: unless-stopped
+    logging: *default-logging
     env_file: .env.app
     volumes:
       - media:/var/www/html/storage/app
@@ -46,6 +56,7 @@ services:
   worker:
     image: nidula-app
     restart: unless-stopped
+    logging: *default-logging
     command: ["php", "artisan", "queue:work", "--tries=3", "--max-time=3600"]
     env_file: .env.app
     volumes:
@@ -59,6 +70,7 @@ services:
   scheduler:
     image: nidula-app
     restart: unless-stopped
+    logging: *default-logging
     # Ersetzt cron (ADR-0020: Papierkorb-Purge läuft täglich via model:prune).
     command: ["php", "artisan", "schedule:work"]
     env_file: .env.app
@@ -71,6 +83,7 @@ services:
   mysql:
     image: mysql:8.4
     restart: unless-stopped
+    logging: *default-logging
     environment:
       MYSQL_DATABASE: nidula
       MYSQL_USER: nidula
@@ -87,6 +100,7 @@ services:
   redis:
     image: redis:7-alpine
     restart: unless-stopped
+    logging: *default-logging
     volumes:
       - redisdata:/data
 

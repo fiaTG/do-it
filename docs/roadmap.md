@@ -152,6 +152,11 @@ Jede Phase ist eigenständig abschließbar. Reihenfolge = empfohlene Bearbeitung
 | [0020](adr/0020-galerie-papierkorb.md) | Galerie-Papierkorb (Soft-Delete mit Aufbewahrungsfrist) | Akzeptiert |
 | [0021](adr/0021-einladungs-rollen-und-owner-schutz.md) | Einladungs-Rollen & Owner-Schutz im Kalender | Akzeptiert |
 | [0022](adr/0022-zahlungsabwicklung-und-premium-erlebnis.md) | Zahlungsabwicklung & Premium-Erlebnis (RevenueCat, Jahresabo) | Akzeptiert |
+| [0023](adr/0023-kalender-abos-ical-import.md) | Kalender-Abos (iCal-Import) | Akzeptiert |
+| [0024](adr/0024-kalender-freigabe-ical-export.md) | Kalender-Freigabe (iCal-Export) | Akzeptiert |
+| [0025](adr/0025-produktionsbetrieb-sicherheitsbasis.md) | Produktionsbetrieb & Sicherheitsbasis (Hetzner, Stufenmodell) | Akzeptiert |
+| [0026](adr/0026-nest-blaetter-belohnungssystem.md) | Nest-Blätter (Belohnungssystem für ToDos) | Akzeptiert |
+| [0027](adr/0027-monitoring-und-alerting.md) | Verhältnismäßiges Monitoring & Alerting | Akzeptiert |
 
 ---
 
