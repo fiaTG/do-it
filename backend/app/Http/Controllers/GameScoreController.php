@@ -12,11 +12,16 @@ class GameScoreController extends Controller
     /**
      * Bekannte Spiele der Fun Area. Eigene Namen/Themen statt geschützter
      * Marken (Mechanik ist frei, Name/Grafik nicht – siehe Produkt-Backlog).
-     * Künftige Premium-Spiele bekommen hier ihren Slug + premium-Middleware.
      */
-    // 'ballons' = Ballon-Knallerei (erstes Premium-Spiel; das Gate liegt in
-    // der UI – Scores speichern schadet nie, falls Premium ausläuft).
-    public const GAMES = ['raupe', 'ballons'];
+    public const GAMES = ['raupe', 'ballons', 'bluetenbeet'];
+
+    /**
+     * Premium-Spiele (ADR-0028): Bestenliste UND Score-Speichern nur mit
+     * aktivem Familien-Abo. Die Berechtigung nutzt dieselbe zentrale
+     * Family::isPremium()-Logik wie die `premium`-Middleware – keine zweite
+     * Definition. Fun Area selbst bleibt frei (Timos Linie).
+     */
+    public const PREMIUM_GAMES = ['ballons', 'bluetenbeet'];
 
     use InteractsWithFamily;
 
@@ -26,7 +31,7 @@ class GameScoreController extends Controller
      */
     public function index(Request $request, string $game): JsonResponse
     {
-        abort_unless(in_array($game, self::GAMES, true), 404);
+        $this->assertPlayable($request, $game);
         $familyId = $this->familyId($request);
 
         $top = GameScore::where('family_id', $familyId)
@@ -58,7 +63,7 @@ class GameScoreController extends Controller
      */
     public function store(Request $request, string $game): JsonResponse
     {
-        abort_unless(in_array($game, self::GAMES, true), 404);
+        $this->assertPlayable($request, $game);
         $familyId = $this->familyId($request);
 
         $data = $request->validate([
@@ -84,5 +89,22 @@ class GameScoreController extends Controller
             'personal_record' => $previousPersonal === null || $data['score'] > (int) $previousPersonal,
             'family_record' => $previousFamily === null || $data['score'] > (int) $previousFamily,
         ]], 201);
+    }
+
+    /**
+     * Unbekanntes Spiel -> 404; Premium-Spiel ohne aktives Abo -> 403.
+     * Nutzt Family::isPremium() (dieselbe Quelle wie die premium-Middleware).
+     */
+    private function assertPlayable(Request $request, string $game): void
+    {
+        abort_unless(in_array($game, self::GAMES, true), 404);
+
+        if (in_array($game, self::PREMIUM_GAMES, true)) {
+            abort_unless(
+                $request->user()->family?->isPremium() ?? false,
+                403,
+                'Dieses Spiel ist Teil von Nidula Premium.',
+            );
+        }
     }
 }

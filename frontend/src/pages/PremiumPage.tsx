@@ -43,14 +43,8 @@ const BENEFITS: { icon: LucideIcon; title: string; text: string; soon?: boolean 
   },
   {
     icon: Gamepad2,
-    title: 'Premium-Spiel: Ballon-Knallerei',
-    text: 'Exklusiv in der Fun Area – mit eigener Familien-Bestenliste.',
-  },
-  {
-    icon: Gamepad2,
-    title: 'Block-Garten',
-    text: 'Das nächste Familienspiel erscheint zuerst für Premium.',
-    soon: true,
+    title: 'Premium-Spiele in der Fun Area',
+    text: 'Ballon-Knallerei & Nidulas Blütenbeet – je mit eigener Familien-Bestenliste.',
   },
   {
     icon: Check,

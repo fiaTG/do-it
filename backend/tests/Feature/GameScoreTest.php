@@ -66,3 +66,40 @@ it('rejects unknown games and invalid scores', function () {
     $this->postJson('/api/v1/games/raupe/scores', ['score' => 999999])
         ->assertStatus(422)->assertJsonValidationErrorFor('score');
 });
+
+// --- Premium-Gate für Premium-Spiele (ADR-0028) ------------------------------
+
+it('lets a premium family read and store premium game scores', function () {
+    $user = premiumFamilyMember();
+    Sanctum::actingAs($user);
+
+    $this->postJson('/api/v1/games/bluetenbeet/scores', ['score' => 80])
+        ->assertCreated()->assertJsonPath('data.family_record', true);
+    $this->getJson('/api/v1/games/bluetenbeet/scores')
+        ->assertOk()->assertJsonPath('data.my_best', 80);
+});
+
+it('blocks free families from premium game scores', function () {
+    Sanctum::actingAs(familyMember());
+
+    $this->postJson('/api/v1/games/bluetenbeet/scores', ['score' => 80])->assertForbidden();
+    $this->getJson('/api/v1/games/bluetenbeet/scores')->assertForbidden();
+    // Auch das zuvor nur UI-gegatete Ballon-Spiel ist jetzt serverseitig dicht.
+    $this->postJson('/api/v1/games/ballons/scores', ['score' => 10])->assertForbidden();
+});
+
+it('blocks a family whose subscription has lapsed', function () {
+    $user = premiumFamilyMember();
+    $user->family->subscription->update(['expires_at' => now()->subDay()]);
+    Sanctum::actingAs($user);
+
+    $this->postJson('/api/v1/games/bluetenbeet/scores', ['score' => 80])->assertForbidden();
+    $this->getJson('/api/v1/games/bluetenbeet/scores')->assertForbidden();
+});
+
+it('keeps free games open for everyone', function () {
+    Sanctum::actingAs(familyMember());
+
+    $this->postJson('/api/v1/games/raupe/scores', ['score' => 15])->assertCreated();
+    $this->getJson('/api/v1/games/raupe/scores')->assertOk();
+});

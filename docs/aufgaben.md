@@ -33,7 +33,6 @@
 - [ ] Einkaufsliste: eigene Läden je Familie anlegen
 - [ ] Einkaufsliste: Angebote der Märkte – erst Rechte-/API-Recherche (Prospektdaten lizenzpflichtig!)
 - [ ] Support-Formular in der App + E-Mail-Support (ab Stufe 2, braucht SMTP)
-- [ ] Block-Garten (zweites Premium-Spiel)
 - [ ] Feed-Katalog/Abo-Assistent (Feiertage per Klick, Abfallkalender-Suche)
 - [ ] Globaler Styling-Run über alle Seiten
 - [ ] Native Runde: Keychain/Keystore für Tokens, PDF-Download nativ, iOS-Swipe-Back
@@ -43,6 +42,7 @@
 
 ## ✅ Erledigt (Auszug)
 
+- [x] 2026-07-20 **Nidulas Blütenbeet** (ADR-0028): drittes Fun-Area-Spiel, eigenes Strategie-Puzzle (kein Tetris-/2048-Reskin), reine test-first-Engine + Balance-geprüft, barrierearmes DOM-Grid; **serverseitiges Premium-Gate** für Premium-Spiele (via zentraler `Family::isPremium()`)
 - [x] 2026-07-18 **Ballon-Knallerei** live: erstes Premium-Spiel (60-s-Runden, goldene Laterne, Wespe), eigene Familien-Bestenliste, Fun Area bleibt frei
 
 - [x] 2026-07-18 **„Nest-Blätter" MVP (ADR-0026)**: 1 🍃 je erledigtem ToDo (Ledger überlebt Löschen), Wochen-Champion auf der ToDo-Seite, Meilenstein-Abzeichen im Profil, Erlediger-Avatar in der Liste

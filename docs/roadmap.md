@@ -157,6 +157,7 @@ Jede Phase ist eigenständig abschließbar. Reihenfolge = empfohlene Bearbeitung
 | [0025](adr/0025-produktionsbetrieb-sicherheitsbasis.md) | Produktionsbetrieb & Sicherheitsbasis (Hetzner, Stufenmodell) | Akzeptiert |
 | [0026](adr/0026-nest-blaetter-belohnungssystem.md) | Nest-Blätter (Belohnungssystem für ToDos) | Akzeptiert |
 | [0027](adr/0027-monitoring-und-alerting.md) | Verhältnismäßiges Monitoring & Alerting | Akzeptiert |
+| [0028](adr/0028-bluetenbeet-und-premium-spiel-gate.md) | „Blütenbeet" & serverseitiges Premium-Gate für Spiele | Akzeptiert |
 
 ---
 

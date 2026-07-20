@@ -205,6 +205,18 @@ h2 {
   color: #fff;
 }
 
+/* Aufpop beim Setzen/Erblühen im Blütenbeet (ADR-0028); nur via motion-safe. */
+@keyframes pop {
+  0% {
+    transform: scale(0.7);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 /* Konfetti-Moment nach Premium-Aktivierung (ADR-0022) */
 @keyframes confetti-fall {
   0% {
