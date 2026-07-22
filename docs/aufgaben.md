@@ -22,8 +22,10 @@
 
 - [ ] Backups extern: DB-Dump zusätzlich verschlüsselt nach außerhalb des Servers kopieren (3-2-1 komplett)
 - [~] DSGVO-Basispaket: **Entwürfe fertig** in docs/legal/ (Datenschutzerklärung, Impressum, Löschkonzept) – OFFEN für Timo: Platzhalter füllen (Name/Adresse/E-Mail), juristisch prüfen (lassen), AVV bei Hetzner abschließen, DSFA-Erfordernis prüfen
-- [ ] Konto-/Familien-Löschung + Datenexport als Feature bauen (gemäß docs/legal/loeschkonzept.md; Produktentscheidung „Fotos beim Austritt behalten?" darin markiert)
-- [ ] Legal-Seiten in die App: /impressum + /datenschutz + Footer-Links (erst live schalten, wenn Platzhalter gefüllt)
+- [x] 2026-07-22 **Datenexport** (DSGVO Art. 15/20): `/me/export` (JSON, nutzerbezogen) + Button „Meine Daten" im Profil, +4 Tests
+- [x] 2026-07-22 **Legal-Seiten** gebaut: `/impressum` + `/datenschutz` (öffentlich, Entwurfs-Banner) – Footer-Links via `LEGAL_PUBLISHED`-Schalter noch AUS bis Platzhalter gefüllt
+- [ ] Konto-/Familien-Löschung als Feature bauen (gemäß docs/legal/loeschkonzept.md; Produktentscheidung „Fotos beim Austritt behalten?" darin markiert) – Timo schaut später drauf
+- [ ] Timo: Platzhalter in ImpressumPage/DatenschutzPage füllen + juristisch prüfen, dann `LEGAL_PUBLISHED=true`
 - [ ] **Monitoring WIRKSAM schalten (Timo):** Wächter-Dienst-Konto + Uptime-Monitor auf `/api/v1/health/ready` + Backup-Heartbeat-URL in `deploy/.env` + Test-Alarm auslösen (ADR-0027, Runbook)
 - [ ] Platten-Alarm (Log-Rotation erkennt keine volle Platte durch DB/Bilder/Backups → nächste Monitoring-Aufgabe, ADR-0027 Stufe 2)
 - [x] 2026-07-20 Monitoring Stufe-1-**Code** (ADR-0027): Readiness-Endpoint (DB+Redis, 503), Backup-Heartbeat (Totmann-Schalter), Docker-Log-Rotation, Incident-Runbook

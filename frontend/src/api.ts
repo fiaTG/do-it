@@ -103,6 +103,11 @@ export const profileApi = {
     const { data } = await api.post<{ data: User }>('/profile/avatar', form)
     return data.data
   },
+  /** DSGVO-Datenexport (Art. 15/20): eigene Daten als JSON-Blob. */
+  async exportData(): Promise<Blob> {
+    const { data } = await api.get('/me/export', { responseType: 'blob' })
+    return data as Blob
+  },
 }
 
 /** Direkt-URL zum PDF-Export der Einkaufsliste (per Cookie authentifiziert). */

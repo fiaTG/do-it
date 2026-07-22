@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\CalendarExportController;
 use App\Http\Controllers\CalendarFeedController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\DataExportController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\FamilyController;
 use App\Http\Controllers\FuelController;
@@ -77,6 +78,9 @@ Route::prefix('v1')->group(function () {
         Route::put('/profile', [ProfileController::class, 'update']);
         Route::post('/profile/avatar', [ProfileController::class, 'avatar'])
             ->middleware('throttle:uploads'); // Bildverarbeitung ist teuer (ADR-0025)
+
+        // Datenexport (DSGVO Art. 15/20) – eigene Daten als JSON.
+        Route::get('/me/export', [DataExportController::class, 'show']);
 
         // Abo / Premium (ADR-0013)
         Route::get('/subscription', [SubscriptionController::class, 'show']);

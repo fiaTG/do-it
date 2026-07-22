@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react'
 import { apiError, authApi, profileApi, todosApi } from '../api'
-import { Check, KeyRound, User } from '../lib/icons'
+import { Check, Download, KeyRound, User } from '../lib/icons'
 import { MEMBER_PALETTE, memberColor } from '../lib/memberColors'
 import { useAuth } from '../store/auth'
 
@@ -18,6 +18,8 @@ export default function ProfilePage() {
   const setUser = useAuth((s) => s.setUser)
   const fileInput = useRef<HTMLInputElement>(null)
   const [leafTotal, setLeafTotal] = useState<number | null>(null)
+  const [exporting, setExporting] = useState(false)
+  const [exportError, setExportError] = useState('')
 
   useEffect(() => {
     if (!user?.family_id) return
@@ -63,6 +65,24 @@ export default function ProfilePage() {
       setConfirmPw('')
     } catch (err) {
       setPwError(apiError(err))
+    }
+  }
+
+  async function exportData() {
+    setExporting(true)
+    setExportError('')
+    try {
+      const blob = await profileApi.exportData()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'nidula-datenexport.json'
+      a.click()
+      URL.revokeObjectURL(url)
+    } catch (err) {
+      setExportError(apiError(err))
+    } finally {
+      setExporting(false)
     }
   }
 
@@ -258,6 +278,26 @@ export default function ProfilePage() {
           Passwort speichern
         </button>
       </form>
+
+      {/* Meine Daten (DSGVO Art. 15/20) */}
+      <div className="space-y-3 rounded-2xl bg-surface p-6 shadow">
+        <h2 className="flex items-center gap-2 font-semibold text-text">
+          <Download className="h-4 w-4" /> Meine Daten
+        </h2>
+        <p className="text-sm text-muted">
+          Lade eine Kopie deiner persönlichen Daten und der von dir angelegten Familieninhalte
+          als JSON-Datei herunter.
+        </p>
+        {exportError && <p className="text-sm text-red-600">{exportError}</p>}
+        <button
+          type="button"
+          onClick={() => void exportData()}
+          disabled={exporting}
+          className="rounded-lg border border-border px-5 py-2 text-sm font-semibold text-primary hover:bg-primary/10 disabled:opacity-60"
+        >
+          {exporting ? 'Wird erstellt …' : 'Daten exportieren'}
+        </button>
+      </div>
     </div>
   )
 }

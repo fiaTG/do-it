@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import Logo from '../components/Logo'
 import ThemeToggle from '../components/ThemeToggle'
 import { APP_ICONS, type LucideIcon, Users } from '../lib/icons'
+import { LEGAL_PUBLISHED } from '../lib/legal'
 
 const FEATURES: { icon: LucideIcon; title: string; text: string }[] = [
   { icon: APP_ICONS['shopping-list'], title: 'Einkaufsliste', text: 'Gemeinsame Liste – jeder ergänzt, was fehlt.' },
@@ -87,6 +88,17 @@ export default function LandingPage() {
 
       <footer className="border-t border-border py-8 text-center text-sm text-muted">
         © {new Date().getFullYear()} Nidula
+        {/* Legal-Links erscheinen erst, wenn die Texte final sind (lib/legal.ts). */}
+        {LEGAL_PUBLISHED && (
+          <span className="mt-2 flex justify-center gap-4">
+            <Link to="/impressum" className="hover:text-primary">
+              Impressum
+            </Link>
+            <Link to="/datenschutz" className="hover:text-primary">
+              Datenschutz
+            </Link>
+          </span>
+        )}
       </footer>
     </div>
   )

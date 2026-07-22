@@ -9,6 +9,8 @@ import FuelPage from './pages/FuelPage'
 import GalleryPage from './pages/GalleryPage'
 import GamesPage from './pages/GamesPage'
 import HelpPage from './pages/HelpPage'
+import DatenschutzPage from './pages/legal/DatenschutzPage'
+import ImpressumPage from './pages/legal/ImpressumPage'
 import LandingPage from './pages/LandingPage'
 import LoginPage from './pages/LoginPage'
 import MembersPage from './pages/MembersPage'
@@ -56,6 +58,9 @@ export default function App() {
         <Route path="/" element={user ? <Navigate to="/dashboard" replace /> : <LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        {/* Rechtstexte: öffentlich erreichbar (Entwurf bis Platzhalter gefüllt). */}
+        <Route path="/impressum" element={<ImpressumPage />} />
+        <Route path="/datenschutz" element={<DatenschutzPage />} />
 
         <Route element={<ProtectedRoute />}>
           <Route element={<Layout />}>
