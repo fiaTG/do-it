@@ -1,4 +1,6 @@
+import { Link } from 'react-router-dom'
 import { CircleHelp, Mail } from '../lib/icons'
+import { LEGAL_PUBLISHED } from '../lib/legal'
 import { useAuth } from '../store/auth'
 
 /**
@@ -132,6 +134,22 @@ export default function HelpPage() {
           stattdessen passiert – am besten mit Screenshot.
         </p>
       </div>
+
+      {/* Rechtliches: Zwei-Klick-Regel (ADR-0029). Erscheint erst, wenn die
+          Rechtstexte final sind (LEGAL_PUBLISHED in lib/legal.ts). */}
+      {LEGAL_PUBLISHED && (
+        <div className="rounded-2xl bg-surface p-5 shadow">
+          <h2 className="font-semibold text-text">Rechtliches</h2>
+          <div className="mt-2 flex gap-4 text-sm">
+            <Link to="/impressum" className="text-primary hover:underline">
+              Impressum
+            </Link>
+            <Link to="/datenschutz" className="text-primary hover:underline">
+              Datenschutz
+            </Link>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

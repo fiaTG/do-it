@@ -25,7 +25,8 @@
 - [x] 2026-07-22 **Datenexport** (DSGVO Art. 15/20): `/me/export` (JSON, nutzerbezogen) + Button „Meine Daten" im Profil, +4 Tests
 - [x] 2026-07-22 **Legal-Seiten** gebaut: `/impressum` + `/datenschutz` (öffentlich, Entwurfs-Banner) – Footer-Links via `LEGAL_PUBLISHED`-Schalter noch AUS bis Platzhalter gefüllt
 - [ ] Konto-/Familien-Löschung als Feature bauen (gemäß docs/legal/loeschkonzept.md; Produktentscheidung „Fotos beim Austritt behalten?" darin markiert) – Timo schaut später drauf
-- [ ] Timo: Platzhalter in ImpressumPage/DatenschutzPage füllen + juristisch prüfen, dann `LEGAL_PUBLISHED=true`
+- [ ] Timo: Platzhalter in ImpressumPage/DatenschutzPage füllen + juristisch prüfen, dann `LEGAL_PUBLISHED=true` (schaltet Footer- + In-App-Links frei, Zwei-Klick-Regel; ADR-0029). Für AT ggf. Impressum-Spezifika (ECG/MedienG)
+- [ ] Timo: Rechtstext-Quelle entscheiden (eRecht24 Premium / IT-Recht Kanzlei vs. einmalige Anwaltsprüfung; ADR-0029)
 - [ ] **Monitoring WIRKSAM schalten (Timo):** Wächter-Dienst-Konto + Uptime-Monitor auf `/api/v1/health/ready` + Backup-Heartbeat-URL in `deploy/.env` + Test-Alarm auslösen (ADR-0027, Runbook)
 - [ ] Platten-Alarm (Log-Rotation erkennt keine volle Platte durch DB/Bilder/Backups → nächste Monitoring-Aufgabe, ADR-0027 Stufe 2)
 - [x] 2026-07-20 Monitoring Stufe-1-**Code** (ADR-0027): Readiness-Endpoint (DB+Redis, 503), Backup-Heartbeat (Totmann-Schalter), Docker-Log-Rotation, Incident-Runbook
@@ -39,6 +40,8 @@
 - [ ] Einkaufsliste: eigene Läden je Familie anlegen
 - [ ] Einkaufsliste: Angebote der Märkte – erst Rechte-/API-Recherche (Prospektdaten lizenzpflichtig!)
 - [ ] Support-Formular in der App + E-Mail-Support (ab Stufe 2, braucht SMTP)
+- [ ] Payment-Release-Rechtliches (ADR-0029 ⇄ ADR-0022): AGB + Widerrufsbelehrung für digitale Güter, Button-Lösung „Kostenpflichtig abonnieren" — erst wenn echtes Geld fließt
+- [ ] Native-Release: Legal-Seiten per Remote-URL öffnen (kein Store-Resubmit bei Textänderung) + Datenschutz-URL in Play/App-Store-Console (ADR-0029)
 - [ ] Feed-Katalog/Abo-Assistent (Feiertage per Klick, Abfallkalender-Suche)
 - [ ] Globaler Styling-Run über alle Seiten
 - [ ] Native Runde: Keychain/Keystore für Tokens, PDF-Download nativ, iOS-Swipe-Back
