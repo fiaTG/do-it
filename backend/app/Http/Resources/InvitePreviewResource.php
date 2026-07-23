@@ -5,7 +5,6 @@ namespace App\Http\Resources;
 use App\Models\Invite;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Str;
 
 /**
  * ÖFFENTLICHE Einladungs-Vorschau (GET /invites/{token}), für die
