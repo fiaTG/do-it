@@ -140,10 +140,16 @@ Bei einem Alarm – ruhig, der Reihe nach:
    voll?), `journalctl -u nidula-backup --since -1d` (Backup ok?).
 3. **Container-Neustart** (kleinste Maßnahme), wenn ein einzelner Dienst hängt:
    `docker compose … restart <service>` bzw. `up -d --force-recreate <service>`.
-4. **Rollback**, wenn ein frischer Deploy die Ursache ist: auf dem Server
-   `git -C /opt/nidula log --oneline -5`, gewünschten Stand auschecken und
-   `./deploy/deploy.sh` vom Entwicklungsrechner mit dem vorherigen Commit – oder
-   das `nidula-app`-Image auf den letzten funktionierenden Stand zurücksetzen.
+4. **Rollback** (versionierte Images, ADR-0027), wenn ein frischer Deploy die
+   Ursache ist – auf dem Server in `/opt/nidula/deploy`: den vorher laufenden
+   Stand zurückholen mit `docker tag nidula-app:previous nidula-app:current`
+   und `docker compose -f docker-compose.prod.yml up -d app worker scheduler`;
+   ein bestimmter Stand geht mit `docker images nidula-app` (verfügbare SHAs)
+   →`docker tag nidula-app:<sha> nidula-app:current` + `up -d`. Der frühere
+   `git -C /opt/nidula`-Weg funktioniert NICHT (deploy.sh synct `.git` nicht).
+   **Achtung Schema:** hat der kaputte Deploy schon migriert, ggf. zusätzlich
+   das VOR der Migration erzeugte Backup einspielen (läuft automatisch direkt
+   vor jeder Migration).
 5. **Platte voll:** alte Backups/Logs prüfen (`/opt/nidula-backups`,
    `docker system df`), `docker system prune` (Vorsicht), Log-Rotation greift
    künftig automatisch.

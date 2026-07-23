@@ -133,3 +133,16 @@ Monitoring mit Alarmierung, Kill-Switch für Registrierung/Uploads.
 - OWASP ASVS als Prüfleitfaden: <https://owasp.org/www-project-application-security-verification-standard/>
 - BSI IT-Grundschutz APP.3.1 (Webanwendungen) als Orientierung
 - DSGVO Art. 25/28/32/33/35 – relevant ab Stufe 2
+
+## Korrektur / Nachtrag (2026-07-22, nach externem Review)
+
+- **Server ist live** (Stufe-1-Beta hinter Bauzaun). Der Status oben („Server-
+  Teil offen") bezog sich auf den Zeitpunkt der Entscheidung.
+- **Verschlüsselung at rest präzisiert:** Die pauschale Aussage „alle Volumes/
+  Backups werden serverseitig verschlüsselt" trifft für den aktuellen Aufbau
+  NICHT automatisch zu – Hetzner-Cloud-Volumes sind standardmäßig nicht
+  at-rest-verschlüsselt, und Hetzner Object Storage verschlüsselt nur per SSE-C
+  (kundenseitiger Schlüssel). Die reale Verschlüsselung-at-rest **und** das
+  externe, verschlüsselte Offsite-Backup (DB + Medien) sind der offene
+  **Beta-Blocker Nr. 1** und werden mit der Storage-/Backup-Runde umgesetzt
+  (docs/aufgaben.md; eigene Entscheidung dort zu Schlüssel-Verwahrung).

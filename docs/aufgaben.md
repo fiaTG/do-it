@@ -4,6 +4,21 @@
 > [roadmap.md](roadmap.md) und den [ADRs](adr/). Wird in jeder Arbeitsrunde
 > gepflegt (Daueranweisung) – Erledigtes wandert mit Datum nach unten.
 
+## 🟢 Beta-Freigabe: Blocker aus externem Review (2026-07-22)
+
+> ChatGPT-Review vor der Freundes-Beta. Reihenfolge = empfohlener Weg zur
+> kleinen invite-only Beta mit 2–4 Familien.
+
+- [x] 2026-07-22 **Auth-Lücke 1**: Invite-Preview maskiert (kein Klartext-Mail/Link) – kein Enumeration über den Link mehr
+- [x] 2026-07-22 **Auth-Lücke 2**: Registrierungs-Enumeration behoben (invite-only: generisch 403 für bekannt/unbekannt)
+- [x] 2026-07-22 **Deploy robust**: SHA-getaggte Images + `previous` (echter Rollback), Backup direkt vor Migration, Runbook-Rollback korrigiert
+- [x] 2026-07-22 Readiness prüft zusätzlich Medienspeicher; `.env`-Template auf stderr; ADR-0025-Erratum (Verschlüsselung/Live-Status)
+- [ ] **Blocker 1 (wichtigster): Externes verschlüsseltes Backup** (DB **+ Medien**) offsite + kompletter Restore-Test auf leere Maschine (DB+Bilder+Secrets → Familie einloggen → Bilder öffnen). Braucht Timos Offsite-Ziel + Schlüssel-Verwahrung; Mechanik dann baubar
+- [ ] **Blocker 2: Monitoring wirksam schalten** – siehe Stufe-2-Punkt unten (Uptime + Heartbeat + Platten-/Worker-/Scheduler-Alarm + Test-Alarm)
+- [ ] **Blocker 3: Domain + Legal + Fence** in dieser Reihenfolge: Domain/DNS → prod-Env (APP_URL/FRONTEND_URL/SESSION_DOMAIN/SANCTUM) → HTTPS+Cookie-Login testen → Legal finalisieren + AVV + `LEGAL_PUBLISHED=true` → **erst dann** Bauzaun entfernen (invite-only bleibt!)
+- [ ] Manueller Löschprozess per E-Mail dokumentieren (Self-Service-Löschung darf für sehr kleine Beta noch fehlen)
+- [ ] Nach Start: 2 Familien, Uploadmenge begrenzt; nach 1 Woche Backups/Logs/Platte/Queue/Feedback prüfen, dann erweitern
+
 ## 🔴 Jetzt: Web-Release Stufe 1 (ADR-0025)
 
 - [ ] Domain festlegen + DNS auf 167.233.64.98 zeigen – Timo

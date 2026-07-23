@@ -31,24 +31,35 @@ rsync -az --delete \
   -e "ssh -i $NIDULA_SSH_KEY" \
   "$REPO_DIR/" "$NIDULA_SSH:$TARGET_DIR/"
 
-echo "==> 3/4 Compose prüfen, Image bauen + Container hochziehen"
+SHA="$(git -C "$REPO_DIR" rev-parse --short HEAD)"
+
+echo "==> 3/4 Compose prüfen, Image ${SHA} bauen (Vorgänger sichern) + hochziehen"
 # config -q validiert die Compose-Datei zuerst (ADR-0027): da lokal kein Docker
 # läuft, fängt das YAML-Fehler ab, BEVOR laufende Container angefasst werden.
+# Versionierte Images (ADR-0027): vor dem Bauen wird das laufende 'current' als
+# 'previous' gesichert, das neue Image zusätzlich mit der Commit-SHA getaggt ->
+# echter Rollback möglich (siehe docs/deploy-hetzner.md).
 # restart caddy: compose erkennt Änderungen an der bind-gemounteten Caddyfile
 # nicht, und 'caddy reload' per exec griff real nicht zuverlässig (2026-07-18).
 "${SSH[@]}" "cd $TARGET_DIR/deploy \
   && docker compose -f docker-compose.prod.yml config -q \
+  && (docker image inspect nidula-app:current >/dev/null 2>&1 && docker tag nidula-app:current nidula-app:previous || true) \
   && docker compose -f docker-compose.prod.yml build --pull app \
+  && docker tag nidula-app:current nidula-app:$SHA \
   && docker compose -f docker-compose.prod.yml up -d --remove-orphans \
   && docker compose -f docker-compose.prod.yml restart caddy"
 
-echo "==> 4/4 Migrationen + Katalog-Seed + Caches"
-# CatalogSeeder = App-Katalog + Läden (idempotent, KEINE Demo-Daten). Muss
-# laufen, sonst gibt es keine auswählbaren Apps/Shops (Prod-Bug 2026-07-17).
+echo "==> 4/4 Backup, Migrationen + Katalog-Seed + Caches"
+# Backup DIREKT vor der Migration (ADR-0027): ein fehlgeschlagenes Backup
+# stoppt den Deploy, bevor das Schema angefasst wird. CatalogSeeder =
+# App-Katalog + Läden (idempotent, KEINE Demo-Daten), sonst keine Apps/Shops.
+# Hinweis: Migrationen bleiben additiv/rückwärtskompatibel, damit das kurze
+# Fenster (neuer Code, noch altes Schema) unkritisch ist.
 "${SSH[@]}" "cd $TARGET_DIR/deploy \
+  && ./backup-db.sh \
   && docker compose -f docker-compose.prod.yml exec -T app php artisan migrate --force \
   && docker compose -f docker-compose.prod.yml exec -T app php artisan db:seed --class=CatalogSeeder --force \
   && docker compose -f docker-compose.prod.yml exec -T app php artisan config:cache \
   && docker compose -f docker-compose.prod.yml exec -T app php artisan route:cache"
 
-echo "==> Fertig: https://${NIDULA_DOMAIN}"
+echo "==> Fertig (${SHA}): https://${NIDULA_DOMAIN}"

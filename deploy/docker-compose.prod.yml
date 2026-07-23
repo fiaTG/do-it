@@ -41,7 +41,7 @@ services:
     build:
       context: ..
       dockerfile: deploy/Dockerfile
-    image: nidula-app
+    image: nidula-app:current
     restart: unless-stopped
     logging: *default-logging
     env_file: .env.app
@@ -54,7 +54,7 @@ services:
         condition: service_started
 
   worker:
-    image: nidula-app
+    image: nidula-app:current
     restart: unless-stopped
     logging: *default-logging
     command: ["php", "artisan", "queue:work", "--tries=3", "--max-time=3600"]
@@ -68,7 +68,7 @@ services:
         condition: service_started
 
   scheduler:
-    image: nidula-app
+    image: nidula-app:current
     restart: unless-stopped
     logging: *default-logging
     # Ersetzt cron (ADR-0020: Papierkorb-Purge läuft täglich via model:prune).

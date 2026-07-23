@@ -1,6 +1,10 @@
 # Family Board – Modernisierungs-Fahrplan
 
-> Stand: 2026-06-12 · Autor des Projekts: Timo Giese · erstellt mit Claude Code
+> Ursprünglicher Fahrplan-Stand: 2026-06-12 · Autor: Timo Giese · mit Claude Code.
+> **Hinweis:** Nidula ist inzwischen als Familien-Beta live (Hetzner). Der
+> aktuelle Arbeitsstand steht in [aufgaben.md](aufgaben.md) und den ADRs
+> (0020–0029); dieser Fahrplan bildet vor allem die ursprüngliche
+> Modernisierung ab. Die Phasen 0–6 unten sind praktisch alle umgesetzt.
 
 Dieses Dokument ist der Gesamt-Fahrplan, um Family Board von der aktuellen
 XAMPP/Vanilla-PHP-Lösung auf einen sauberen, wartbaren und modernen Stand zu
