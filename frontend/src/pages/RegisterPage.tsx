@@ -17,6 +17,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState('')
   const [passwordConfirmation, setPasswordConfirmation] = useState('')
   const [inviteFamily, setInviteFamily] = useState<string | null>(null)
+  const [inviteEmailMasked, setInviteEmailMasked] = useState<string | null>(null)
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
 
@@ -26,7 +27,9 @@ export default function RegisterPage() {
       .show(token)
       .then((invite) => {
         setInviteFamily(invite.family?.name ?? null)
-        setEmail(invite.email)
+        // Bewusst KEIN Vorausfüllen der E-Mail: der Link soll nicht verraten,
+        // welche Adresse gemeint ist (Sicherheit). Nur maskierter Hinweis.
+        setInviteEmailMasked(invite.email_masked)
       })
       .catch(() => setError('Diese Einladung ist ungültig oder abgelaufen.'))
   }, [token])
@@ -86,6 +89,12 @@ export default function RegisterPage() {
           />
         </div>
 
+        {inviteEmailMasked && (
+          <p className="mb-2 text-xs text-muted">
+            Bitte registriere dich mit der eingeladenen Adresse{' '}
+            <span className="font-semibold text-text">{inviteEmailMasked}</span>.
+          </p>
+        )}
         <input
           type="email"
           placeholder="E-Mail"

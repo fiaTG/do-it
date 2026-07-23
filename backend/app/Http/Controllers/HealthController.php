@@ -6,6 +6,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use RuntimeException;
 
@@ -48,6 +49,15 @@ class HealthController extends Controller
             }
         }
 
+        if ($failed === null) {
+            try {
+                $this->checkMediaStorage();
+            } catch (\Throwable $e) {
+                $failed = 'media';
+                Log::warning('Readiness-Check: Medienspeicher nicht erreichbar', ['exception' => $e->getMessage()]);
+            }
+        }
+
         if ($failed !== null) {
             return response()->json(['status' => 'degraded'], 503);
         }
@@ -77,5 +87,24 @@ class HealthController extends Controller
         }
 
         Cache::store()->forget($key);
+    }
+
+    /**
+     * Schreib-/Lese-Round-Trip auf dem Medienspeicher (ADR-0027). Fängt u. a.
+     * eine volle Platte oder fehlende S3-Berechtigung ab – genau die Fälle, die
+     * Uploads still brechen lassen würden.
+     */
+    private function checkMediaStorage(): void
+    {
+        $disk = Storage::disk(config('filesystems.media'));
+        $key = 'health/readiness-'.Str::uuid().'.txt';
+
+        $disk->put($key, 'ok');
+        $ok = $disk->get($key) === 'ok';
+        $disk->delete($key);
+
+        if (! $ok) {
+            throw new RuntimeException('Media storage readiness check failed.');
+        }
     }
 }

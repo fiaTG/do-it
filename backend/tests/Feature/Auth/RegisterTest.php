@@ -184,3 +184,21 @@ it('binds the invite to the invited email address (Review H-01)', function () {
         'token' => 'bound-token',
     ])->assertCreated()->assertJsonPath('data.family_id', $family->id);
 });
+
+it('does not leak whether an email is registered (no enumeration) in invite-only mode', function () {
+    config()->set('features.registration', 'invite');
+    User::factory()->create(['email' => 'known@example.com']);
+
+    $payload = fn (string $email) => [
+        'first_name' => 'A', 'last_name' => 'B', 'email' => $email,
+        'password' => 'Sup3r!pass', 'password_confirmation' => 'Sup3r!pass',
+    ];
+
+    $known = $this->postJson('/api/v1/auth/register', $payload('known@example.com'));
+    $unknown = $this->postJson('/api/v1/auth/register', $payload('unknown@example.com'));
+
+    // Gleiche generische Antwort (403) – kein 422 für bereits registrierte Adressen.
+    $known->assertForbidden();
+    $unknown->assertForbidden();
+    expect($known->status())->toBe($unknown->status());
+});

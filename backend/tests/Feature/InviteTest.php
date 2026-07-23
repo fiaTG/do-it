@@ -146,3 +146,22 @@ it('caps a family at the configured member limit including open invites', functi
     $this->postJson('/api/v1/invites', ['email' => 'zuviel@example.com', 'role' => 'child'])
         ->assertStatus(422);
 });
+
+it('masks the email and hides the link in the public invite preview', function () {
+    $family = Family::factory()->create();
+    Invite::create([
+        'family_id' => $family->id,
+        'email' => 'maxine@example.com',
+        'token' => 'preview-token',
+        'expires_at' => now()->addDay(),
+    ]);
+
+    $res = $this->getJson('/api/v1/invites/preview-token')->assertOk();
+
+    $res->assertJsonPath('data.email_masked', 'm***@example.com');
+    $body = $res->content();
+    // Weder Klartext-Adresse noch der Token/Link dürfen auftauchen.
+    expect($body)->not->toContain('maxine@example.com');
+    expect($body)->not->toContain('preview-token');
+    expect($body)->not->toContain('/register?token=');
+});

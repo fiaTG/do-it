@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Concerns\InteractsWithFamily;
 use App\Http\Requests\InviteRequest;
+use App\Http\Resources\InvitePreviewResource;
 use App\Http\Resources\InviteResource;
 use App\Mail\InvitationMail;
 use App\Models\Invite;
@@ -100,12 +101,14 @@ class InviteController extends Controller
      * Öffentliche Vorschau einer Einladung anhand des Tokens (für die
      * Registrierungsseite). 404, wenn ungültig/abgelaufen/eingelöst.
      */
-    public function show(string $token): InviteResource
+    public function show(string $token): InvitePreviewResource
     {
         $invite = Invite::where('token', $token)->with('family')->first();
 
         abort_if(! $invite || $invite->isAccepted() || $invite->isExpired(), 404);
 
-        return new InviteResource($invite);
+        // Öffentlich: maskierte Vorschau (kein Klartext-E-Mail, kein Link) –
+        // ein abgefangener Link verrät so nicht die einzugebende Adresse.
+        return new InvitePreviewResource($invite);
     }
 }

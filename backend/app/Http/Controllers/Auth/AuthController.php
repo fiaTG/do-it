@@ -42,6 +42,15 @@ class AuthController extends Controller
         $user = DB::transaction(function () use ($data): User {
             $invite = $this->validInviteFor($data['token'] ?? null, $data['email']);
 
+            // Im invite-only-Modus prüft die FormRequest die Eindeutigkeit
+            // bewusst NICHT (Enumeration). Hier – hinter dem gültigen, E-Mail-
+            // gebundenen Token – sauber statt DB-Constraint-500 abfangen.
+            if (User::where('email', $data['email'])->exists()) {
+                throw ValidationException::withMessages([
+                    'email' => 'Für diese Adresse besteht bereits ein Konto.',
+                ]);
+            }
+
             $user = User::create([
                 'first_name' => $data['first_name'],
                 'last_name' => $data['last_name'],

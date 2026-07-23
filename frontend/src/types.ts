@@ -204,8 +204,16 @@ export interface Invite {
   email: string
   role: FamilyRole
   family: Family | null
-  /** Teilbarer Registrierungs-Link (Beta: Mail-Versand ist noch aus). */
+  /** Teilbarer Registrierungs-Link (nur Verwalter-Liste; Beta: Mail aus). */
   link: string
   created_at: string | null
+  expires_at: string | null
+}
+
+/** Öffentliche Einladungs-Vorschau (Registrierungsseite): bewusst maskiert. */
+export interface InvitePreview {
+  email_masked: string
+  role: FamilyRole
+  family: Family | null
   expires_at: string | null
 }

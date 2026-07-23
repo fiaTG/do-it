@@ -11,6 +11,7 @@ import type {
   ImageItem,
   ImagePage,
   Invite,
+  InvitePreview,
   Shop,
   ShoppingItem,
   Subscription,
@@ -233,8 +234,8 @@ export const inviteApi = {
   async remove(id: number): Promise<void> {
     await api.delete(`/invites/${id}`)
   },
-  async show(token: string): Promise<Invite> {
-    const { data } = await api.get<{ data: Invite }>(`/invites/${token}`)
+  async show(token: string): Promise<InvitePreview> {
+    const { data } = await api.get<{ data: InvitePreview }>(`/invites/${token}`)
     return data.data
   },
 }
